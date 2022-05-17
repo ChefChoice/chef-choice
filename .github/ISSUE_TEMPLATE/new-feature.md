@@ -2,13 +2,16 @@
 name: New Feature
 about: Add a new feature
 title: ''
-labels: ''
+labels: enhancement
 assignees: ''
 
 ---
 
-**Describe the Feature**
+### Describe the Feature ⭐
 A clear and concise description of what the feature is.
 
-**Additional Context**
+### Proposed Date of Completion 📅
+2022-05-17
+
+### Additional Context ℹ
 Add any other context or screenshots about the feature.
