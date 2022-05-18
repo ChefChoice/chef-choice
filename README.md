@@ -21,6 +21,9 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 
 The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
 
+## Cypress Testing
+Sample tests are located in `cypress/integration`. You can see these tests running by `yarn run cypress open` and selecting the appropriate test. 
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
