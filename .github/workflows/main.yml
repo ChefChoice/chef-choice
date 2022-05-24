@@ -23,5 +23,7 @@ jobs:
         uses: cypress-io/github-action@v2
         with:
           browser: chrome
+          record: false
+          # parallel: true - in the future this would be nice
           build: yarn build
           start: yarn start
