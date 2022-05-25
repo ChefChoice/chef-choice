@@ -2,9 +2,9 @@ name: Cypress Tests
 
 on:
   push:
-    branches: [ main, develop, cypress-sample ] # needed?
+    branches: [ main, develop ]
   pull_request:
-    branches: [ main, develop, cypress-sample ]
+    branches: [ main, develop ]
 
 jobs:
   cypress-run:
