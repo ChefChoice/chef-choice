@@ -23,7 +23,7 @@ const Marketplace: NextPage = () => {
           </div>
 
           <div className="md:w-full grid md:grid-cols-5 grid-cols-1 gap-2 pl-3 pt-5 justify-center">
-            <div className="max-w-xs w-full md:col-start-2 bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring">
+            <div className="max-w-xs w-full md:col-start-2 bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
               <Image
                 src="/images/dishMgt.jpg"
                 layout="responsive"
@@ -41,7 +41,7 @@ const Marketplace: NextPage = () => {
               </div>
             </div>
 
-            <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring">
+            <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
               <Image
                 src="/images/reviewMgt.jpg"
                 layout="responsive"
@@ -59,7 +59,7 @@ const Marketplace: NextPage = () => {
               </div>
             </div>
 
-            <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring">
+            <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
               <Image
                 src="/images/scheduleMgt.jpg"
                 layout="responsive"

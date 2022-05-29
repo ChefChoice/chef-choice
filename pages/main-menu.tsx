@@ -29,20 +29,20 @@ const MainMenu: NextPage = () => {
               </Link>
             ) : (
               <Link href="#">
-                <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green md:w-full w-3/4 h-20">
+                <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
                   <h2>Search Dishes</h2>
                 </a>
               </Link>
             )}
 
             <Link href="#">
-              <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green md:w-full w-3/4 h-20">
+              <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
                 <h2>Marketplace Management</h2>
               </a>
             </Link>
 
             <Link href="#">
-              <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green md:w-full w-3/4 h-20">
+              <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
                 <h2>My Account</h2>
               </a>
             </Link>
