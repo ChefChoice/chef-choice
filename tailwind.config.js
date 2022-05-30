@@ -4,6 +4,7 @@ module.exports = {
     extend: {
       colors: {
         'green-light': '#4D966D',
+        'green-hover': '#36AE7C',
       },
     },
   },
