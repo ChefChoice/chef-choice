@@ -1,13 +1,13 @@
 // pages/signin.tsx
 
 import { supabase } from '../utils/supabaseClient';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 
 export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) {
@@ -30,7 +30,7 @@ export default function SignIn() {
               id="input-email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
             />
             <input
@@ -38,7 +38,7 @@ export default function SignIn() {
               placeholder="Password"
               id="input-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             />
             <div className="mb-4">
               <p className="text-sm font-semibold text-blue-500 hover:text-blue-900">
