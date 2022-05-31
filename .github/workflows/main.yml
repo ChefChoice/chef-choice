@@ -2,21 +2,30 @@ name: Cypress Tests
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   cypress-run:
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        node-version: [ 14.x ]
-    
+        node-version: [14.x]
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      # generate .env file with repository secrets
+      - name: 'create nev file'
+        run: |
+          touch .env
+          echo "NEXT_PUBLIC_SUPABASE_URL=${{secrets.NEXT_PUBLIC_SUPABASE_URL}} > .env
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}} > .env
+          cat .env
+
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - name: Cypress run
