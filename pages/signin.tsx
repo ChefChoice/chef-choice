@@ -1,7 +1,7 @@
 // pages/signin.tsx
 
 import { supabase } from '../utils/supabaseClient';
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 
 export default function SignIn() {
@@ -9,7 +9,7 @@ export default function SignIn() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const { user, error } = await supabase.auth.signIn({ email, password });
     if (error) {
@@ -35,8 +35,10 @@ export default function SignIn() {
               id="input-email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              onFocus={(e) => (document.getElementById('loginErrorField')!.innerHTML = '')}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+              onFocus={(e: ChangeEvent<HTMLInputElement>) =>
+                (document.getElementById('loginErrorField')!.innerHTML = '')
+              }
               required
             />
             <input
@@ -44,8 +46,10 @@ export default function SignIn() {
               placeholder="Password"
               id="input-password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              onFocus={(e) => (document.getElementById('loginErrorField')!.innerHTML = '')}
+              onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+              onFocus={(e: ChangeEvent<HTMLInputElement>) =>
+                (document.getElementById('loginErrorField')!.innerHTML = '')
+              }
             />
             <div className="mb-2">
               <p id="loginErrorField" className="text-sm font-semibold text-red-500"></p>
