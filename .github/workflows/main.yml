@@ -17,18 +17,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
-      # generate .env file with repository secrets
-      - name: 'make env file'
-        run: |
-          touch .env
-          echo NEXT_PUBLIC_SUPABASE_URL=${{secrets.NEXT_PUBLIC_SUPABASE_URL}} > .env
-          echo NEXT_PUBLIC_SUPABASE_ANON_KEY=${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}} > .env
-          cat .env
-
       # Install NPM dependencies, cache them correctly
       # and run all Cypress tests
       - name: Cypress run
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
         uses: cypress-io/github-action@v2
         with:
           browser: chrome
