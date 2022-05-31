@@ -4,11 +4,11 @@ interface IHeadingProps {
   optionalNodeRightAligned?: boolean;
 }
 
-const Header = ({ title, optionalNode, optionalNodeRightAligned = true }: IHeadingProps) => {
+const Header = ({ title, optionalNode, optionalNodeRightAligned = false }: IHeadingProps) => {
   return (
     <>
       <div className="grid grid-cols-8 items-center mb-3">
-        <div className="col-span-2">
+        <div className={optionalNode ? 'col-span-2' : 'col-span-8'}>
           <p className="text-3xl">{title}</p>
         </div>
         {optionalNode && (
