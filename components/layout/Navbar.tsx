@@ -2,7 +2,11 @@ import Link from 'next/link';
 
 import Logo from './Logo';
 
+import { useUser } from '../../lib/UserContext';
+
 const Navbar = () => {
+  const { user } = useUser();
+
   return (
     <div className="flex items-center max-w-screen-2xl mx-auto px-5 py-3 bg-white">
       <div className="mr-8">
@@ -27,9 +31,9 @@ const Navbar = () => {
           <Link href="/">
             <a className="text-black font-semibold text-xl">Help</a>
           </Link>
-          <Link href="/signin">
+          <Link href={user ? '/profile' : '/signin'}>
             <a className="text-white font-semibold text-xl px-6 py-1 border-none rounded-lg bg-green-light">
-              Log In
+              {user ? <span>{user['email']}</span> : <span>Log In</span>}
             </a>
           </Link>
         </div>
