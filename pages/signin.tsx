@@ -45,6 +45,7 @@ export default function SignIn() {
               className="w-full rounded px-3 py-2 mb-2 bg-gray-200 border-gray-200 border-2 hover:border-green-700 focus:outline-none focus:bg-white focus:border-green-700"
               placeholder="Password"
               id="input-password"
+              type="password"
               value={password}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
               onFocus={(e: ChangeEvent<HTMLInputElement>) =>
@@ -68,7 +69,6 @@ export default function SignIn() {
           </form>
         </div>
       </div>
-      ;
     </>
   );
 }

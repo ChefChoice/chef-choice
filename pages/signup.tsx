@@ -16,6 +16,7 @@ export default function SignIn() {
     }
   };
 
+  // TODO: Add password re-entry for verification
   return (
     <>
       <div className="bg-gray-200 max-w-screen-2xl flex h-screen mx-auto">
@@ -37,14 +38,10 @@ export default function SignIn() {
               className="w-full rounded px-3 py-2 mb-2 bg-gray-200 border-gray-200 border-2 hover:border-green-700 focus:outline-none focus:bg-white focus:border-green-700"
               placeholder="Password"
               id="input-password"
+              type="password"
               value={password}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             />
-            <div className="mb-4">
-              <p className="text-sm font-semibold text-blue-500 hover:text-blue-900">
-                <a href="">Forgot your password?</a>
-              </p>
-            </div>
             <button
               className="block max-w-sm bg-green-700 hover:bg-green-900 border-green-700 hover:border-green-900 py-2 px-2 text-white rounded w-full"
               type="submit"
@@ -54,7 +51,6 @@ export default function SignIn() {
           </form>
         </div>
       </div>
-      ;
     </>
   );
 }
