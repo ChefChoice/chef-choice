@@ -5,31 +5,35 @@ import { useRouter } from 'next/router';
 import { supabase } from '../utils/supabaseClient';
 
 export default function ViewCertificate() {
-  const [certImageURL, setCertImageURL] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [certImageURL, setCertImageURL] = useState('');
 
   const router = useRouter();
   const query = router.query;
+  // Take the certificate image path from query
   const imgPath = query.cert_image;
 
   useEffect(() => {
     if (imgPath) downloadImage(imgPath);
   }, [imgPath]);
 
-  async function downloadImage(imgPath) {
+  async function downloadImage(imgPath: any) {
     try {
+      setLoading(true);
+
       const { data, error } = await supabase.storage.from('cert-images').download(imgPath);
       if (error) {
         throw error;
       }
 
-      const url = URL.createObjectURL(data);
-      console.log('abc');
-      console.log(url);
-      console.log(data);
-
-      setCertImageURL(url);
-    } catch (error) {
-      console.log('Error downloading image: ', error.message);
+      if (data) {
+        const url = URL.createObjectURL(data);
+        setCertImageURL(url);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -40,8 +44,9 @@ export default function ViewCertificate() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <main className="py-20 px-10">
-        {certImageURL ? (
+      <main className="py-20 px-10 bg-gray-200">
+        {loading ? 'Loading...' : ''}
+        {certImageURL && (
           <Image
             src={certImageURL}
             alt="certificate image"
@@ -50,8 +55,6 @@ export default function ViewCertificate() {
             height={1000}
             objectFit="scale-down"
           />
-        ) : (
-          <p>no-image for this certificate</p>
         )}
       </main>
     </>
