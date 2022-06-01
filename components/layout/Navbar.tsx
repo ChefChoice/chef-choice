@@ -27,7 +27,7 @@ const Navbar = () => {
           <Link href="/">
             <a className="text-black font-semibold text-xl">Help</a>
           </Link>
-          <Link href="/">
+          <Link href="/signin">
             <a className="text-white font-semibold text-xl px-6 py-1 border-none rounded-lg bg-green-light">
               Log In
             </a>
