@@ -35,13 +35,13 @@ const MainMenu: NextPage = () => {
               </Link>
             )}
 
-            <Link href="#">
+            <Link href="/marketplace">
               <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
                 <h2>Marketplace Management</h2>
               </a>
             </Link>
 
-            <Link href="#">
+            <Link href="/profile">
               <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
                 <h2>My Account</h2>
               </a>
