@@ -23,6 +23,7 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: ${{secrets.NEXT_PUBLIC_SUPABASE_URL}}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY}}
+          NEXT_PUBLIC_SUPABASE_DOMAIN: ${{secrets.NEXT_PUBLIC_SUPABASE_DOMAIN}}
         uses: cypress-io/github-action@v2
         with:
           browser: chrome
