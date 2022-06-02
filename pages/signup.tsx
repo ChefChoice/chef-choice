@@ -3,7 +3,7 @@
 import { supabase } from '../utils/supabaseClient';
 import { ChangeEvent, FormEvent, useState } from 'react';
 
-export default function SignIn() {
+export default function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -26,7 +26,7 @@ export default function SignIn() {
           </div>
           <form onSubmit={handleSubmit} className="mb-2">
             <input
-              className="w-full rounded px-3 py-2 mb-4 bg-gray-200 border-gray-200 border-2 hover:border-green-700 focus:outline-none focus:bg-white focus:border-green-700"
+              className="w-full rounded px-3 py-2 mb-4 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
               placeholder="Email Address"
               id="input-email"
               type="email"
@@ -35,7 +35,7 @@ export default function SignIn() {
               required
             />
             <input
-              className="w-full rounded px-3 py-2 mb-2 bg-gray-200 border-gray-200 border-2 hover:border-green-700 focus:outline-none focus:bg-white focus:border-green-700"
+              className="w-full rounded px-3 py-2 mb-2 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
               placeholder="Password"
               id="input-password"
               type="password"
@@ -43,7 +43,7 @@ export default function SignIn() {
               onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             />
             <button
-              className="block max-w-sm bg-green-700 hover:bg-green-900 border-green-700 hover:border-green-900 py-2 px-2 text-white rounded w-full"
+              className="block max-w-sm bg-green-light hover:bg-green-hover border-green-light hover:border-green-hover py-2 px-2 text-white rounded w-full"
               type="submit"
             >
               Login
