@@ -24,9 +24,15 @@ const Navbar = () => {
         <nav>
           <ul>
             <li>
-              <Link href="/order-management">
-                <a className="text-black font-semibold text-xl">Orders</a>
-              </Link>
+              {user ? (
+                <Link href="/order-management">
+                  <a className="text-black font-semibold text-xl">Orders</a>
+                </Link>
+              ) : (
+                <Link href="#">
+                  <a className="text-black font-semibold text-xl">Become a Chef</a>
+                </Link>
+              )}
             </li>
           </ul>
         </nav>
