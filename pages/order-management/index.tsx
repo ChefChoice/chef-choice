@@ -3,7 +3,7 @@ import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
 
-const Orders: NextPage = () => {
+const OrderManagement: NextPage = () => {
   return (
     <>
       <Head>
@@ -72,4 +72,4 @@ const Orders: NextPage = () => {
   );
 };
 
-export default Orders;
+export default OrderManagement;

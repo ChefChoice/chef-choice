@@ -6,7 +6,7 @@ import Head from 'next/head';
 import { supabase } from '../../utils/supabaseClient';
 import ContentContainer from '../../components/orders/ContentContainer';
 
-const orderID = 1;
+const orderID = 1; // TODO: Temporary hard-coded value until Context
 
 const PostCheckout: NextPage = () => {
   // TODO: Once the order is approved, change the screen.
@@ -27,10 +27,6 @@ const PostCheckout: NextPage = () => {
 
     getData().catch(console.error); // TODO: Remove the console error
   }, []);
-
-  if (orders) {
-    console.log(orders);
-  }
 
   return (
     <>

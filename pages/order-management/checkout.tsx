@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { supabase } from '../../utils/supabaseClient';
@@ -12,11 +11,11 @@ import Heading from '../../components/common/Heading';
 import ContentContainer from '../../components/orders/ContentContainer';
 import SmallButton from '../../components/orders/SmallButton';
 
-const orderID = 1;
+// TODO: Update implementation with actual subtotal, tax, and total
+
+const orderID = 1; // TODO: Remove temporary hardcoded value
 
 const Checkout: NextPage = () => {
-  // console.log('render'); // TODO: Remove console.log
-
   const [order, setOrder] = useState<Array<any> | null>(null);
   const [orderDishes, setOrderDishes] = useState<Array<any> | null>(null);
 
@@ -39,16 +38,14 @@ const Checkout: NextPage = () => {
       setOrderDishes(Order_Dish);
     };
 
-    getData().catch(console.error); // TODO: Remove the console error
+    getData().catch(console.error);
   }, []);
 
   const handleClick = async () => {
-    console.log('clicked!');
-
     const { data, error } = await supabase
       .from('Order')
       .update({ ORDER_STATUS: 'P' })
-      .eq('ORDER_ID', '1');
+      .eq('ORDER_ID', orderID);
   };
 
   return (
@@ -74,15 +71,15 @@ const Checkout: NextPage = () => {
             </div>
             <div className="flex md:w-full font-semibold">
               <div className="grow">SubTotal</div>
-              <div>$31.99</div>
+              <div>$31.99</div> {/* TODO: Remove temporary hardcoded value */}
             </div>
             <div className="flex md:w-full">
               <div className="grow">Tax and Fees</div>
-              <div>$4.28</div>
+              <div>$4.28</div> {/* TODO: Remove temporary hardcoded value */}
             </div>
             <div className="flex md:w-full font-bold text-lg">
               <div className="grow">Total</div>
-              <div>$36.27</div>
+              <div>$36.27</div> {/* TODO: Remove temporary hardcoded value */}
             </div>
           </div>
           <div className="grow flex flex-col max-w-xl">

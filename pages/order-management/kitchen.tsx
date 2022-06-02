@@ -1,3 +1,5 @@
+// TODO: Move file to appropriate directory
+
 import type { NextPage } from 'next';
 import { useState, useEffect } from 'react';
 
@@ -11,7 +13,7 @@ import Heading from '../../components/common/Heading';
 import RowItem from '../../components/common/RowItem';
 import SmallButton from '../../components/orders/SmallButton';
 
-const testChefID = '4a1abd67-53f4-4a24-8a8b-569729e6fb95';
+const testChefID = '4a1abd67-53f4-4a24-8a8b-569729e6fb95'; // TODO: Temporary hard-coded value until Context
 
 const Kitchen: NextPage = () => {
   const [homechef, setHomeChef] = useState<Array<any> | null>(null);
@@ -43,12 +45,8 @@ const Kitchen: NextPage = () => {
       setPublicURL(PublicURL);
     };
 
-    getData().catch(console.error); // TODO: Remove the console error
+    getData().catch(console.error);
   }, []);
-
-  if (dishes) {
-    console.log(dishes);
-  }
 
   return (
     <>
@@ -64,7 +62,7 @@ const Kitchen: NextPage = () => {
           )}
           <SmallButton data={'View Schedule'} />
         </div>
-        <div>100 Queen St W, Toronto, ON M5H 2N1</div>
+        <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}
         <div className="grow flex flex-col pt-5">
           <div>
             <Heading title={'Dinner'}></Heading>
