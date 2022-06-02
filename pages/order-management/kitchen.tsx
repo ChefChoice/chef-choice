@@ -72,7 +72,14 @@ const Kitchen: NextPage = () => {
                   key={dish.id}
                   title={dish.dish_name}
                   subtitle={dish.dish_price}
-                  image={<Image src={publicURL + dish.dish_image} width={100} height={100}></Image>}
+                  image={
+                    <Image
+                      src={publicURL + dish.dish_image}
+                      alt={dish.dish_name}
+                      width={100}
+                      height={100}
+                    ></Image>
+                  }
                   optionalNode={<SmallButton data={'Add to Order'} />}
                   optionalNodeRightAligned
                 />

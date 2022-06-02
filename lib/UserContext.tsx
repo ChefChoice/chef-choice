@@ -21,6 +21,7 @@ export const UserContextProvider = (props: any) => {
     return () => {
       authListener.unsubscribe();
     };
+    // eslint-disable-next-line
   }, []);
 
   const value = {
