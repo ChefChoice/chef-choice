@@ -1,13 +1,17 @@
 import '../styles/globals.css';
 import type { AppProps } from 'next/app';
+import { UserContextProvider } from '../lib/UserContext';
+import { supabase } from '../utils/supabaseClient';
 
 import Layout from '../components/layout/Layout';
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <Component {...pageProps} />
-    </Layout>
+    <UserContextProvider supabaseClient={supabase}>
+      <Layout>
+        <Component {...pageProps} />
+      </Layout>
+    </UserContextProvider>
   );
 }
 

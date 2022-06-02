@@ -1,45 +1,49 @@
-import { User } from '@supabase/supabase-js';
+// import { User } from '@supabase/supabase-js';
 import Head from 'next/head';
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
-import { supabase } from '../utils/supabaseClient';
+// import { useEffect, useState } from 'react';
+// import { supabase } from '../utils/supabaseClient';
 import SignIn from './signin';
+
+import { useUser } from '../lib/UserContext';
 
 // TODO: Check user types; Add navigation for Orders and Search Dishes
 // TODO: integrate global userContext later
+// TODO: Temporary commented code for demo
 
 export default function MainMenu() {
-  const [user, setUser] = useState<User | any>(null);
-  const [username, setUsername] = useState(null);
+  const { user } = useUser();
+  // const [currentUser, setUser] = useState<User | any>(null);
+  // const [username, setUsername] = useState(null);
 
-  useEffect(() => {
-    getUsername();
-  });
+  // useEffect(() => {
+  //   getUsername();
+  // });
 
-  async function getUsername() {
-    try {
-      setUser(supabase.auth.user());
+  // async function getUsername() {
+  //   try {
+  //     setUser(user);
 
-      if (user) {
-        let { data, error, status } = await supabase
-          .from('HomeChef')
-          .select('HOMECHEF_NAME')
-          // select by homechef_id
-          .eq('HOMECHEF_ID', user.id)
-          .single();
+  //     if (user) {
+  //       let { data, error, status } = await supabase
+  //         .from('HomeChef')
+  //         .select('HOMECHEF_NAME')
+  //         // select by homechef_id
+  //         .eq('HOMECHEF_ID', user['id'])
+  //         .single();
 
-        if (error && status !== 406) {
-          throw error;
-        }
+  //       if (error && status !== 406) {
+  //         throw error;
+  //       }
 
-        if (data) {
-          setUsername(data.HOMECHEF_NAME);
-        }
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
+  //       if (data) {
+  //         setUsername(data.HOMECHEF_NAME);
+  //       }
+  //     }
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // }
 
   return (
     <>
@@ -55,7 +59,8 @@ export default function MainMenu() {
           <div className="mx-auto">
             <main className="background-image h-screen w-screen py-4 flex flex-col justify-center items-center">
               <h1 className="font-headline font-medium text-4xl break-words">
-                Welcome to ChefChoice, {username ? username : ''}
+                {/* Welcome to ChefChoice, {username ? username : ''} */}
+                Welcome to ChefChoice, {user ? user?.['email'] : ''} {/* Temporary override */}
                 <hr style={{ borderTop: '3px solid #000000 ' }} />
               </h1>
               <div className="grid grid-rows-3 grid-flow-col gap-2 pt-10 justify-items-center items-center w-96">

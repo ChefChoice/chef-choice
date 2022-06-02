@@ -6,7 +6,11 @@ const Footer = () => {
   return (
     <div className="flex max-w-screen-2xl mx-auto px-20 py-12 bg-white h-80">
       <div className="w-1/2 min-w-fit border-r-2 border-black">
-        <Logo />
+        <Link href="/">
+          <a>
+            <Logo />
+          </a>
+        </Link>
       </div>
       <div className="flex flex-col justify-between w-1/2 min-w-fit px-20 text-black font-normal text-lg">
         <nav>
