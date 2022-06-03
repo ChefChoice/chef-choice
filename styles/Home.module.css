@@ -4,6 +4,7 @@
 
 .main {
   min-height: 100vh;
+  min-width: 100%;
   padding: 4rem 0;
   flex: 1;
   display: flex;
@@ -42,7 +43,7 @@
 .title {
   margin: 0;
   line-height: 1.15;
-  font-size: 4rem;
+  font-size: 3rem;
 }
 
 .title,
@@ -76,20 +77,20 @@
 .card {
   margin: 1rem;
   padding: 1.5rem;
-  text-align: left;
-  color: inherit;
+  text-align: center;
+  font-size: 20px;
+  color: black;
   text-decoration: none;
-  border: 1px solid #eaeaea;
   border-radius: 10px;
   transition: color 0.15s ease, border-color 0.15s ease;
-  max-width: 300px;
+  background-color: white;
 }
 
 .card:hover,
 .card:focus,
 .card:active {
-  color: #0070f3;
-  border-color: #0070f3;
+  color: #4d966d;
+  border-color: #4d966d;
 }
 
 .card h2 {

@@ -18,3 +18,21 @@ a {
 * {
   box-sizing: border-box;
 }
+
+/* put it here for now as tailwind doesn't support changing image opacity.
+If you have any suggestions, pls let me know*/
+.background-image {
+  background: linear-gradient(rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.68)),
+    url('../public/images/backgroundImage.jpg') no-repeat center center fixed;
+  background-size: cover;
+  overflow: hidden;
+  width: 100%;
+  padding-right: 15px;
+  padding-left: 15px;
+  margin-right: auto;
+  margin-left: auto;
+
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+}
