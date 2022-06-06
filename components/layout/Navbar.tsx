@@ -19,24 +19,36 @@ const Navbar = () => {
           </a>
         </Link>
       </div>
-
       <div className="flex items-center justify-between w-full">
         <nav>
-          <ul>
-            <li>
-              {user ? (
+          {user ? (
+            <ul>
+              <li className="inline">
                 <Link href="/order-management">
-                  <a className="text-black font-semibold text-xl">Orders</a>
+                  <a className="text-black font-semibold text-xl hover:text-gray-400">Orders</a>
                 </Link>
-              ) : (
-                <Link href="#">
-                  <a className="text-black font-semibold text-xl">Become a Chef</a>
+              </li>
+            </ul>
+          ) : (
+            <ul className="flex gap-x-6">
+              <li className="inline">
+                <Link href="/sign-up/consumer">
+                  <a className="text-black font-semibold text-xl hover:text-gray-400">
+                    Register Today
+                  </a>
                 </Link>
-              )}
-            </li>
-          </ul>
+              </li>
+              <li className="inline">
+                <Link href="/sign-up/chef">
+                  <a className="text-black font-semibold text-xl hover:text-gray-400">
+                    Become a Chef
+                  </a>
+                </Link>
+              </li>
+            </ul>
+          )}
         </nav>
-        <div className="flex items-center gap-x-8">
+        <div className="flex items-center gap-x-6">
           {user && (
             <Link href="/order-management/checkout">
               <a className="text-black font-semibold text-xl">Cart</a>
@@ -47,7 +59,7 @@ const Navbar = () => {
           </Link>
           {user && (
             <button
-              className="block max-w-sm bg-green-light hover:bg-green-hover py-2 px-2 text-white rounded w-full"
+              className="text-white font-semibold text-xl px-6 py-1 rounded-lg border-green-light hover:border-green-hover bg-green-light hover:bg-green-hover"
               onClick={async (e) => {
                 e.preventDefault();
                 const { error } = await supabase.auth.signOut();
@@ -63,7 +75,7 @@ const Navbar = () => {
           )}
 
           <Link href={user ? '/profile' : '/signin'}>
-            <a className="text-white font-semibold text-xl px-6 py-1 border-none rounded-lg bg-green-light">
+            <a className="text-white font-semibold text-xl px-6 py-1 rounded-lg border-green-light hover:border-green-hover bg-green-light hover:bg-green-hover">
               {user ? <span>Profile</span> : <span>Log In</span>}
             </a>
           </Link>
