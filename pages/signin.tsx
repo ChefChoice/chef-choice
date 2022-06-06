@@ -19,7 +19,7 @@ export default function SignIn() {
       throw error;
     }
     if (user) {
-      router.push('/');
+      router.push('/main-menu');
     }
   };
 
