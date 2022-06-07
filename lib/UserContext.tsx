@@ -1,4 +1,6 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
+import axios from 'axios';
+import { supabase } from '../utils/supabaseClient';
 
 const UserContext = createContext({ user: null, session: null });
 
@@ -23,6 +25,13 @@ export const UserContextProvider = (props: any) => {
     };
     // eslint-disable-next-line
   }, []);
+
+  useEffect(() => {
+    axios.post('/api/auth/set-auth-cookie', {
+      event: user ? 'SIGNED_IN' : 'SIGNED_OUT',
+      session: supabase.auth.session(),
+    });
+  }, [user]);
 
   const value = {
     session,
