@@ -3,14 +3,17 @@ import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { supabase } from '../utils/supabaseClient';
-import SignIn from './signin';
+import { useUser } from '../../lib/UserContext';
+import { supabase } from '../../utils/supabaseClient';
+import SignIn from '../signin';
 
 // TODO: integrate global userContext later
 
 export default function ViewCertificate() {
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<User | any>(null);
+
+  const { user } = useUser();
+
   const [certImageURL, setCertImageURL] = useState('');
 
   const router = useRouter();
@@ -25,8 +28,6 @@ export default function ViewCertificate() {
   async function downloadImage(imgPath: any) {
     try {
       setLoading(true);
-
-      setUser(supabase.auth.user());
 
       const { data, error } = await supabase.storage.from('cert-images').download(imgPath);
       if (error) {
@@ -46,7 +47,7 @@ export default function ViewCertificate() {
 
   return (
     <>
-      {!user ? (
+      {loading ? (
         <SignIn />
       ) : (
         <>
