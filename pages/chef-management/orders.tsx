@@ -61,7 +61,7 @@ const Orders: NextPage = () => {
             {pendingOrders?.map((order, i) => (
               <div key={i} className="flex py-2">
                 <div className="grow">
-                  <RowItem key={i} title={`#${order.ORDER_ID}`}></RowItem>
+                  <RowItem key={i} rowID={i} title={`#${order.ORDER_ID}`}></RowItem>
                 </div>
                 <div
                   onClick={() => handleClick(order.ORDER_ID)}
@@ -83,7 +83,7 @@ const Orders: NextPage = () => {
             {orders?.map((order, i) => (
               <div key={i} className="flex py-2">
                 <div className="grow">
-                  <RowItem key={i} title={`#${order.ORDER_ID}`}></RowItem>
+                  <RowItem key={i} rowID={i} title={`#${order.ORDER_ID}`}></RowItem>
                 </div>
                 <div
                   onClick={() => handleCancelClick(order.ORDER_ID)}

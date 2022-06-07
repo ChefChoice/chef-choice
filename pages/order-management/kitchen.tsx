@@ -70,6 +70,7 @@ const Kitchen: NextPage = () => {
               {dishes?.map((dish) => (
                 <RowItem
                   key={dish.id}
+                  rowID={dish.id}
                   title={dish.dish_name}
                   subtitle={dish.dish_price}
                   image={
