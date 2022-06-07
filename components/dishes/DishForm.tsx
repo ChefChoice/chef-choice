@@ -68,6 +68,12 @@ const DishForm = ({
                   className="object-cover"
                 />
                 <div className="flex flex-col">
+                  <label
+                    htmlFor="upload"
+                    className="text-center text-white rounded w-full h-12 bg-green-light hover:bg-green-hover cursor-pointer"
+                  >
+                    <p className="p-2">Upload Image...</p>
+                  </label>
                   <input
                     type="file"
                     name="upload"
@@ -92,12 +98,6 @@ const DishForm = ({
                     }}
                     // onChange={(upload) => validateFileSize(upload.target)}
                   />
-                  <label
-                    htmlFor="upload"
-                    className="text-center text-white rounded w-full h-12 bg-green-light hover:bg-green-hover cursor-pointer"
-                  >
-                    <p className="p-2">Upload Image...</p>
-                  </label>
                   <p
                     id="imageErr"
                     className={`text-center text-red-600 pt-3 ${!imageError && 'hidden'}`}
@@ -134,6 +134,7 @@ const DishForm = ({
                   <label htmlFor="name">Dish name</label>
                 </div>
                 <div className="grid grid-rows-2 justify-items-center justify-self-center lg:justify-items-start lg:justify-self-start w-1/3 lg:w-1/5">
+                  <label htmlFor="price">Dish price</label>
                   <input
                     type="text"
                     id="price"
@@ -154,9 +155,9 @@ const DishForm = ({
                       e.currentTarget.setCustomValidity('');
                     }}
                   />
-                  <label htmlFor="price">Dish price</label>
                 </div>
                 <div className="lg:text-left">
+                  <label htmlFor="category">Dish category(s)</label>
                   <input
                     type="text"
                     id="category"
@@ -165,9 +166,9 @@ const DishForm = ({
                     className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
                     maxLength={256}
                   />
-                  <label htmlFor="category">Dish category(s)</label>
                 </div>
                 <div className="lg:text-left">
+                  <label htmlFor="ingredient">Ingredient(s)</label>
                   <input
                     type="text"
                     id="ingredient"
@@ -176,13 +177,13 @@ const DishForm = ({
                     className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
                     maxLength={256}
                   />
-                  <label htmlFor="ingredient">Ingredient(s)</label>
                 </div>
               </div>
             </div>
           </div>
           <div className="grid grid-rows-8 gap-6">
             <div className="row-span-6">
+              <label htmlFor="details">Other notes</label>
               <textarea
                 id="details"
                 name="details"
@@ -191,7 +192,6 @@ const DishForm = ({
                 className="w-full px-1 py-1 bg-gray-100 rounded border-gray-200 border-2 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover resize-none"
                 maxLength={256}
               />
-              <label htmlFor="details">Other notes</label>
             </div>
             <button
               type="submit"
