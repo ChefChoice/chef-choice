@@ -50,7 +50,7 @@ const DishForm = ({
   //     file.value = '';
   //   }
   // };
-  console.log(hasImage);
+
   return (
     <>
       <Heading title={formName} />
