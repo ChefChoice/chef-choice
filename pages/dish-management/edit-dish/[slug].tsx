@@ -3,7 +3,6 @@ import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import DishForm from '../../../components/dishes/DishForm';
-import { getFormattedFileName } from '../../../utils/formatting';
 import { supabase } from '../../../utils/supabaseClient';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 
