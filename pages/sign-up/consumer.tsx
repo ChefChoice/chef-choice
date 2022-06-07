@@ -1,26 +1,39 @@
 // pages/sign-up/consumer.tsx
 
 import { supabase } from '../../utils/supabaseClient';
-import { ChangeEvent, FormEvent, useState } from 'react';
-import Head from 'next/head';
 import { useRouter } from 'next/router';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import Head from 'next/head';
+
+const schema = yup
+  .object()
+  .shape({
+    firstName: yup.string().required('Required'),
+    lastName: yup.string().required('Required'),
+    email: yup.string().email('Invalid Email Address').required('Required'),
+    password: yup.string().min(8, 'Must be 8 characters or longer').required('Required'),
+    confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
+  })
+  .required();
 
 export default function SignUp() {
-  const router = useRouter();
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({ mode: 'onBlur', resolver: yupResolver(schema) });
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const router = useRouter();
+
+  const onSubmit = async (data: any) => {
     const { error: userError } = await supabase.auth.signUp(
-      { email, password },
+      { email: data.email, password: data.password },
       {
         data: {
           type: 'consumer',
-          name: firstName.concat(' ', lastName),
+          name: data.firstName.concat(' ', data.lastName),
         },
       }
     );
@@ -34,7 +47,6 @@ export default function SignUp() {
     }
   };
 
-  // TODO: Add password re-entry for verification
   return (
     <>
       <Head>
@@ -42,10 +54,10 @@ export default function SignUp() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
       <main>
-        <div className="bg-default bg-cover w-screen h-screen md:grid md:grid-cols-2 md:gap-4 md:place-content-center">
-          <div className="bg-white px-4 py-4 mx-2 mt-2 mb-1 inline-block md:my-2 md:w-96 md:justify-self-end">
-            <h1 className="text-4xl font-sans font-bold mb-4">Discover authentic home-made food</h1>
-            <span className="text-base font-sans">
+        <div className="w-screen bg-default bg-cover py-1 sm:flex sm:h-screen sm:justify-center sm:gap-4">
+          <div className="mx-2 mt-1 mb-2 self-start bg-white px-4 py-4 sm:my-10 sm:w-96">
+            <h1 className="mb-4 font-sans text-4xl font-bold">Discover authentic home-made food</h1>
+            <span className="font-sans text-base">
               <span className="font-bold">CHEFCHOICE</span> gives you a wide selection of home-made
               food prepared by qualified home chefs across the Greater Toronto Area, all with
               affordable prices.
@@ -54,60 +66,71 @@ export default function SignUp() {
               Join us and place your first order today!
             </span>
           </div>
-          <div className="bg-white px-4 py-4 mx-2 mt-1 mb-2 inline-block md:my-2 md:w-96 md:justify-self-start">
-            <div className="px-1 mb-4">
-              <p className="text-2xl font-sans font-bold">Get Started</p>
+          <div className="mx-2 mb-1 self-start bg-white px-4 py-4 sm:my-10 sm:w-96">
+            <div className="mb-4 px-1">
+              <p className="font-sans text-2xl font-bold">Get Started</p>
             </div>
-            <form onSubmit={handleSubmit} className="mb-2">
-              <div className="flex justify-between">
-                <input
-                  className="w-1/2 rounded px-3 py-2 mb-4 mr-2 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
-                  placeholder="First Name"
-                  id="input-firstname"
-                  type="text"
-                  value={firstName}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setFirstName(e.target.value)}
-                  required
-                />
-                <input
-                  className="w-1/2 rounded px-3 py-2 mb-4 ml-2 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
-                  placeholder="Last Name"
-                  id="input-lastname"
-                  type="text"
-                  value={lastName}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => setLastName(e.target.value)}
-                  required
-                />
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <div className="-mx-2 mb-3 flex flex-wrap">
+                <div className="w-full px-2 sm:w-1/2">
+                  <input
+                    {...register('firstName')}
+                    className={`${!errors.firstName ? 'input-text-default' : 'input-text-error'}`}
+                    placeholder="First Name"
+                    type="text"
+                  />
+                  <div className="ml-1 mt-1 text-xs font-semibold text-red-400">
+                    {errors.firstName?.message}
+                  </div>
+                </div>
+                <div className="w-full px-2 sm:w-1/2">
+                  <input
+                    {...register('lastName')}
+                    className={`${!errors.lastName ? 'input-text-default' : 'input-text-error'}`}
+                    placeholder="Last Name"
+                    type="text"
+                  />
+                  <div className="ml-1 mt-1 text-xs font-semibold text-red-400">
+                    {errors.lastName?.message}
+                  </div>
+                </div>
               </div>
-              <input
-                className="w-full rounded px-3 py-2 mb-4 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
-                placeholder="Email Address"
-                id="input-email"
-                type="email"
-                value={email}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                className="w-full rounded px-3 py-2 mb-4 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
-                placeholder="Password"
-                id="input-password"
-                type="password"
-                value={password}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
-              />
-              <input
-                className="w-full rounded px-3 py-2 mb-2 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
-                placeholder="Confirm Password"
-                id="input-confirm-password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
-              />
-              <button
-                className="block max-w-sm bg-green-light hover:bg-green-hover border-green-light hover:border-green-hover py-2 px-2 text-white rounded w-full"
-                type="submit"
-              >
+              <div className="mb-4">
+                <input
+                  {...register('email')}
+                  className={`${!errors.email ? 'input-text-default' : 'input-text-error'}`}
+                  placeholder="Email Address"
+                  type="email"
+                />
+                <div className="ml-1 mt-1 text-xs font-semibold text-red-400">
+                  {errors.email?.message}
+                </div>
+              </div>
+              <div className="mb-4">
+                <input
+                  {...register('password')}
+                  className={`${!errors.password ? 'input-text-default' : 'input-text-error'}`}
+                  placeholder="Password"
+                  type="password"
+                />
+                <div className="ml-1 mt-1 text-xs font-semibold text-red-400">
+                  {errors.password?.message}
+                </div>
+              </div>
+              <div className="mb-4">
+                <input
+                  {...register('confirmPassword')}
+                  className={`${
+                    !errors.confirmPassword ? 'input-text-default' : 'input-text-error'
+                  }`}
+                  placeholder="Confirm Password"
+                  type="password"
+                />
+                <div className="ml-1 mt-1 text-xs font-semibold text-red-400">
+                  {errors.confirmPassword?.message}
+                </div>
+              </div>
+              <button className="input-submit" type="submit">
                 Submit
               </button>
             </form>
