@@ -77,7 +77,7 @@ const DishManagement: NextPage = () => {
                 image={
                   <Image
                     src={`${bucketURL}/${dish.dish_image}`}
-                    alt={'Image of dish, ' + dish.dish_name}
+                    alt={`Picture of ${dish.dish_name}`}
                     width={250}
                     height={250}
                     className="object-cover"

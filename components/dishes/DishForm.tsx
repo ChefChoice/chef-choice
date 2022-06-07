@@ -61,7 +61,7 @@ const DishForm = ({
               <div className="grid gap-3">
                 <Image
                   src={imageURL}
-                  alt="Picture of Chicken Penne"
+                  alt={`Picture of ${dishName}`}
                   id="dishImg"
                   width={250}
                   height={250}
