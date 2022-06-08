@@ -12,7 +12,8 @@ import SignIn from '../signin';
 export default function ViewCertificate() {
   const [loading, setLoading] = useState(true);
 
-  const { user } = useUser();
+  // const { user } = useUser();
+  const [user, setUser] = useState<User | null>(null);
 
   const [certImageURL, setCertImageURL] = useState('');
 
@@ -23,20 +24,30 @@ export default function ViewCertificate() {
 
   useEffect(() => {
     if (imgPath) downloadImage(imgPath);
-  }, [imgPath]);
+  }, [imgPath, user]);
 
   async function downloadImage(imgPath: any) {
     try {
       setLoading(true);
+      setUser(supabase.auth.user());
+      console.log(user);
 
-      const { data, error } = await supabase.storage.from('cert-images').download(imgPath);
-      if (error) {
-        throw error;
-      }
+      if (user) {
+        const authorizedImgPath = `${user.id}/${imgPath}`;
+        console.log(authorizedImgPath);
 
-      if (data) {
-        const url = URL.createObjectURL(data);
-        setCertImageURL(url);
+        const { data, error } = await supabase.storage
+          .from('cert-images')
+          .download(authorizedImgPath);
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          const url = URL.createObjectURL(data);
+          setCertImageURL(url);
+        }
       }
     } catch (err) {
       console.log(err);
@@ -46,31 +57,31 @@ export default function ViewCertificate() {
   }
 
   return (
+    // <>
+    //   {loading ? (
+    //     <SignIn />
+    //   ) : (
     <>
-      {loading ? (
-        <SignIn />
-      ) : (
-        <>
-          <Head>
-            <title>View Certificate</title>
-            <meta content="width=device-width, initial-scale=1" name="viewport" />
-          </Head>
+      <Head>
+        <title>View Certificate</title>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+      </Head>
 
-          <main className="py-20 px-10 bg-gray-200">
-            {loading ? 'Loading...' : ''}
-            {certImageURL && (
-              <Image
-                src={certImageURL}
-                alt="certificate image"
-                layout="responsive"
-                width={2000}
-                height={1000}
-                objectFit="scale-down"
-              />
-            )}
-          </main>
-        </>
-      )}
+      <main className="py-20 px-10 bg-gray-200">
+        {loading ? 'Loading...' : ''}
+        {certImageURL && (
+          <Image
+            src={certImageURL}
+            alt="certificate image"
+            layout="responsive"
+            width={2000}
+            height={1000}
+            objectFit="scale-down"
+          />
+        )}
+      </main>
     </>
+    //   )}
+    // </>
   );
 }
