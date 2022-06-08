@@ -87,6 +87,7 @@ const Checkout: NextPage = () => {
               <Heading title={'Address'}></Heading>
               <RowItem
                 key={0}
+                rowID={0}
                 title=""
                 subtitle="100 Queen St W, Toronto, ON M5H 2N1"
                 optionalNode={<SmallButton data={'Edit'} />}
@@ -97,6 +98,7 @@ const Checkout: NextPage = () => {
               <Heading title={'Payment'}></Heading>
               <RowItem
                 key={0}
+                rowID={0}
                 title=""
                 subtitle="Visa ending in 4321"
                 optionalNode={<SmallButton data={'Edit'} />}
@@ -107,6 +109,7 @@ const Checkout: NextPage = () => {
               <Heading title={'Scheduled Time'}></Heading>
               <RowItem
                 key={0}
+                rowID={0}
                 title=""
                 subtitle="None selected"
                 optionalNode={<SmallButton data={'Edit'} />}

@@ -19,7 +19,7 @@ export default function SignIn() {
       throw error;
     }
     if (user) {
-      router.push('/');
+      router.push('/main-menu');
     }
   };
 
@@ -30,7 +30,7 @@ export default function SignIn() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
       <main>
-        <div className="bg-gray-200 max-w-screen-2xl flex h-screen mx-auto">
+        <div className="bg-default bg-cover w-screen flex h-screen mx-auto">
           <div className="max-w-sm m-auto bg-white px-4 py-4">
             <div className="px-1 mb-4">
               <p className="text-2xl font-sans font-bold">Welcome Back</p>

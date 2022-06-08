@@ -6,7 +6,14 @@ module.exports = {
         'green-light': '#4D966D',
         'green-hover': '#36AE7C',
       },
+      backgroundImage: {
+        default: "url('/images/backgroundImage.jpg')",
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')({
+      strategy: 'class',
+    }),
+  ],
 };

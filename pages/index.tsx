@@ -9,7 +9,7 @@ const Home: NextPage = () => {
   return (
     <>
       {user ? (
-        <div className="bg-gray-200 max-w-screen-2xl flex h-screen mx-auto">
+        <div className="bg-default bg-cover w-screen flex h-screen mx-auto">
           <div className="max-w-sm m-auto bg-white px-4 py-4">
             <p>{`Welcome back, ${user['email']}`}</p>
           </div>

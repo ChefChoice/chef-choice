@@ -12,9 +12,18 @@
     "@heroicons/react": "^1.0.6",
     "@supabase/supabase-auth-helpers": "^1.4.2",
     "@supabase/supabase-js": "^1.35.3",
+    "@tailwindcss/forms": "^0.5.2",
+    "@types/multiparty": "^0.0.33",
+    "axios": "^0.27.2",
+    "image-conversion": "^2.1.1",
+    "multiparty": "^4.2.3",
+    "nanoid": "^3.3.4",
     "next": "12.1.6",
+    "nookies": "^2.5.2",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "react-hook-form": "^7.31.3",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "17.0.33",
