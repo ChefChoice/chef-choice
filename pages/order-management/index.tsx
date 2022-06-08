@@ -31,7 +31,7 @@ const OrderManagement: NextPage = () => {
                 </div>
               </div>
             </Link>
-            <Link href="#">
+            <Link href="/order-management/orders">
               <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
                 <Image
                   src="/images/dishMgt.jpg"
@@ -43,24 +43,7 @@ const OrderManagement: NextPage = () => {
 
                 <div className="py-5 px-5 text-right">
                   <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
-                    Ongoing Orders
-                  </a>
-                </div>
-              </div>
-            </Link>
-            <Link href="#">
-              <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
-                <Image
-                  src="/images/dishMgt.jpg"
-                  layout="responsive"
-                  width={2100}
-                  height={1900}
-                  alt="dish image"
-                />
-
-                <div className="py-5 px-5 text-right">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
-                    Order History
+                    Orders
                   </a>
                 </div>
               </div>

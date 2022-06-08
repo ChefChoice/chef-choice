@@ -14,42 +14,41 @@ const Orders: NextPage = () => {
   const [refresh, setRefresh] = useState<number>(0);
 
   useEffect(() => {
-    getData().catch(console.error);
+    const getData = async () => {
+      let { data: PendingOrder, error: PendingOrderError } = await supabase
+        .from('Order')
+        .select('*')
+        .eq('status', 'P');
+
+      if (PendingOrderError) throw PendingOrderError.message;
+
+      let { data: Order, error: OrderError } = await supabase
+        .from('Order')
+        .select('*')
+        .eq('status', 'O');
+
+      if (OrderError) throw OrderError.message;
+
+      let { data: PastOrder, error: PastOrderError } = await supabase
+        .from('Order')
+        .select('*')
+        .eq('status', 'F');
+
+      if (PastOrderError) throw PastOrderError.message;
+
+      setOrders([PendingOrder, Order, PastOrder]);
+    };
+
+    getData().catch(console.error); // TODO: Remove the console error
   }, [refresh]);
-
-  const getData = async () => {
-    let { data: PendingOrder, error: PendingOrderError } = await supabase
-      .from('Order')
-      .select('*')
-      .eq('status', 'P');
-
-    if (PendingOrderError) throw PendingOrderError.message;
-
-    let { data: Order, error: OrderError } = await supabase
-      .from('Order')
-      .select('*')
-      .eq('status', 'O');
-
-    if (OrderError) throw OrderError.message;
-
-    let { data: PastOrder, error: PastOrderError } = await supabase
-      .from('Order')
-      .select('*')
-      .eq('status', 'F');
-
-    if (PastOrderError) throw PastOrderError.message;
-
-    setOrders([PendingOrder, Order, PastOrder]);
-  };
-
-  const handleClick: any = async (e: any) => {
-    const { data, error } = await supabase.from('Order').update({ status: 'O' }).eq('id', e);
-    setRefresh(refresh + 1);
-  };
 
   const handleCancelClick: any = async (e: any) => {
     const { data, error } = await supabase.from('Order').update({ status: 'C' }).eq('id', e);
     setRefresh(refresh + 1);
+  };
+
+  const handleClick: any = async (e: any) => {
+    console.log(e);
   };
 
   return (
@@ -72,11 +71,11 @@ const Orders: NextPage = () => {
                     <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
                   </div>
                   <div
-                    onClick={() => handleClick(order.id)}
+                    onClick={() => handleCancelClick(order.id)}
                     className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-green hover:ring hover:bg-green-hover"
                   >
                     <div className="py-2 px-2 text-center">
-                      <a className="font-bold text-white lg:text-base xs:text-x">Accept Order</a>
+                      <a className="font-bold text-white lg:text-base xs:text-x">Cancel Order</a>
                     </div>
                   </div>
                 </div>
@@ -93,11 +92,11 @@ const Orders: NextPage = () => {
                     <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
                   </div>
                   <div
-                    onClick={() => handleCancelClick(order.id)}
+                    onClick={() => handleClick(order.id)}
                     className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-green hover:ring hover:bg-green-hover"
                   >
                     <div className="py-2 px-2 text-center">
-                      <a className="font-bold text-white lg:text-base xs:text-xs">Cancel Order</a>
+                      <a className="font-bold text-white lg:text-base xs:text-xs">View Details</a>
                     </div>
                   </div>
                 </div>
@@ -114,7 +113,7 @@ const Orders: NextPage = () => {
                     <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
                   </div>
                   <div
-                    onClick={() => console.log('clicked view details')}
+                    onClick={() => handleClick(order.id)}
                     className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-green hover:ring hover:bg-green-hover"
                   >
                     <div className="py-2 px-2 text-center">

@@ -11,41 +11,34 @@ import Heading from '../../components/common/Heading';
 import ContentContainer from '../../components/orders/ContentContainer';
 import SmallButton from '../../components/orders/SmallButton';
 
-// TODO: Update implementation with actual subtotal, tax, and total
-
 const orderID = 1; // TODO: Remove temporary hardcoded value
 
 const Checkout: NextPage = () => {
   const [order, setOrder] = useState<Array<any> | null>(null);
-  const [orderDishes, setOrderDishes] = useState<Array<any> | null>(null);
 
   useEffect(() => {
-    const getData = async () => {
-      let { data: Order, error: OrderError } = await supabase
-        .from('Order')
-        .select(`*, "HomeChef" ("HOMECHEF_NAME")`)
-        .eq('ORDER_ID', orderID);
-
-      let { data: Order_Dish, error: OrderDishError } = await supabase
-        .from('Order_Dish')
-        .select(`*, "Dish" (dish_name, dish_price)`)
-        .eq('ORDER_ID', orderID);
-
-      if (OrderError) throw OrderError.message;
-      if (OrderDishError) throw OrderDishError.message;
-
-      setOrder(Order);
-      setOrderDishes(Order_Dish);
-    };
-
     getData().catch(console.error);
   }, []);
 
-  const handleClick = async () => {
-    const { data, error } = await supabase
+  const getData = async () => {
+    let { data: Order, error: OrderError } = await supabase
       .from('Order')
-      .update({ ORDER_STATUS: 'P' })
-      .eq('ORDER_ID', orderID);
+      .select(`*, "HomeChef" ("name")`)
+      .eq('id', orderID);
+
+    let { data: Order_Dish, error: OrderDishError } = await supabase
+      .from('Order_Dish')
+      .select(`*, "Dish" (dish_name, dish_price)`)
+      .eq('order_id', orderID);
+
+    if (OrderError) throw OrderError.message;
+    if (OrderDishError) throw OrderDishError.message;
+
+    setOrder([Order, Order_Dish]);
+  };
+
+  const handleClick = async () => {
+    const { data, error } = await supabase.from('Order').update({ status: 'P' }).eq('id', orderID);
   };
 
   return (
@@ -56,30 +49,32 @@ const Checkout: NextPage = () => {
       </Head>
 
       <ContentContainer>
-        {order && <h3 className="text-4xl font-bold">Chef {order[0].HomeChef.HOMECHEF_NAME}</h3>}
+        {order && <h3 className="text-4xl font-bold">Chef {order[0][0].HomeChef.name}</h3>}
         <div className="flex gap-x-16 mx-auto pt-6">
           <div className="grow">
             <Heading title={'Your Items'}></Heading>
             <div className="md:w-full">
-              {orderDishes?.map((orderDish, i) => (
-                <CartItem
-                  key={i}
-                  title={orderDish.Dish.dish_name}
-                  price={orderDish.Dish.dish_price}
-                ></CartItem>
-              ))}
+              {order &&
+                order[1]?.map((orderDish: any, i: any) => (
+                  <CartItem
+                    key={i}
+                    quantity={orderDish.quantity}
+                    title={orderDish.Dish.dish_name}
+                    price={orderDish.Dish.dish_price * orderDish.quantity}
+                  ></CartItem>
+                ))}
             </div>
             <div className="flex md:w-full font-semibold">
               <div className="grow">SubTotal</div>
-              <div>$31.99</div> {/* TODO: Remove temporary hardcoded value */}
+              <div>{order && `$` + order[0][0].subtotal}</div>
             </div>
             <div className="flex md:w-full">
               <div className="grow">Tax and Fees</div>
-              <div>$4.28</div> {/* TODO: Remove temporary hardcoded value */}
+              <div>{order && `$` + order[0][0].fees}</div>
             </div>
             <div className="flex md:w-full font-bold text-lg">
               <div className="grow">Total</div>
-              <div>$36.27</div> {/* TODO: Remove temporary hardcoded value */}
+              <div>{order && `$` + order[0][0].total}</div>
             </div>
           </div>
           <div className="grow flex flex-col max-w-xl">

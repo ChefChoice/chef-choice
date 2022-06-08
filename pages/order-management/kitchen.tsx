@@ -25,7 +25,7 @@ const Kitchen: NextPage = () => {
       let { data: HomeChef, error: HomeChefError } = await supabase
         .from('HomeChef')
         .select('*')
-        .eq('HOMECHEF_ID', testChefID);
+        .eq('id', testChefID);
 
       if (HomeChefError) throw HomeChefError.message;
       setHomeChef(HomeChef);
@@ -51,15 +51,13 @@ const Kitchen: NextPage = () => {
   return (
     <>
       <Head>
-        {homechef ? <title>Chef {homechef[0].HOMECHEF_NAME}</title> : <title>Chef ...</title>}
+        {homechef ? <title>Chef {homechef[0].name}</title> : <title>Chef ...</title>}
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
       <ContentContainer>
         <div className="flex">
-          {homechef && (
-            <h3 className="text-4xl font-bold pr-5">Chef {homechef[0].HOMECHEF_NAME}</h3>
-          )}
+          {homechef && <h3 className="text-4xl font-bold pr-5">Chef {homechef[0].name}</h3>}
           <SmallButton data={'View Schedule'} />
         </div>
         <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}
