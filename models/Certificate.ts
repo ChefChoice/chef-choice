@@ -1,8 +1,10 @@
 export interface Certificate {
   id: number;
   homechef_id: string;
-  cert_type: string;
-  cert_name: string;
-  cert_expirydate: Date;
-  cert_image: string;
+  type: string;
+  name: string;
+  awardedBy: string;
+  date: Date;
+  expirydate: Date;
+  image: string;
 }
