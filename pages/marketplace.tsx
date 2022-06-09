@@ -47,7 +47,7 @@ export default function Marketplace() {
                   />
 
                   <div className="py-5 px-5 text-right">
-                    <Link href="#">
+                    <Link href="/dish-management">
                       <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
                         Manage Dishes
                       </a>
