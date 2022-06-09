@@ -13,8 +13,26 @@ import ContentContainer from '../../components/orders/ContentContainer';
 import Heading from '../../components/common/Heading';
 import RowItem from '../../components/common/RowItem';
 import SmallButton from '../../components/orders/SmallButton';
+import { StarIcon } from '@heroicons/react/outline';
 
 const testChefID = '4a1abd67-53f4-4a24-8a8b-569729e6fb95'; // TODO: Temporary hard-coded value until Context
+const stars: number = 4; // TODO: Temporary hard-coded rating
+
+const Stars = () => {
+  const starIcons = [];
+
+  for (let i = 0; i < 5; i++) {
+    starIcons.push(
+      <StarIcon
+        key={i}
+        className={`h-8 w-8 stroke-1 ` + (i < stars && `fill-black`)}
+        onClick={() => console.log('click')}
+      />
+    );
+  }
+
+  return <div className="ml-auto flex">{starIcons}</div>;
+};
 
 const Kitchen: NextPage = () => {
   const [data, setData] = useState<any | null>(null);
@@ -27,6 +45,10 @@ const Kitchen: NextPage = () => {
       .catch(console.error);
   }, []);
 
+  const addToOrder = (id: any) => {
+    console.log('clicked', id);
+  };
+
   return (
     <>
       <Head>
@@ -38,6 +60,7 @@ const Kitchen: NextPage = () => {
         <div className="flex">
           {data && <h3 className="pr-5 text-4xl font-bold">Chef {data.HomeChef[0].name}</h3>}
           <SmallButton data={'View Schedule'} />
+          <Stars />
         </div>
         <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}
         <div className="flex grow flex-col pt-5">
@@ -46,10 +69,10 @@ const Kitchen: NextPage = () => {
             <div>
               {data &&
                 data.Dishes.map((dish: any) => (
-                  <div onClick={() => console.log('clicked')}>
+                  <div key={dish.dish_id}>
                     <RowItem
-                      key={dish.id}
-                      rowID={dish.id}
+                      key={dish.dish_id}
+                      rowID={dish.dish_id}
                       title={dish.dish_name}
                       subtitle={dish.dish_price}
                       image={
@@ -60,7 +83,11 @@ const Kitchen: NextPage = () => {
                           height={100}
                         ></Image>
                       }
-                      optionalNode={<SmallButton data={'Add to Order'} />}
+                      optionalNode={
+                        <div onClick={() => addToOrder(dish.dish_id)}>
+                          <SmallButton data={'Add to Order'} />
+                        </div>
+                      }
                       optionalNodeRightAligned
                     />
                   </div>
