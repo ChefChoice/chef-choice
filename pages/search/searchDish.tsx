@@ -8,6 +8,9 @@ import SearchBar from '../../components/search/SearchBar';
 import SearchRow from '../../components/search/SearchRow';
 
 const SearchDish: NextPage = () => {
+  const DISH_IMAGE_PUBLIC_URL =
+    'https://nwcvvpfhfsturkjenths.supabase.co/storage/v1/object/public/dish-images';
+
   const termRef = useRef<HTMLInputElement>(null);
 
   const [searchTerm, setSearchTerm] = useState('');
@@ -20,7 +23,7 @@ const SearchDish: NextPage = () => {
   };
 
   useEffect(() => {
-    async function test() {
+    async function getResult() {
       const { data: dishData, error: dishError } = await supabase
         .from('dishinfo')
         .select()
@@ -31,7 +34,7 @@ const SearchDish: NextPage = () => {
       if (dishData) setResult(dishData);
     }
 
-    test();
+    getResult();
   }, [searchTerm]);
 
   return (
@@ -48,7 +51,7 @@ const SearchDish: NextPage = () => {
           handleKeyPress={handleKeyPress}
         />
         <div className="grid w-2/3 gap-10 grid-cols-1 mt-11">
-          {result &&
+          {result.length ? (
             result.map((dish: any) => (
               <SearchRow
                 key={dish.dish_id}
@@ -57,9 +60,15 @@ const SearchDish: NextPage = () => {
                 dishPrice={dish.dish_price}
                 chefName={dish.name}
                 href="#"
-                imageSrc="/images/dishMgt.jpg"
+                imageSrc={`${DISH_IMAGE_PUBLIC_URL}/${dish.dish_image}`}
               />
-            ))}
+            ))
+          ) : (
+            <div className="flex flex-col justify-center items-center w-full">
+              <h2 className="text-2xl font-semibold">No items found</h2>
+              <p className="text-lg mt-3">Please try with another search term</p>
+            </div>
+          )}
         </div>
       </div>
     </>

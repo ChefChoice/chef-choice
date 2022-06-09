@@ -11,13 +11,13 @@ interface ISearchRowProps {
   chefName: string;
 }
 
-const SearchRow = ({ href, dishId, dishName, dishPrice, chefName }: ISearchRowProps) => {
+const SearchRow = ({ href, imageSrc, dishId, dishName, dishPrice, chefName }: ISearchRowProps) => {
   return (
     <div key={dishId} className="w-full">
       <Link href={href}>
         <a className="flex flex-col items-center border shadow-md md:flex-row bg-white hover:bg-gray-100 active:bg-gray-200">
           <div className="relative w-full h-96 rounded-t-lg md:h-40 md:w-48 md:rounded-none md:rounded-l-lg">
-            <Image src="/images/dishMgt.jpg" alt={dishName} layout="fill" />
+            <Image src={imageSrc} alt={dishName} layout="fill" priority={true} />
           </div>
           <div className="flex flex-col justify-between p-4 -leading-normal">
             <h5 className="mb-2 text-2xl text-black font-bold tracking-tight">{dishName}</h5>
