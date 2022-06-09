@@ -1,5 +1,6 @@
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
+import { nanoid } from 'nanoid';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { ChangeEvent, useEffect, useState } from 'react';
@@ -37,7 +38,7 @@ export default function AddCertificate() {
 
         // Folder level access for authenticated user
         // Format of the file path: Bucket/user.id/filename
-        const imagePath = `${Math.random()}.${fileExt}`;
+        const imagePath = `${nanoid()}.${fileExt}`;
         const fullImagePath = `${user.id}/${imagePath}`;
 
         const { error: uploadError } = await supabase.storage
@@ -75,6 +76,13 @@ export default function AddCertificate() {
     }
 
     push('/profile');
+  };
+
+  const getMinExpiryDate = () => {
+    const minExpiryDate = new Date();
+    minExpiryDate.setDate(minExpiryDate.getDate() + 15);
+
+    return minExpiryDate.toLocaleDateString('en-ca');
   };
 
   return (
@@ -149,9 +157,7 @@ export default function AddCertificate() {
                 className="col-span-3 sm:col-span-2 rounded px-3 py-2 mb-4 mx-2 border-black border-2 hover:border-green-light focus:outline-none focus:border-green-light"
                 id="expirydate"
                 type="date"
-                min={new Date(new Date().setDate(new Date().getDate() + 15)).toLocaleDateString(
-                  'en-ca'
-                )}
+                min={getMinExpiryDate()}
                 value={expirydate}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setExpirydate(e.target.value)}
                 required
