@@ -33,7 +33,7 @@ const EditDish: NextPage = () => {
 
         const { publicURL, error: imageError } = supabase.storage
           .from('dish-images')
-          .getPublicUrl(user.id);
+          .getPublicUrl('');
         if (imageError) throw imageError;
 
         setBucketURL(publicURL);
@@ -50,7 +50,7 @@ const EditDish: NextPage = () => {
             dishId={dish.dish_id}
             dishName={dish.dish_name}
             hasImage={true}
-            imageURL={`${bucketURL}/${dish.dish_image}`}
+            imageURL={`${bucketURL}${dish.dish_image}`}
             dishPrice={dish.dish_price}
             dishCategory={dish.dish_category}
             dishDescription={dish.dish_description}

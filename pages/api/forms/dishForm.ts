@@ -62,7 +62,7 @@ const uploadDishImage = async (formData: any) => {
     const imageType = imageFile.headers['content-type'];
     const { originalFilename } = imageFile;
     const dishImageFilename = nanoid() + '.' + originalFilename.split('.').pop();
-    const serverFilePath = `${formData.fields.userId}/${dishImageFilename}`;
+    const serverFilePath = `${dishImageFilename}`;
 
     fs.readFile(imageFile.path, async (error, image) => {
       if (error) return reject(error.message);

@@ -37,7 +37,7 @@ const DishManagement: NextPage = () => {
 
       const { publicURL, error: imageError } = supabase.storage
         .from('dish-images')
-        .getPublicUrl(user.id);
+        .getPublicUrl('');
       if (imageError) throw imageError;
 
       setBucketURL(publicURL);
@@ -76,7 +76,7 @@ const DishManagement: NextPage = () => {
                 subtitle={dish.dish_price}
                 image={
                   <Image
-                    src={`${bucketURL}/${dish.dish_image}`}
+                    src={`${bucketURL}${dish.dish_image}`}
                     alt={`Picture of ${dish.dish_name}`}
                     width={250}
                     height={250}
