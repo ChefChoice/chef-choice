@@ -18,7 +18,7 @@ const Search: NextPage = () => {
         </div>
         <div className="w-2/3 flex flex-row justify-around items-center">
           <div className="w-1/4 bg-green-light border-solid border-2 border-green-light rounded text-white hover:ring hover:bg-green-hover hover:border-green-hover hover:text-black">
-            <Link href="#">
+            <Link href="/search/searchDish">
               <a>
                 <Image
                   src="/images/dishMgt.jpg"
