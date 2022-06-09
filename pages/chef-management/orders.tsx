@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 
 import { supabase } from '../../utils/supabaseClient';
 import { getOrders } from '../../utils/fetchUtils';
@@ -9,6 +10,10 @@ import RowItem from '../../components/common/RowItem';
 import Heading from '../../components/common/Heading';
 import ContentContainer from '../../components/orders/ContentContainer';
 import SmallButton from '../../components/orders/SmallButton';
+
+export const getServerSideProps = withPageAuth({
+  redirectTo: '/signin',
+});
 
 const Orders: NextPage = () => {
   const [orders, setOrders] = useState<any | null>(null);
@@ -53,10 +58,10 @@ const Orders: NextPage = () => {
                   </div>
                   <div
                     onClick={() => handleClick(order.id)}
-                    className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-green hover:ring hover:bg-green-hover"
+                    className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
                   >
                     <div className="py-2 px-2 text-center">
-                      <a className="font-bold text-white lg:text-base xs:text-x">Accept Order</a>
+                      <a className="xs:text-x font-bold text-white lg:text-base">Accept Order</a>
                     </div>
                   </div>
                 </div>
@@ -74,10 +79,10 @@ const Orders: NextPage = () => {
                   </div>
                   <div
                     onClick={() => handleCancelClick(order.id)}
-                    className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-green hover:ring hover:bg-green-hover"
+                    className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
                   >
                     <div className="py-2 px-2 text-center">
-                      <a className="font-bold text-white lg:text-base xs:text-xs">Cancel Order</a>
+                      <a className="xs:text-xs font-bold text-white lg:text-base">Cancel Order</a>
                     </div>
                   </div>
                 </div>
@@ -95,10 +100,10 @@ const Orders: NextPage = () => {
                   </div>
                   <div
                     onClick={() => console.log('clicked view details')}
-                    className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-green hover:ring hover:bg-green-hover"
+                    className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
                   >
                     <div className="py-2 px-2 text-center">
-                      <a className="font-bold text-white lg:text-base xs:text-xs">View Details</a>
+                      <a className="xs:text-xs font-bold text-white lg:text-base">View Details</a>
                     </div>
                   </div>
                 </div>

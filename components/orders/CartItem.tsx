@@ -9,7 +9,7 @@ const CartItem = ({ key, title, price, quantity }: ICartItemProps) => {
   return (
     <div className="flex" key={key}>
       {quantity && (
-        <div className="border-solid rounded-sm border-2 text-center w-8 mr-2">{quantity}</div>
+        <div className="mr-2 w-8 rounded-sm border-2 border-solid text-center">{quantity}</div>
       )}
       <div className="mr-2">x</div>
       <div className="grow">{title}</div>

@@ -1,7 +1,12 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
+import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import Image from 'next/image';
 import Link from 'next/link';
+
+export const getServerSideProps = withPageAuth({
+  redirectTo: '/signin',
+});
 
 const OrderManagement: NextPage = () => {
   return (
@@ -12,10 +17,10 @@ const OrderManagement: NextPage = () => {
       </Head>
 
       <div className="mx-auto">
-        <main className="md:h-screen h-1/3  w-full py-4 px-0 flex flex-col justify-center">
-          <div className="md:w-full flex gap-2 pt-5 justify-center">
+        <main className="flex h-1/3  w-full flex-col justify-center py-4 px-0 md:h-screen">
+          <div className="flex justify-center gap-2 pt-5 md:w-full">
             <Link href="/order-management/kitchen">
-              <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
+              <div className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
                 <Image
                   src="/images/dishMgt.jpg"
                   layout="responsive"
@@ -25,14 +30,14 @@ const OrderManagement: NextPage = () => {
                 />
 
                 <div className="py-5 px-5 text-right">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
+                  <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
                     Create Order
                   </a>
                 </div>
               </div>
             </Link>
             <Link href="/order-management/orders">
-              <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
+              <div className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
                 <Image
                   src="/images/dishMgt.jpg"
                   layout="responsive"
@@ -42,7 +47,7 @@ const OrderManagement: NextPage = () => {
                 />
 
                 <div className="py-5 px-5 text-right">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
+                  <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
                     Orders
                   </a>
                 </div>

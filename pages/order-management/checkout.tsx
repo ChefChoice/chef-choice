@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
+import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 
 import { supabase } from '../../utils/supabaseClient';
 
@@ -13,20 +14,24 @@ import SmallButton from '../../components/orders/SmallButton';
 
 const orderID = 1; // TODO: Remove temporary hardcoded value
 
+export const getServerSideProps = withPageAuth({
+  redirectTo: '/signin',
+});
+
 const Checkout: NextPage = () => {
-  const [order, setOrder] = useState<Array<any> | null>(null);
+  const [order, setOrder] = useState<any | null>(null);
 
   useEffect(() => {
     getData().catch(console.error);
   }, []);
 
   const getData = async () => {
-    let { data: Order, error: OrderError } = await supabase
+    let { data: order, error: OrderError } = await supabase
       .from('Order')
       .select(`*, "HomeChef" ("name")`)
       .eq('id', orderID);
 
-    let { data: Order_Dish, error: OrderDishError } = await supabase
+    let { data: orderDish, error: OrderDishError } = await supabase
       .from('Order_Dish')
       .select(`*, "Dish" (dish_name, dish_price)`)
       .eq('order_id', orderID);
@@ -34,7 +39,7 @@ const Checkout: NextPage = () => {
     if (OrderError) throw OrderError.message;
     if (OrderDishError) throw OrderDishError.message;
 
-    setOrder([Order, Order_Dish]);
+    setOrder({ order, orderDish });
   };
 
   const handleClick = async () => {
@@ -49,13 +54,13 @@ const Checkout: NextPage = () => {
       </Head>
 
       <ContentContainer>
-        {order && <h3 className="text-4xl font-bold">Chef {order[0][0].HomeChef.name}</h3>}
-        <div className="flex gap-x-16 mx-auto pt-6">
+        {order && <h3 className="text-4xl font-bold">Chef {order.order[0].HomeChef.name}</h3>}
+        <div className="mx-auto flex gap-x-16 pt-6">
           <div className="grow">
             <Heading title={'Your Items'}></Heading>
             <div className="md:w-full">
               {order &&
-                order[1]?.map((orderDish: any, i: any) => (
+                order.orderDish?.map((orderDish: any, i: any) => (
                   <CartItem
                     key={i}
                     quantity={orderDish.quantity}
@@ -64,20 +69,20 @@ const Checkout: NextPage = () => {
                   ></CartItem>
                 ))}
             </div>
-            <div className="flex md:w-full font-semibold">
+            <div className="flex font-semibold md:w-full">
               <div className="grow">SubTotal</div>
-              <div>{order && `$` + order[0][0].subtotal}</div>
+              <div>{order && `$` + order.order[0].subtotal}</div>
             </div>
             <div className="flex md:w-full">
               <div className="grow">Tax and Fees</div>
-              <div>{order && `$` + order[0][0].fees}</div>
+              <div>{order && `$` + order.order[0].fees}</div>
             </div>
-            <div className="flex md:w-full font-bold text-lg">
+            <div className="flex text-lg font-bold md:w-full">
               <div className="grow">Total</div>
-              <div>{order && `$` + order[0][0].total}</div>
+              <div>{order && `$` + order.order[0].total}</div>
             </div>
           </div>
-          <div className="grow flex flex-col max-w-xl">
+          <div className="flex max-w-xl grow flex-col">
             <div>
               <Heading title={'Address'}></Heading>
               <RowItem
@@ -114,10 +119,10 @@ const Checkout: NextPage = () => {
             <Link href="/order-management/post-checkout">
               <div
                 onClick={handleClick}
-                className="mt-10 self-end max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover"
+                className="hover:border-green mt-10 w-full max-w-xs self-end overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring"
               >
                 <div className="py-5 px-5 text-center">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
+                  <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
                     Place Order
                   </a>
                 </div>
