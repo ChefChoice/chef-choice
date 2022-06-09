@@ -11,6 +11,7 @@ import RowItem from '../../components/common/RowItem';
 import Heading from '../../components/common/Heading';
 import ContentContainer from '../../components/orders/ContentContainer';
 import SmallButton from '../../components/orders/SmallButton';
+import { ClockIcon, CreditCardIcon, LocationMarkerIcon } from '@heroicons/react/outline';
 
 const orderID = 1; // TODO: Remove temporary hardcoded value
 
@@ -55,7 +56,7 @@ const Checkout: NextPage = () => {
 
       <ContentContainer>
         {order && <h3 className="text-4xl font-bold">Chef {order.order[0].HomeChef.name}</h3>}
-        <div className="mx-auto flex gap-x-16 pt-6">
+        <div className="mx-auto flex flex-col gap-x-16 pt-6 lg:flex-row">
           <div className="grow">
             <Heading title={'Your Items'}></Heading>
             <div className="md:w-full">
@@ -74,7 +75,7 @@ const Checkout: NextPage = () => {
               <div>{order && `$` + order.order[0].subtotal}</div>
             </div>
             <div className="flex md:w-full">
-              <div className="grow">Tax and Fees</div>
+              <div className="grow">Tax and Fees (HST 13%)</div>
               <div>{order && `$` + order.order[0].fees}</div>
             </div>
             <div className="flex text-lg font-bold md:w-full">
@@ -82,39 +83,55 @@ const Checkout: NextPage = () => {
               <div>{order && `$` + order.order[0].total}</div>
             </div>
           </div>
-          <div className="flex max-w-xl grow flex-col">
+          <div className="flex grow flex-col lg:max-w-xl">
             <div>
               <Heading title={'Address'}></Heading>
-              <RowItem
-                key={0}
-                rowID={0}
-                title=""
-                subtitle="100 Queen St W, Toronto, ON M5H 2N1"
-                optionalNode={<SmallButton data={'Edit'} />}
-                optionalNodeRightAligned
-              />
+              <div className="flex">
+                <LocationMarkerIcon className="h-8 w-8 stroke-2 pr-2" />
+                <div className="grow">
+                  <RowItem
+                    key={0}
+                    rowID={0}
+                    title=""
+                    subtitle="100 Queen St W, Toronto, ON M5H 2N1"
+                    optionalNode={<SmallButton data={'Edit'} />}
+                    optionalNodeRightAligned
+                  />
+                </div>
+              </div>
             </div>
             <div>
               <Heading title={'Payment'}></Heading>
-              <RowItem
-                key={0}
-                rowID={0}
-                title=""
-                subtitle="Visa ending in 4321"
-                optionalNode={<SmallButton data={'Edit'} />}
-                optionalNodeRightAligned
-              />
+              <div className="flex">
+                <CreditCardIcon className="h-8 w-8 stroke-2 pr-2" />
+                <div className="grow">
+                  <RowItem
+                    key={0}
+                    rowID={0}
+                    title=""
+                    subtitle="Visa ending in 4321"
+                    optionalNode={<SmallButton data={'Edit'} />}
+                    optionalNodeRightAligned
+                  />
+                </div>
+              </div>
             </div>
+
             <div>
               <Heading title={'Scheduled Time'}></Heading>
-              <RowItem
-                key={0}
-                rowID={0}
-                title=""
-                subtitle="None selected"
-                optionalNode={<SmallButton data={'Edit'} />}
-                optionalNodeRightAligned
-              />
+              <div className="flex">
+                <ClockIcon className="h-8 w-8 stroke-2 pr-2" />
+                <div className="grow">
+                  <RowItem
+                    key={0}
+                    rowID={0}
+                    title=""
+                    subtitle="None selected"
+                    optionalNode={<SmallButton data={'Edit'} />}
+                    optionalNodeRightAligned
+                  />
+                </div>
+              </div>
             </div>
             <Link href="/order-management/post-checkout">
               <div
