@@ -1,9 +1,14 @@
+import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { ChangeEvent, useEffect, useState } from 'react';
-import Header from '../../components/common/Heading';
+import Heading from '../../components/common/Heading';
 import { supabase } from '../../utils/supabaseClient';
+
+export const getServerSideProps = withPageAuth({
+  redirectTo: '/signin',
+});
 
 export default function AddCertificate() {
   const [name, setName] = useState('');
@@ -30,7 +35,7 @@ export default function AddCertificate() {
         const file = event.target.files[0];
         const fileExt = file.name.split('.').pop();
 
-        // Folder access level for authenticated user
+        // Folder level access for authenticated user
         // Format of the file path: Bucket/user.id/filename
         const imagePath = `${Math.random()}.${fileExt}`;
         const fullImagePath = `${user.id}/${imagePath}`;
@@ -50,7 +55,6 @@ export default function AddCertificate() {
     }
   }
 
-  // TODO: check imagePath not set yet
   const addCertificate = async (e: any) => {
     e.preventDefault();
 
@@ -81,7 +85,7 @@ export default function AddCertificate() {
       </Head>
 
       <main className="flex flex-col h-screen w-full py-10 px-10 mx-auto">
-        <Header title={'Add Certificate'} optionalNode={null} optionalNodeRightAligned={true} />
+        <Heading title={'Add Certificate'} optionalNode={null} optionalNodeRightAligned={true} />
 
         <form onSubmit={addCertificate}>
           <div className="grid grid-rows-6 grid-flow-col gap-2 py-5 text-lg justify-center">
@@ -145,6 +149,9 @@ export default function AddCertificate() {
                 className="col-span-3 sm:col-span-2 rounded px-3 py-2 mb-4 mx-2 border-black border-2 hover:border-green-light focus:outline-none focus:border-green-light"
                 id="expirydate"
                 type="date"
+                min={new Date(new Date().setDate(new Date().getDate() + 15)).toLocaleDateString(
+                  'en-ca'
+                )}
                 value={expirydate}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => setExpirydate(e.target.value)}
                 required
