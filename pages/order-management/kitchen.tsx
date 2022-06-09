@@ -3,7 +3,8 @@
 import type { NextPage } from 'next';
 import { useState, useEffect } from 'react';
 
-import { supabase } from '../../utils/supabaseClient';
+// import { supabase } from '../../utils/supabaseClient';
+import { getKitchen } from '../../utils/fetchUtils';
 
 import Head from 'next/head';
 import Image from 'next/image';
@@ -16,48 +17,26 @@ import SmallButton from '../../components/orders/SmallButton';
 const testChefID = '4a1abd67-53f4-4a24-8a8b-569729e6fb95'; // TODO: Temporary hard-coded value until Context
 
 const Kitchen: NextPage = () => {
-  const [homechef, setHomeChef] = useState<Array<any> | null>(null);
-  const [dishes, setDishes] = useState<Array<any> | null>(null);
-  const [publicURL, setPublicURL] = useState<any | null>(null);
+  const [data, setData] = useState<any | null>(null);
 
   useEffect(() => {
-    const getData = async () => {
-      let { data: HomeChef, error: HomeChefError } = await supabase
-        .from('HomeChef')
-        .select('*')
-        .eq('id', testChefID);
-
-      if (HomeChefError) throw HomeChefError.message;
-      setHomeChef(HomeChef);
-
-      let { data: Dishes, error: DishesError } = await supabase
-        .from('Dish')
-        .select('*')
-        .eq('user_id', testChefID);
-
-      if (DishesError) throw DishesError.message;
-      setDishes(Dishes);
-
-      const { publicURL: PublicURL, error: PublicURLError } = supabase.storage
-        .from('dish-test-orders')
-        .getPublicUrl('');
-      if (PublicURLError) throw PublicURLError.message;
-      setPublicURL(PublicURL);
-    };
-
-    getData().catch(console.error);
+    getKitchen(testChefID)
+      .then((data) => {
+        setData(data);
+      })
+      .catch(console.error);
   }, []);
 
   return (
     <>
       <Head>
-        {homechef ? <title>Chef {homechef[0].name}</title> : <title>Chef ...</title>}
+        {data ? <title>Chef {data.HomeChef[0].name}</title> : <title>Chef ...</title>}
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
       <ContentContainer>
         <div className="flex">
-          {homechef && <h3 className="text-4xl font-bold pr-5">Chef {homechef[0].name}</h3>}
+          {data && <h3 className="text-4xl font-bold pr-5">Chef {data.HomeChef[0].name}</h3>}
           <SmallButton data={'View Schedule'} />
         </div>
         <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}
@@ -65,24 +44,27 @@ const Kitchen: NextPage = () => {
           <div>
             <Heading title={'Dinner'}></Heading>
             <div>
-              {dishes?.map((dish) => (
-                <RowItem
-                  key={dish.id}
-                  rowID={dish.id}
-                  title={dish.dish_name}
-                  subtitle={dish.dish_price}
-                  image={
-                    <Image
-                      src={publicURL + dish.dish_image}
-                      alt={dish.dish_name}
-                      width={100}
-                      height={100}
-                    ></Image>
-                  }
-                  optionalNode={<SmallButton data={'Add to Order'} />}
-                  optionalNodeRightAligned
-                />
-              ))}
+              {data &&
+                data.Dishes.map((dish: any) => (
+                  <div onClick={() => console.log('clicked')}>
+                    <RowItem
+                      key={dish.id}
+                      rowID={dish.id}
+                      title={dish.dish_name}
+                      subtitle={dish.dish_price}
+                      image={
+                        <Image
+                          src={data.PublicURL + dish.dish_image}
+                          alt={dish.dish_name}
+                          width={100}
+                          height={100}
+                        ></Image>
+                      }
+                      optionalNode={<SmallButton data={'Add to Order'} />}
+                      optionalNodeRightAligned
+                    />
+                  </div>
+                ))}
             </div>
           </div>
         </div>
