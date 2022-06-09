@@ -108,8 +108,9 @@ const DishForm = ({
               </div>
             </div>
             <div className="col-span-10 lg:col-span-7 lg:pl-8 lg:w-2/3">
-              <div className="grid grid-rows-4 gap-3 lg:gap-0 text-center">
-                <div className="grid grid-rows-2 justify-items-center justify-self-center lg:justify-items-start lg:justify-self-start w-5/6 lg:w-2/3">
+              <div className="grid grid-rows-4 gap-3 lg:gap-4 text-center justify-items-center lg:justify-items-start lg:text-left">
+                <div className="w-5/6 lg:w-2/3">
+                  <label htmlFor="name">Dish name</label>
                   <input
                     type="text"
                     id="name"
@@ -131,9 +132,8 @@ const DishForm = ({
                       e.currentTarget.setCustomValidity('');
                     }}
                   />
-                  <label htmlFor="name">Dish name</label>
                 </div>
-                <div className="grid grid-rows-2 justify-items-center justify-self-center lg:justify-items-start lg:justify-self-start w-1/3 lg:w-1/5">
+                <div className="w-1/3 lg:w-1/3">
                   <label htmlFor="price">Dish price</label>
                   <input
                     type="text"
@@ -156,7 +156,7 @@ const DishForm = ({
                     }}
                   />
                 </div>
-                <div className="lg:text-left">
+                <div className="w-full">
                   <label htmlFor="category">Dish category(s)</label>
                   <input
                     type="text"
@@ -167,7 +167,7 @@ const DishForm = ({
                     maxLength={256}
                   />
                 </div>
-                <div className="lg:text-left">
+                <div className="w-full">
                   <label htmlFor="ingredient">Ingredient(s)</label>
                   <input
                     type="text"
