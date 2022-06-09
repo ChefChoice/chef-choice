@@ -36,11 +36,11 @@ const Kitchen: NextPage = () => {
 
       <ContentContainer>
         <div className="flex">
-          {data && <h3 className="text-4xl font-bold pr-5">Chef {data.HomeChef[0].name}</h3>}
+          {data && <h3 className="pr-5 text-4xl font-bold">Chef {data.HomeChef[0].name}</h3>}
           <SmallButton data={'View Schedule'} />
         </div>
         <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}
-        <div className="grow flex flex-col pt-5">
+        <div className="flex grow flex-col pt-5">
           <div>
             <Heading title={'Dinner'}></Heading>
             <div>
@@ -54,7 +54,7 @@ const Kitchen: NextPage = () => {
                       subtitle={dish.dish_price}
                       image={
                         <Image
-                          src={data.PublicURL + dish.dish_image}
+                          src={data.PublicURL + '/' + dish.dish_image}
                           alt={dish.dish_name}
                           width={100}
                           height={100}
@@ -68,10 +68,10 @@ const Kitchen: NextPage = () => {
             </div>
           </div>
         </div>
-        <div className="md:w-full flex gap-2 pt-5 justify-end">
+        <div className="flex justify-end gap-2 pt-5 md:w-full">
           <Link href="/order-management/checkout">
-            <div className="max-w-xs w-full bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover py-5 px-5 text-center">
-              <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
+            <div className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light py-5 px-5 text-center shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
+              <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
                 Go to checkout
               </a>
             </div>
