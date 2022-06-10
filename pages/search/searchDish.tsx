@@ -21,9 +21,7 @@ const SearchDish: NextPage = () => {
   useEffect(() => {
     async function getResult() {
       const { data: dishData, error: dishError } = await supabase
-        .from('dishinfo')
-        .select()
-        .textSearch('dish_name', `${searchTerm}`)
+        .rpc('search_dishes', { dish_term: searchTerm })
         .order('dish_name');
 
       if (dishError) throw dishError.message;
