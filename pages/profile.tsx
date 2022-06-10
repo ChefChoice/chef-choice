@@ -13,43 +13,36 @@ export const getServerSideProps = withPageAuth({
 });
 
 export default function Profile() {
-  // const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
 
   useEffect(() => {
     getCertificates();
-  });
+  }, [user]);
 
   async function getCertificates() {
-    if (certificates.length == 0) {
-      try {
-        // setLoading(true);
-        setUser(supabase.auth.user());
+    try {
+      setUser(supabase.auth.user());
 
-        if (user) {
-          let { data, error, status } = await supabase
-            .from<Certificate>('Certificate')
-            .select(`*`)
-            // select by homechef_id
-            .eq('homechef_id', user.id);
+      if (user) {
+        let { data, error, status } = await supabase
+          .from<Certificate>('Certificate')
+          .select(`*`)
+          // select by homechef_id
+          .eq('homechef_id', user.id);
 
-          if (error && status !== 406) {
-            throw error;
-          }
-
-          if (data) {
-            setCertificates(data);
-          } else {
-            setCertificates([]);
-          }
+        if (error && status !== 406) {
+          throw error;
         }
-      } catch (err) {
-        console.log(err);
+
+        if (data) {
+          setCertificates(data);
+        } else {
+          setCertificates([]);
+        }
       }
-      // } finally {
-      //   setLoading(false);
-      // }
+    } catch (err) {
+      console.log(err);
     }
   }
 
