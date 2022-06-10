@@ -1,20 +1,18 @@
+import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useUser } from '../../lib/UserContext';
 import { supabase } from '../../utils/supabaseClient';
-import SignIn from '../signin';
 
-// TODO: integrate global userContext later
+export const getServerSideProps = withPageAuth({
+  redirectTo: '/signin',
+});
 
 export default function ViewCertificate() {
   const [loading, setLoading] = useState(true);
-
-  // const { user } = useUser();
   const [user, setUser] = useState<User | null>(null);
-
   const [certImageURL, setCertImageURL] = useState('');
 
   const router = useRouter();
@@ -57,10 +55,6 @@ export default function ViewCertificate() {
   }
 
   return (
-    // <>
-    //   {loading ? (
-    //     <SignIn />
-    //   ) : (
     <>
       <Head>
         <title>View Certificate</title>
@@ -81,7 +75,5 @@ export default function ViewCertificate() {
         )}
       </main>
     </>
-    //   )}
-    // </>
   );
 }
