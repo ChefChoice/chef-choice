@@ -62,7 +62,7 @@ const Kitchen: NextPage = () => {
                     subtitle={dish.dish_price}
                     image={
                       <Image
-                        src={data.PublicURL + '/' + dish.dish_image}
+                        src={data.PublicURL + dish.dish_image}
                         alt={dish.dish_name}
                         width={100}
                         height={100}

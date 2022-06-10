@@ -42,7 +42,7 @@ const getKitchen = async (chefId: any) => {
 
   const { publicURL: PublicURL, error: PublicURLError } = supabase.storage
     .from('dish-images')
-    .getPublicUrl(chefId);
+    .getPublicUrl('');
   if (PublicURLError) throw PublicURLError.message;
 
   return { HomeChef, Dishes, PublicURL };
