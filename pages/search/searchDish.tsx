@@ -6,11 +6,9 @@ import { supabase } from '../../utils/supabaseClient';
 
 import SearchBar from '../../components/search/SearchBar';
 import SearchRow from '../../components/search/SearchRow';
-import Loading from '../../components/search/Loading';
+import Loading from '../../components/common/Loading';
 
 const SearchDish: NextPage = () => {
-  const DISH_IMAGE_PUBLIC_URL =
-    'https://nwcvvpfhfsturkjenths.supabase.co/storage/v1/object/public/dish-images';
   const DISH_DISPLAY_LIMIT = 2; // the number of displayed dishes will be n + 1
 
   const termRef = useRef<HTMLInputElement>(null);
@@ -82,7 +80,7 @@ const SearchDish: NextPage = () => {
         dishPrice={dish.dish_price}
         chefName={dish.name}
         href="#"
-        imageSrc={`${DISH_IMAGE_PUBLIC_URL}/${dish.dish_image}`}
+        imageSrc={`${process.env.NEXT_PUBLIC_SUPABASE_DISH_STORAGE_URL}/${dish.dish_image}`}
       />
     ));
   };
