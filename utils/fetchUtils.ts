@@ -1,21 +1,21 @@
 import { supabase } from './supabaseClient';
 
 const getOrders = async () => {
-  let { data: pendingOrders, error: PendingOrderError } = await supabase
+  const { data: pendingOrders, error: PendingOrderError } = await supabase
     .from('Order')
     .select('*')
     .eq('status', 'P');
 
   if (PendingOrderError) throw PendingOrderError.message;
 
-  let { data: ongoingOrders, error: OrderError } = await supabase
+  const { data: ongoingOrders, error: OrderError } = await supabase
     .from('Order')
     .select('*')
     .eq('status', 'O');
 
   if (OrderError) throw OrderError.message;
 
-  let { data: pastOrders, error: PastOrderError } = await supabase
+  const { data: pastOrders, error: PastOrderError } = await supabase
     .from('Order')
     .select('*')
     .eq('status', 'F');
@@ -26,14 +26,14 @@ const getOrders = async () => {
 };
 
 const getKitchen = async (chefId: any) => {
-  let { data: HomeChef, error: HomeChefError } = await supabase
+  const { data: HomeChef, error: HomeChefError } = await supabase
     .from('HomeChef')
     .select('*')
     .eq('id', chefId);
 
   if (HomeChefError) throw HomeChefError.message;
 
-  let { data: Dishes, error: DishesError } = await supabase
+  const { data: Dishes, error: DishesError } = await supabase
     .from('Dish')
     .select('*')
     .eq('user_id', chefId);
