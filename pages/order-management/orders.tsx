@@ -8,6 +8,7 @@ import { getOrders } from '../../utils/fetchUtils';
 
 import RowItem from '../../components/common/RowItem';
 import Heading from '../../components/common/Heading';
+import Loading from '../../components/common/Loading';
 import ContentContainer from '../../components/orders/ContentContainer';
 import SmallButton from '../../components/orders/SmallButton';
 
@@ -24,7 +25,7 @@ const Orders: NextPage = () => {
       .then((data) => {
         setOrders(data);
       })
-      .catch(console.error); // TODO: Remove the console error
+      .catch(console.error);
   }, [refresh]);
 
   const handleCancelClick: any = async (e: any) => {
@@ -43,72 +44,84 @@ const Orders: NextPage = () => {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
       <ContentContainer>
-        <div>
-          <div className="w-40" onClick={() => setRefresh(refresh + 1)}>
-            <SmallButton data={'Refresh'} />
-          </div>
-          <Heading title={'Pending Orders'}></Heading>
-          <div className="md:w-full">
-            {orders &&
-              orders.pendingOrders.map((order: any, i: number) => (
-                <div key={i} className="flex py-2">
-                  <div className="grow">
-                    <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
-                  </div>
-                  <div
-                    onClick={() => handleCancelClick(order.id)}
-                    className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
-                  >
-                    <div className="py-2 px-2 text-center">
-                      <a className="xs:text-x font-bold text-white lg:text-base">Cancel Order</a>
+        {orders ? (
+          <>
+            <div>
+              <div className="w-40" onClick={() => setRefresh(refresh + 1)}>
+                <SmallButton data={'Refresh'} />
+              </div>
+              <Heading title={'Pending Orders'}></Heading>
+              <div className="md:w-full">
+                {orders &&
+                  orders.pendingOrders.map((order: any, i: number) => (
+                    <div key={i} className="flex py-2">
+                      <div className="grow">
+                        <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
+                      </div>
+                      <div
+                        onClick={() => handleCancelClick(order.id)}
+                        className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
+                      >
+                        <div className="py-2 px-2 text-center">
+                          <a className="xs:text-x font-bold text-white lg:text-base">
+                            Cancel Order
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-        <div>
-          <Heading title={'Ongoing Orders'}></Heading>
-          <div className="md:w-full">
-            {orders &&
-              orders.ongoingOrders.map((order: any, i: number) => (
-                <div key={i} className="flex py-2">
-                  <div className="grow">
-                    <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
-                  </div>
-                  <div
-                    onClick={() => handleClick(order.id)}
-                    className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
-                  >
-                    <div className="py-2 px-2 text-center">
-                      <a className="xs:text-xs font-bold text-white lg:text-base">View Details</a>
+                  ))}
+              </div>
+            </div>
+            <div>
+              <Heading title={'Ongoing Orders'}></Heading>
+              <div className="md:w-full">
+                {orders &&
+                  orders.ongoingOrders.map((order: any, i: number) => (
+                    <div key={i} className="flex py-2">
+                      <div className="grow">
+                        <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
+                      </div>
+                      <div
+                        onClick={() => handleClick(order.id)}
+                        className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
+                      >
+                        <div className="py-2 px-2 text-center">
+                          <a className="xs:text-xs font-bold text-white lg:text-base">
+                            View Details
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
-        <div>
-          <Heading title={'Past Orders'}></Heading>
-          <div className="md:w-full">
-            {orders &&
-              orders.pastOrders.map((order: any, i: number) => (
-                <div key={i} className="flex py-2">
-                  <div className="grow">
-                    <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
-                  </div>
-                  <div
-                    onClick={() => handleClick(order.id)}
-                    className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
-                  >
-                    <div className="py-2 px-2 text-center">
-                      <a className="xs:text-xs font-bold text-white lg:text-base">View Details</a>
+                  ))}
+              </div>
+            </div>
+            <div>
+              <Heading title={'Past Orders'}></Heading>
+              <div className="md:w-full">
+                {orders &&
+                  orders.pastOrders.map((order: any, i: number) => (
+                    <div key={i} className="flex py-2">
+                      <div className="grow">
+                        <RowItem key={i} rowID={i} title={`#${order.id}`}></RowItem>
+                      </div>
+                      <div
+                        onClick={() => handleClick(order.id)}
+                        className="hover:border-green w-full max-w-xs overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
+                      >
+                        <div className="py-2 px-2 text-center">
+                          <a className="xs:text-xs font-bold text-white lg:text-base">
+                            View Details
+                          </a>
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              ))}
-          </div>
-        </div>
+                  ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          <Loading />
+        )}
       </ContentContainer>
     </>
   );
