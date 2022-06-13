@@ -1,8 +1,8 @@
 export interface Certificate {
-  id: number;
+  id: string;
   homechef_id: string;
-  type: string;
   name: string;
+  type: string;
   awardedBy: string;
   date: Date;
   expirydate: Date;

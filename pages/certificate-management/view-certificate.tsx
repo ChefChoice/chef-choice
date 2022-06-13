@@ -18,17 +18,16 @@ export default function ViewCertificate() {
   const router = useRouter();
   const query = router.query;
   // Take the image path from query
-  const imgPath = query.cert_image;
+  const imgPath = query.cert_image as string;
 
   useEffect(() => {
     if (imgPath) downloadImage(imgPath);
   }, [imgPath, user]);
 
-  async function downloadImage(imgPath: any) {
+  async function downloadImage(imgPath: string) {
     try {
       setLoading(true);
       setUser(supabase.auth.user());
-      console.log(user);
 
       if (user) {
         const authorizedImgPath = `${user.id}/${imgPath}`;
