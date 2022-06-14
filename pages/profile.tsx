@@ -5,6 +5,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Heading from '../components/common/Heading';
+import DeleteModal from '../components/modals/DeleteModal';
 import { Certificate } from '../models/Certificate';
 import { supabase } from '../utils/supabaseClient';
 
@@ -16,9 +17,16 @@ export default function Profile() {
   const [user, setUser] = useState<User | null>(null);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [certName, setCertName] = useState('');
+  const [certId, setCertId] = useState('');
+  const [certImage, setCertImage] = useState('');
+
+  const handleOnClose = () => setShowModal(false);
+
   useEffect(() => {
     getCertificates();
-  }, [user]);
+  }, [user, showModal]);
 
   async function getCertificates() {
     try {
@@ -29,7 +37,9 @@ export default function Profile() {
           .from<Certificate>('Certificate')
           .select(`*`)
           // select by homechef_id
-          .eq('homechef_id', user.id);
+          .eq('homechef_id', user.id)
+          // put required certificate on top
+          .order('type', { ascending: false });
 
         if (error && status !== 406) {
           throw error;
@@ -43,6 +53,32 @@ export default function Profile() {
       }
     } catch (err) {
       console.log(err);
+    }
+  }
+
+  async function deleteCertificate(id: any) {
+    // delete from storage
+    if (user) {
+      const imagePath = `${user.id}/${certImage}`;
+      const { error: storageError } = await supabase.storage
+        .from('cert-images')
+        .remove([imagePath]);
+
+      if (storageError) {
+        throw storageError;
+      }
+
+      // delete from database
+      const { error: deleteError } = await supabase
+        .from('Certificate')
+        .delete()
+        .match({ id: certId });
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      setShowModal(false);
     }
   }
 
@@ -74,8 +110,6 @@ export default function Profile() {
         />
 
         <div className="w-full">
-          {/* {loading ? 'Loading...' : ''} */}
-
           {certificates.length === 0
             ? 'No records found'
             : certificates.map((cert: Certificate) => {
@@ -92,7 +126,7 @@ export default function Profile() {
                       <p>{cert.type}</p>
                     </div>
 
-                    <div className="grid grid-rows-1 grid-flow-col ml-auto">
+                    <div className="grid grid-rows-3 sm:grid-rows-1 grid-flow-col ml-auto">
                       <Link
                         href={{
                           pathname: '/certificate-management/view-certificate',
@@ -103,29 +137,49 @@ export default function Profile() {
                           <EyeIcon className="h-6 w-6" />
                         </a>
                       </Link>
-                      <Link href="/edit-certificate">
+                      <Link
+                        href={{
+                          pathname: '/certificate-management/edit-certificate',
+                          query: { cert_id: cert.id },
+                        }}
+                      >
                         <a className="mr-8">
                           <PencilIcon className="h-6 w-6" />
                         </a>
                       </Link>
 
                       {/* Check if it is allowed to delete the certificate */}
-                      <Link href="">
+                      <button
+                        onClick={() => {
+                          setShowModal(true);
+                          setCertName(cert.name);
+                          setCertId(cert.id);
+                          setCertImage(cert.image);
+                        }}
+                      >
                         {cert.type == 'Required' ? (
-                          <a className="ml-6">
+                          <a className="sm:ml-6">
                             <XCircleIcon className="h-6 w-6 hidden" />
                           </a>
                         ) : (
-                          <a className="ml-auto">
-                            <XCircleIcon className="h-6 w-6" />
+                          <a className="ml-auto" data-modal-toggle="popup-modal">
+                            <XCircleIcon className="h-6 w-6" data-modal-toggle="popup-modal" />
                           </a>
                         )}
-                      </Link>
+                      </button>
                     </div>
                   </div>
                 );
               })}
         </div>
+
+        {/* Modal */}
+        <DeleteModal
+          visible={showModal}
+          onClose={handleOnClose}
+          contentString={`Do you want to delete ${certName}?`}
+          deleteOnClick={() => deleteCertificate(certId)}
+        />
       </main>
     </>
   );
