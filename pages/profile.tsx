@@ -56,7 +56,7 @@ export default function Profile() {
     }
   }
 
-  async function deleteCertificate(id: any) {
+  async function deleteCertificate() {
     // delete from storage
     if (user) {
       const imagePath = `${user.id}/${certImage}`;
@@ -178,7 +178,7 @@ export default function Profile() {
           visible={showModal}
           onClose={handleOnClose}
           contentString={`Do you want to delete ${certName}?`}
-          deleteOnClick={() => deleteCertificate(certId)}
+          deleteOnClick={deleteCertificate}
         />
       </main>
     </>
