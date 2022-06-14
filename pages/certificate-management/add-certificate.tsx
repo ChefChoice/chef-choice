@@ -1,6 +1,6 @@
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import Head from 'next/head';
-import CertForm from '../../components/certificates/CertForm';
+import { CertForm } from '../../components/certificates/CertForm';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',

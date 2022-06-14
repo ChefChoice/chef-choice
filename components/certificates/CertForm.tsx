@@ -11,7 +11,7 @@ interface ICertForm {
   certificate: Certificate | null;
 }
 
-const CertForm = ({ formName, certificate }: ICertForm) => {
+export const CertForm = ({ formName, certificate }: ICertForm) => {
   const [name, setName] = useState(certificate ? certificate.name : '');
   const [type, setType] = useState(certificate ? certificate.type : '');
   const [awardedBy, setAwardedBy] = useState(certificate ? certificate.awardedBy : '');
@@ -29,16 +29,21 @@ const CertForm = ({ formName, certificate }: ICertForm) => {
   }, []);
 
   async function uploadImage(event: any) {
+    const submitBtn = document.getElementById('submitBtn');
+
     try {
       if (!event.target.files || event.target.files.length === 0) {
         throw new Error('You must select an image to upload.');
       }
 
+      // disable submit button until image is uploaded
+      submitBtn?.setAttribute('disabled', 'true');
+
       if (user) {
         const file = event.target.files[0];
 
-        // Check if there is no image, upload.
-        // If there is, replace the existing one with the new one (retain the imagePath)
+        // Check if no image, upload.
+        // Otherwise, replace the existing image with the new one (retain the imagePath)
         if (!imagePath) {
           const fileExt = file.name.split('.').pop();
 
@@ -60,7 +65,6 @@ const CertForm = ({ formName, certificate }: ICertForm) => {
           const { error } = await supabase.storage
             .from('cert-images')
             .update(`${user.id}/${imagePath}`, file);
-
           if (error) {
             throw error;
           }
@@ -68,6 +72,9 @@ const CertForm = ({ formName, certificate }: ICertForm) => {
       }
     } catch (err) {
       console.log(err);
+    } finally {
+      // release submit button
+      submitBtn?.removeAttribute('disabled');
     }
   }
 
@@ -185,8 +192,7 @@ const CertForm = ({ formName, certificate }: ICertForm) => {
                   id="Required"
                   type="radio"
                   value={'1'}
-                  // checked={type === 'Required' ? true : false}
-                  required={certificate && type ? false : true}
+                  required
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setType(e.target.value)}
                 />
                 <label className="form-check-label" htmlFor="Required">
@@ -200,8 +206,7 @@ const CertForm = ({ formName, certificate }: ICertForm) => {
                   name="certType"
                   type="radio"
                   value={'0'}
-                  required={certificate && type ? false : true}
-                  // checked={type === 'Required' ? false : true}
+                  required
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setType(e.target.value)}
                 />
                 <label className="form-check-label" htmlFor="Optional">
@@ -229,6 +234,7 @@ const CertForm = ({ formName, certificate }: ICertForm) => {
         </div>
         <div className="grid justify-center">
           <button
+            id="submitBtn"
             className="py-3 px-3 my-2 mx-2 sm:px-20 justify-center text-lg bg-green-light hover:bg-green-hover border-green-light hover:border-green-hover text-white rounded"
             type="submit"
           >
@@ -239,5 +245,3 @@ const CertForm = ({ formName, certificate }: ICertForm) => {
     </>
   );
 };
-
-export default CertForm;

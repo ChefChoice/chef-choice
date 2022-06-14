@@ -3,7 +3,7 @@ import { User } from '@supabase/supabase-js';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import CertForm from '../../components/certificates/CertForm';
+import { CertForm } from '../../components/certificates/CertForm';
 import { Certificate } from '../../models/Certificate';
 import { supabase } from '../../utils/supabaseClient';
 
