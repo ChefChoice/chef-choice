@@ -30,7 +30,7 @@ export default function ViewCertificate() {
       setUser(supabase.auth.user());
 
       if (user) {
-        const authorizedImgPath = `${user.id}/${imgPath}`;
+        const authorizedImgPath = `${user.id}/${imgPath}?t=${Date.now()}`;
 
         const { data, error } = await supabase.storage
           .from('cert-images')
