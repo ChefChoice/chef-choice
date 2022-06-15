@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Image from 'next/image';
+import Head from 'next/head';
 import { supabase } from '../../utils/supabaseClient';
 import RowItem from '../../components/common/RowItem';
 import Heading from '../../components/common/Heading';
@@ -54,6 +55,11 @@ const DishManagement: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Dish Management</title>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+      </Head>
+
       <div className="max-w-screen-2xl min-h-screen mx-auto p-16 ml-18 mr-18">
         <Heading
           title="Your Dishes"
