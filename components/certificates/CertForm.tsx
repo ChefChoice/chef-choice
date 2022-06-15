@@ -64,7 +64,9 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
         } else {
           const { error } = await supabase.storage
             .from('cert-images')
-            .update(`${user.id}/${imagePath}`, file);
+            .update(`${user.id}/${imagePath}`, file, {
+              cacheControl: '0',
+            });
           if (error) {
             throw error;
           }
