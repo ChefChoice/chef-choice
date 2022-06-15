@@ -28,7 +28,7 @@ const DishManagement: NextPage = () => {
     if (user) {
       const { data: dishData, error: dishError } = await supabase
         .from('Dish')
-        .select('dish_id, user_id, dish_image, dish_name, dish_description, dish_image')
+        .select('dish_id, user_id, dish_image, dish_name, dish_price, dish_image')
         .eq('user_id', user.id)
         .order('dish_name');
 
@@ -37,7 +37,7 @@ const DishManagement: NextPage = () => {
 
       const { publicURL, error: imageError } = supabase.storage
         .from('dish-images')
-        .getPublicUrl(user.id);
+        .getPublicUrl('');
       if (imageError) throw imageError;
 
       setBucketURL(publicURL);
@@ -76,7 +76,7 @@ const DishManagement: NextPage = () => {
                 subtitle={dish.dish_price}
                 image={
                   <Image
-                    src={`${bucketURL}/${dish.dish_image}`}
+                    src={`${bucketURL}${dish.dish_image}`}
                     alt={`Picture of ${dish.dish_name}`}
                     width={250}
                     height={250}
