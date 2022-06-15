@@ -60,6 +60,7 @@ const EditDish: NextPage = () => {
             hasImage={true}
             imageURL={`${bucketURL}${dish.dish_image}`}
             dishPrice={dish.dish_price}
+            dishSection={dish.dish_section}
             dishCategory={dish.dish_category}
             dishDescription={dish.dish_description}
             dishIngredients={dish.dish_ingredients}

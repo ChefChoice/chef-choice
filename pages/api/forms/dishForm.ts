@@ -37,6 +37,7 @@ const upsertDish = async (formFields: any) => {
         ...(formFields.dishImage && { dish_image: formFields.dishImage }),
         dish_name: formFields.name.toString(),
         dish_price: parseFloat(formFields.price),
+        dish_section: formFields.section.toString(),
         dish_category: formFields.category.toString() ?? null,
         dish_ingredients: formFields.ingredient.toString() ?? null,
         dish_description: formFields.details.toString() ?? null,
