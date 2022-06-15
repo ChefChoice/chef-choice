@@ -5,11 +5,7 @@ const Stars = ({ stars }: { stars: number }) => {
 
   for (let i = 0; i < 5; i++) {
     starIcons.push(
-      <StarIcon
-        key={i}
-        className={`h-8 w-8 stroke-1 ` + (i < stars && `fill-black`)}
-        onClick={() => console.log('click')}
-      />
+      <StarIcon key={i} className={`h-8 w-8 stroke-1 ` + (i < stars && `fill-black`)} />
     );
   }
 

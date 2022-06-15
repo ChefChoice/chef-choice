@@ -1,15 +1,38 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import { supabase } from '../../utils/supabaseClient';
+import { useUser } from '../../lib/UserContext';
 
 import Logo from './Logo';
-
-import { useUser } from '../../lib/UserContext';
 import { ShoppingCartIcon } from '@heroicons/react/outline';
 
 const Navbar = () => {
-  const { user } = useUser();
+  const { user, isHomeChef } = useUser();
+  const [itemNumber, setItemNumber] = useState<number>(0);
   const router = useRouter();
+
+  useEffect(() => {
+    // TODO: Get cart number to change realtime
+    // getCart('P');
+  }, []);
+
+  const getCart = async (status: string) => {
+    try {
+      const response = await axios.get(`/api/order-management/orders/${status}`);
+
+      const orders = response.data.orders;
+      const filteredOrders = orders.filter((order: any) => order.cart);
+
+      if (filteredOrders.length > 0) {
+        const response = await axios.get(`/api/order-management/quantity/${filteredOrders[0].id}`);
+        setItemNumber(response.data.quantity);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <div className="mx-auto flex max-w-screen-2xl items-center bg-white px-5 py-3">
@@ -50,11 +73,11 @@ const Navbar = () => {
           )}
         </nav>
         <div className="flex items-center gap-x-6">
-          {user && (
+          {!isHomeChef && (
             <Link href="/order-management/checkout">
               <a className="flex text-xl font-semibold text-black">
+                {itemNumber > 0 && <div>{itemNumber}</div>}
                 <ShoppingCartIcon className="h-8 w-8 stroke-2 pr-2" />
-                {/* TODO: Remove tmeporary number */}
               </a>
             </Link>
           )}

@@ -1,11 +1,9 @@
 import { useState, useEffect } from 'react';
 import type { NextPage } from 'next';
 import Head from 'next/head';
-import Link from 'next/link';
+import axios from 'axios';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { ClockIcon, CreditCardIcon, LocationMarkerIcon } from '@heroicons/react/outline';
-
-import { supabase } from '../../utils/supabaseClient';
 
 import RowItem from '../../components/common/RowItem';
 import Heading from '../../components/common/Heading';
@@ -13,8 +11,7 @@ import Loading from '../../components/common/Loading';
 import CartItem from '../../components/orders/CartItem';
 import ContentContainer from '../../components/orders/ContentContainer';
 import SmallButton from '../../components/orders/SmallButton';
-
-const orderID = 1; // TODO: Remove temporary hardcoded value
+import { useRouter } from 'next/router';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
@@ -22,31 +19,39 @@ export const getServerSideProps = withPageAuth({
 
 const Checkout: NextPage = () => {
   const [order, setOrder] = useState<any | null>(null);
+  const [refresh, setRefresh] = useState<number>(0);
+  const router = useRouter();
 
   useEffect(() => {
     getData().catch(console.error);
-  }, []);
+  }, [refresh]);
 
   const getData = async () => {
-    let { data: order, error: OrderError } = await supabase
-      .from('Order')
-      .select(`*, "HomeChef" ("name")`)
-      .eq('id', orderID);
-
-    let { data: orderDish, error: OrderDishError } = await supabase
-      .from('Order_Dish')
-      .select(`*, "Dish" (dish_name, dish_price)`)
-      .eq('order_id', orderID);
-
-    if (OrderError) throw OrderError.message;
-    if (OrderDishError) throw OrderDishError.message;
-
-    setOrder({ order, orderDish });
+    const order = await axios
+      .get('/api/order-management/checkout')
+      .then((response) => {
+        return response.data;
+      })
+      .catch((err) => {
+        throw Error('Server Error');
+      });
+    setOrder(order);
   };
 
   const handleClick = async () => {
-    const { data, error } = await supabase.from('Order').update({ status: 'P' }).eq('id', orderID);
+    axios
+      .post('/api/order-management/checkout', { id: order.order[0].id })
+      .then(() => {
+        router.push('/order-management');
+      })
+      .catch((err) => {
+        throw Error('Server Error');
+      });
   };
+
+  if (!order) {
+    return <Loading />;
+  }
 
   return (
     <>
@@ -56,7 +61,7 @@ const Checkout: NextPage = () => {
       </Head>
 
       <ContentContainer>
-        {order ? (
+        {order !== -1 ? (
           <>
             <h3 className="text-4xl font-bold">Chef {order.order[0].HomeChef.name}</h3>
             <div className="mx-auto flex flex-col gap-x-16 pt-6 lg:flex-row">
@@ -69,12 +74,17 @@ const Checkout: NextPage = () => {
                         key={i}
                         quantity={orderDish.quantity}
                         title={orderDish.Dish.dish_name}
-                        price={orderDish.Dish.dish_price * orderDish.quantity}
+                        price={
+                          Math.round(orderDish.Dish.dish_price * orderDish.quantity * 100) / 100
+                        }
+                        orderDish={orderDish}
+                        setRefresh={setRefresh}
+                        refresh={refresh}
                       ></CartItem>
                     ))}
                 </div>
                 <div className="flex font-semibold md:w-full">
-                  <div className="grow">SubTotal</div>
+                  <div className="grow">Subtotal</div>
                   <div>{order && `$` + order.order[0].subtotal}</div>
                 </div>
                 <div className="flex md:w-full">
@@ -136,23 +146,21 @@ const Checkout: NextPage = () => {
                     </div>
                   </div>
                 </div>
-                <Link href="/order-management/post-checkout">
-                  <div
-                    onClick={handleClick}
-                    className="hover:border-green mt-10 w-full max-w-xs self-end overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring"
-                  >
-                    <div className="py-5 px-5 text-center">
-                      <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
-                        Place Order
-                      </a>
-                    </div>
+                <div
+                  onClick={handleClick}
+                  className="hover:border-green mt-10 w-full max-w-xs cursor-pointer self-end overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring"
+                >
+                  <div className="py-5 px-5 text-center">
+                    <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
+                      Place Order
+                    </a>
                   </div>
-                </Link>
+                </div>
               </div>
             </div>
           </>
         ) : (
-          <Loading />
+          <div>{`There's nothing in your cart`}</div>
         )}
       </ContentContainer>
     </>
