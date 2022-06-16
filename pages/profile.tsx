@@ -89,7 +89,7 @@ export default function Profile() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <main className="flex flex-col h-screen w-full py-20 px-10">
+      <main className="flex h-screen w-full flex-col py-20 px-10">
         <Heading
           title={'Certification Management'}
           optionalNode={
@@ -101,7 +101,7 @@ export default function Profile() {
                 },
               }}
             >
-              <button className="bg-white py-1 text-lg border-solid border-black border-2 hover:ring font-medium px-8 rounded">
+              <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
                 Add
               </button>
             </Link>
@@ -126,7 +126,7 @@ export default function Profile() {
                       <p>{cert.type}</p>
                     </div>
 
-                    <div className="grid grid-rows-3 sm:grid-rows-1 grid-flow-col ml-auto">
+                    <div className="ml-auto grid grid-flow-col grid-rows-3 sm:grid-rows-1">
                       <Link
                         href={{
                           pathname: '/certificate-management/view-certificate',
@@ -148,25 +148,23 @@ export default function Profile() {
                         </a>
                       </Link>
 
-                      {/* Check if it is allowed to delete the certificate */}
-                      <button
-                        onClick={() => {
-                          setShowModal(true);
-                          setCertName(cert.name);
-                          setCertId(cert.id);
-                          setCertImage(cert.image);
-                        }}
-                      >
-                        {cert.type == 'Required' ? (
-                          <a className="sm:ml-6">
-                            <XCircleIcon className="h-6 w-6 hidden" />
-                          </a>
-                        ) : (
+                      {/* No delete button for required certificate */}
+                      {cert.type == 'Required' ? (
+                        <div className="sm:ml-6"></div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setShowModal(true);
+                            setCertName(cert.name);
+                            setCertId(cert.id);
+                            setCertImage(cert.image);
+                          }}
+                        >
                           <a className="ml-auto" data-modal-toggle="popup-modal">
                             <XCircleIcon className="h-6 w-6" data-modal-toggle="popup-modal" />
                           </a>
-                        )}
-                      </button>
+                        </button>
+                      )}
                     </div>
                   </div>
                 );
