@@ -17,6 +17,7 @@ export const UserContextProvider = (props: any) => {
       async (event: any, session: any) => {
         setSession(session);
         setUser(session?.user ?? null);
+        axios.post('/api/auth/set-auth-cookie', { event: event, session: session });
       }
     );
 
@@ -25,13 +26,6 @@ export const UserContextProvider = (props: any) => {
     };
     // eslint-disable-next-line
   }, []);
-
-  useEffect(() => {
-    axios.post('/api/auth/set-auth-cookie', {
-      event: user ? 'SIGNED_IN' : 'SIGNED_OUT',
-      session: supabase.auth.session(),
-    });
-  }, [user]);
 
   const value = {
     session,

@@ -1,5 +1,6 @@
 import type { NextPage } from 'next';
 import Image from 'next/image';
+import Head from 'next/head';
 import { supabase } from '../../utils/supabaseClient';
 import RowItem from '../../components/common/RowItem';
 import Heading from '../../components/common/Heading';
@@ -28,7 +29,7 @@ const DishManagement: NextPage = () => {
     if (user) {
       const { data: dishData, error: dishError } = await supabase
         .from('Dish')
-        .select('dish_id, user_id, dish_image, dish_name, dish_price, dish_image')
+        .select('dish_id, user_id, dish_image, dish_name, dish_section, dish_price, dish_image')
         .eq('user_id', user.id)
         .order('dish_name');
 
@@ -54,6 +55,11 @@ const DishManagement: NextPage = () => {
 
   return (
     <>
+      <Head>
+        <title>Dish Management</title>
+        <meta content="width=device-width, initial-scale=1" name="viewport" />
+      </Head>
+
       <div className="max-w-screen-2xl min-h-screen mx-auto p-16 ml-18 mr-18">
         <Heading
           title="Your Dishes"
