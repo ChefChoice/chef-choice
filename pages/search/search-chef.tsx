@@ -45,6 +45,7 @@ const SearchChef: NextPage = () => {
     }
 
     getResult().catch((error) => console.log(error.message));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, page]);
 
   const getPagination = (page: number, size: number) => {
@@ -74,7 +75,7 @@ const SearchChef: NextPage = () => {
 
     return result.map((chef: any) => (
       <div key={chef.id} className="w-full">
-        <Link href="#">
+        <Link href={`/kitchen/${chef.id}`}>
           <a className="flex flex-col items-center border shadow-md bg-white hover:bg-gray-100 active:bg-gray-200">
             <div className="relative w-full h-64 rounded-t-lg">
               <Image src="/images/chef.webp" alt={chef.name} layout="fill" priority={true} />
