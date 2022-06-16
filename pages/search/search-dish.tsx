@@ -26,11 +26,8 @@ const SearchDish: NextPage = () => {
       setLoading(true);
 
       const { data: dishData, error: dishError } = searchTerm
-        ? await supabase
-            .rpc('search_dishes', { dish_term: searchTerm })
-            .order('dish_name')
-            .range(from, to)
-        : await supabase.from('dishinfo').select().order('dish_name').range(from, to);
+        ? await supabase.rpc('search_dishes', { dish_term: searchTerm }).range(from, to)
+        : await supabase.from('dish_info').select().order('dish_name').range(from, to);
 
       if (dishError) throw dishError.message;
 
@@ -45,6 +42,7 @@ const SearchDish: NextPage = () => {
     }
 
     getResult();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, page]);
 
   const getPagination = (page: number, size: number) => {
@@ -79,7 +77,7 @@ const SearchDish: NextPage = () => {
         dishName={dish.dish_name}
         dishPrice={dish.dish_price}
         chefName={dish.name}
-        href="#"
+        href={`/kitchen/${dish.user_id}`}
         imageSrc={`${process.env.NEXT_PUBLIC_SUPABASE_DISH_STORAGE_URL}/${dish.dish_image}`}
       />
     ));
