@@ -1,5 +1,6 @@
 import { User } from '@supabase/supabase-js';
 import { NextPage } from 'next';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import DishForm from '../../../components/dishes/DishForm';
@@ -43,6 +44,13 @@ const EditDish: NextPage = () => {
 
   return (
     <>
+      {dish && (
+        <Head>
+          <title>Edit Dish - {dish.dish_name}</title>
+          <meta content="width=device-width, initial-scale=1" name="viewport" />
+        </Head>
+      )}
+
       <div className="max-w-screen-2xl min-h-screen mx-auto p-16 ml-18 mr-18">
         {dish && (
           <DishForm
@@ -52,6 +60,7 @@ const EditDish: NextPage = () => {
             hasImage={true}
             imageURL={`${bucketURL}${dish.dish_image}`}
             dishPrice={dish.dish_price}
+            dishSection={dish.dish_section}
             dishCategory={dish.dish_category}
             dishDescription={dish.dish_description}
             dishIngredients={dish.dish_ingredients}
