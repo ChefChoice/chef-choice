@@ -55,6 +55,7 @@ const SearchDishByCategory: NextPage = () => {
     }
 
     getResult();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, page]);
 
   const getPagination = (page: number, size: number) => {
