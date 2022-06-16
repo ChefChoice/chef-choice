@@ -11,6 +11,10 @@
     @apply w-full rounded border-2 border-red-400 bg-red-50 px-2 py-2 focus:outline-none;
   }
 
+  .input-text-disabled {
+    @apply w-full rounded border-2 border-gray-200 bg-gray-200 px-2 py-2;
+  }
+
   .input-submit {
     @apply w-full rounded border-green-light bg-green-light py-2 px-2 text-white hover:border-green-hover hover:bg-green-hover;
   }

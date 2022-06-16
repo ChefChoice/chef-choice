@@ -1,21 +1,24 @@
 import { EyeIcon, PencilIcon, XCircleIcon } from '@heroicons/react/outline';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import Heading from '../components/common/Heading';
-import DeleteModal from '../components/modals/DeleteModal';
-import { Certificate } from '../models/Certificate';
-import { supabase } from '../utils/supabaseClient';
+import Heading from '../../components/common/Heading';
+import DeleteModal from '../../components/modals/DeleteModal';
+import { Certificate } from '../../models/Certificate';
+import { supabase } from '../../utils/supabaseClient';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
 });
 
-export default function Profile() {
+const Profile: NextPage = () => {
   const [user, setUser] = useState<User | null>(null);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [userData, setUserData] = useState<any>();
+  const [address, setAddress] = useState<any>();
 
   const [showModal, setShowModal] = useState(false);
   const [certName, setCertName] = useState('');
@@ -25,14 +28,25 @@ export default function Profile() {
   const handleOnClose = () => setShowModal(false);
 
   useEffect(() => {
-    getCertificates();
+    getData();
   }, [user, showModal]);
 
-  async function getCertificates() {
+  async function getData() {
     try {
       setUser(supabase.auth.user());
 
       if (user) {
+        const { data: homeChefData, error: homeChefError } = await supabase
+          .from('HomeChef')
+          .select(`*, address:address_id(*)`)
+          .eq('id', user.id);
+
+        if (homeChefError) throw homeChefError.message;
+        if (homeChefData) {
+          setUserData(homeChefData[0]);
+          console.log(homeChefData);
+        }
+
         let { data, error, status } = await supabase
           .from<Certificate>('Certificate')
           .select(`*`)
@@ -90,6 +104,50 @@ export default function Profile() {
       </Head>
 
       <main className="flex h-screen w-full flex-col py-20 px-10">
+        <div>
+          <Heading
+            title={'Account Details'}
+            optionalNode={
+              <div className="flew space-x-2">
+                <Link
+                  href={{
+                    pathname: '#',
+                    query: {
+                      id: user ? user.id : null,
+                    },
+                  }}
+                >
+                  <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
+                    Payout Management
+                  </button>
+                </Link>
+                <Link
+                  href={{
+                    pathname: '/profile/edit',
+                  }}
+                >
+                  <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
+                    Edit
+                  </button>
+                </Link>
+              </div>
+            }
+            optionalNodeRightAligned={true}
+          />
+          <div className="ml-8 grid grid-cols-2">
+            <div>Name:</div>
+            <div>{userData?.name}</div>
+            <div>Email Address:</div>
+            <div>{userData?.email}</div>
+            <div>Phone Number:</div>
+            <div>{userData?.phoneno}</div>
+            <div>Address:</div>
+            <div>
+              {userData?.address?.street}, {userData?.address?.city},{' '}
+              {userData?.address?.postalcode}
+            </div>
+          </div>
+        </div>
         <Heading
           title={'Certification Management'}
           optionalNode={
@@ -181,4 +239,6 @@ export default function Profile() {
       </main>
     </>
   );
-}
+};
+
+export default Profile;
