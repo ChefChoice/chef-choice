@@ -1,40 +1,36 @@
+import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
 import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useUser } from '../../lib/UserContext';
 import { supabase } from '../../utils/supabaseClient';
-import SignIn from '../signin';
 
-// TODO: integrate global userContext later
+export const getServerSideProps = withPageAuth({
+  redirectTo: '/signin',
+});
 
 export default function ViewCertificate() {
   const [loading, setLoading] = useState(true);
-
-  // const { user } = useUser();
   const [user, setUser] = useState<User | null>(null);
-
   const [certImageURL, setCertImageURL] = useState('');
 
   const router = useRouter();
   const query = router.query;
   // Take the image path from query
-  const imgPath = query.cert_image;
+  const imgPath = query.cert_image as string;
 
   useEffect(() => {
     if (imgPath) downloadImage(imgPath);
   }, [imgPath, user]);
 
-  async function downloadImage(imgPath: any) {
+  async function downloadImage(imgPath: string) {
     try {
       setLoading(true);
       setUser(supabase.auth.user());
-      console.log(user);
 
       if (user) {
-        const authorizedImgPath = `${user.id}/${imgPath}`;
-        console.log(authorizedImgPath);
+        const authorizedImgPath = `${user.id}/${imgPath}?t=${Date.now()}`;
 
         const { data, error } = await supabase.storage
           .from('cert-images')
@@ -57,10 +53,6 @@ export default function ViewCertificate() {
   }
 
   return (
-    // <>
-    //   {loading ? (
-    //     <SignIn />
-    //   ) : (
     <>
       <Head>
         <title>View Certificate</title>
@@ -81,7 +73,5 @@ export default function ViewCertificate() {
         )}
       </main>
     </>
-    //   )}
-    // </>
   );
 }

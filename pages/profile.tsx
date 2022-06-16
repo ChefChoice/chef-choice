@@ -5,6 +5,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Heading from '../components/common/Heading';
+import DeleteModal from '../components/modals/DeleteModal';
 import { Certificate } from '../models/Certificate';
 import { supabase } from '../utils/supabaseClient';
 
@@ -13,43 +14,71 @@ export const getServerSideProps = withPageAuth({
 });
 
 export default function Profile() {
-  // const [loading, setLoading] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
 
+  const [showModal, setShowModal] = useState(false);
+  const [certName, setCertName] = useState('');
+  const [certId, setCertId] = useState('');
+  const [certImage, setCertImage] = useState('');
+
+  const handleOnClose = () => setShowModal(false);
+
   useEffect(() => {
     getCertificates();
-  });
+  }, [user, showModal]);
 
   async function getCertificates() {
-    if (certificates.length == 0) {
-      try {
-        // setLoading(true);
-        setUser(supabase.auth.user());
+    try {
+      setUser(supabase.auth.user());
 
-        if (user) {
-          let { data, error, status } = await supabase
-            .from<Certificate>('Certificate')
-            .select(`*`)
-            // select by homechef_id
-            .eq('homechef_id', user.id);
+      if (user) {
+        let { data, error, status } = await supabase
+          .from<Certificate>('Certificate')
+          .select(`*`)
+          // select by homechef_id
+          .eq('homechef_id', user.id)
+          // put required certificate on top
+          .order('type', { ascending: false });
 
-          if (error && status !== 406) {
-            throw error;
-          }
-
-          if (data) {
-            setCertificates(data);
-          } else {
-            setCertificates([]);
-          }
+        if (error && status !== 406) {
+          throw error;
         }
-      } catch (err) {
-        console.log(err);
+
+        if (data) {
+          setCertificates(data);
+        } else {
+          setCertificates([]);
+        }
       }
-      // } finally {
-      //   setLoading(false);
-      // }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async function deleteCertificate() {
+    // delete from storage
+    if (user) {
+      const imagePath = `${user.id}/${certImage}`;
+      const { error: storageError } = await supabase.storage
+        .from('cert-images')
+        .remove([imagePath]);
+
+      if (storageError) {
+        throw storageError;
+      }
+
+      // delete from database
+      const { error: deleteError } = await supabase
+        .from('Certificate')
+        .delete()
+        .match({ id: certId });
+
+      if (deleteError) {
+        throw deleteError;
+      }
+
+      setShowModal(false);
     }
   }
 
@@ -60,7 +89,7 @@ export default function Profile() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <main className="flex flex-col h-screen w-full py-20 px-10">
+      <main className="flex h-screen w-full flex-col py-20 px-10">
         <Heading
           title={'Certification Management'}
           optionalNode={
@@ -72,7 +101,7 @@ export default function Profile() {
                 },
               }}
             >
-              <button className="bg-white py-1 text-lg border-solid border-black border-2 hover:ring font-medium px-8 rounded">
+              <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
                 Add
               </button>
             </Link>
@@ -81,8 +110,6 @@ export default function Profile() {
         />
 
         <div className="w-full">
-          {/* {loading ? 'Loading...' : ''} */}
-
           {certificates.length === 0
             ? 'No records found'
             : certificates.map((cert: Certificate) => {
@@ -99,7 +126,7 @@ export default function Profile() {
                       <p>{cert.type}</p>
                     </div>
 
-                    <div className="grid grid-rows-1 grid-flow-col ml-auto">
+                    <div className="ml-auto grid grid-flow-col grid-rows-3 sm:grid-rows-1">
                       <Link
                         href={{
                           pathname: '/certificate-management/view-certificate',
@@ -110,29 +137,47 @@ export default function Profile() {
                           <EyeIcon className="h-6 w-6" />
                         </a>
                       </Link>
-                      <Link href="/edit-certificate">
+                      <Link
+                        href={{
+                          pathname: '/certificate-management/edit-certificate',
+                          query: { cert_id: cert.id },
+                        }}
+                      >
                         <a className="mr-8">
                           <PencilIcon className="h-6 w-6" />
                         </a>
                       </Link>
 
-                      {/* Check if it is allowed to delete the certificate */}
-                      <Link href="">
-                        {cert.type == 'Required' ? (
-                          <a className="ml-6">
-                            <XCircleIcon className="h-6 w-6 hidden" />
+                      {/* No delete button for required certificate */}
+                      {cert.type == 'Required' ? (
+                        <div className="sm:ml-6"></div>
+                      ) : (
+                        <button
+                          onClick={() => {
+                            setShowModal(true);
+                            setCertName(cert.name);
+                            setCertId(cert.id);
+                            setCertImage(cert.image);
+                          }}
+                        >
+                          <a className="ml-auto" data-modal-toggle="popup-modal">
+                            <XCircleIcon className="h-6 w-6" data-modal-toggle="popup-modal" />
                           </a>
-                        ) : (
-                          <a className="ml-auto">
-                            <XCircleIcon className="h-6 w-6" />
-                          </a>
-                        )}
-                      </Link>
+                        </button>
+                      )}
                     </div>
                   </div>
                 );
               })}
         </div>
+
+        {/* Modal */}
+        <DeleteModal
+          visible={showModal}
+          onClose={handleOnClose}
+          contentString={`Do you want to delete ${certName}?`}
+          deleteOnClick={deleteCertificate}
+        />
       </main>
     </>
   );

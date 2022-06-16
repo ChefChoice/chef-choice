@@ -14,6 +14,7 @@ interface IDishFormProps {
   hasImage: boolean;
   imageURL: string;
   dishPrice?: number;
+  dishSection?: string;
   dishCategory?: string;
   dishIngredients?: string;
   dishDescription?: string;
@@ -26,6 +27,7 @@ const DishForm = ({
   hasImage,
   imageURL,
   dishPrice,
+  dishSection,
   dishCategory,
   dishIngredients,
   dishDescription,
@@ -133,7 +135,7 @@ const DishForm = ({
                     }}
                   />
                 </div>
-                <div className="w-1/3 lg:w-1/3">
+                <div className="w-1/3">
                   <label htmlFor="price">Dish price</label>
                   <input
                     type="text"
@@ -147,7 +149,7 @@ const DishForm = ({
                       let message =
                         e.currentTarget.value == ''
                           ? 'Having a dish price is required!'
-                          : 'Dish price must be atleast dollar and limited to two decimal places.';
+                          : 'Dish price must be atleast a dollar and limited to two decimal places.';
 
                       e.currentTarget.setCustomValidity(message);
                     }}
@@ -156,15 +158,27 @@ const DishForm = ({
                     }}
                   />
                 </div>
-                <div className="w-full">
-                  <label htmlFor="category">Dish category(s)</label>
+                <div className="w-5/6 lg:w-1/2">
+                  <label htmlFor="section">Marketplace section</label>
+                  <input
+                    type="text"
+                    id="section"
+                    name="section"
+                    defaultValue={dishSection}
+                    className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
+                    required
+                    maxLength={32}
+                  />
+                </div>
+                <div className="w-5/6 lg:w-1/2">
+                  <label htmlFor="category">Dish category</label>
                   <input
                     type="text"
                     id="category"
                     name="category"
                     defaultValue={dishCategory}
                     className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
-                    maxLength={256}
+                    maxLength={32}
                   />
                 </div>
                 <div className="w-full">
