@@ -17,7 +17,7 @@ export default function MainMenu() {
 
   useEffect(() => {
     getUsername();
-  });
+  }, [user]);
 
   async function getUsername() {
     try {
@@ -52,35 +52,35 @@ export default function MainMenu() {
       </Head>
 
       <div className="mx-auto">
-        <main className="background-image h-screen w-screen py-4 flex flex-col justify-center items-center">
-          <h1 className="font-headline font-medium text-4xl break-words">
+        <main className="background-image h-screen w-full py-4 flex flex-col justify-center items-center">
+          <h1 className="font-headline font-medium text-3xl sm:text-4xl break-words">
             Welcome to ChefChoice, {username ? username : ''}
-            <hr style={{ borderTop: '3px solid #000000 ' }} />
+            <hr className="border-t-2 border-black/[.50]" />
           </h1>
-          <div className="grid grid-rows-3 grid-flow-col gap-2 pt-10 justify-items-center items-center w-96">
+          <div className="grid grid-rows-3 grid-flow-row pt-10 justify-center">
             {/* TODO: Change the option cards according to the type of user*/}
             {2 > 1 ? (
               <Link href="#">
-                <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
+                <a className="grid p-6 m-2 sm:w-96 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
                   <h2>Orders</h2>
                 </a>
               </Link>
             ) : (
               <Link href="#">
-                <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
+                <a className="grid p-6 m-2 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
                   <h2>Search Dishes</h2>
                 </a>
               </Link>
             )}
 
             <Link href="/marketplace">
-              <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
+              <a className="grid p-6 m-2 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
                 <h2>Marketplace Management</h2>
               </a>
             </Link>
 
             <Link href="/profile">
-              <a className="flex justify-center items-center mx-auto py-2 px-2 bg-green-light text-white text-xl rounded-lg hover:bg-green-hover md:w-full w-3/4 h-20">
+              <a className="grid p-6 m-2 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
                 <h2>My Account</h2>
               </a>
             </Link>
