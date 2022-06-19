@@ -115,33 +115,34 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
       <Heading title={formName} optionalNode={null} optionalNodeRightAligned={true} />
 
       <form onSubmit={submitCertificate}>
-        <div className="grid grid-rows-6 grid-flow-col gap-2 py-5 text-lg justify-center">
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+        <div className="grid grid-flow-col grid-rows-6 justify-center gap-2 py-5 text-lg">
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
             <label
-              className="grid col-span-1 col-start-1 sm:col-start-2 mb-4 justify-start place-content-center"
+              className="col-span-1 col-start-1 mb-4 grid place-content-center justify-start sm:col-start-2"
               htmlFor="name"
             >
               Certificate Name
             </label>
             <input
-              className="grid col-span-3 sm:col-span-2 rounded px-3 py-2 mb-4 mx-2 border-black border-2 hover:border-green-light focus:outline-none focus:border-green-light"
+              className="col-span-3 mx-2 mb-4 grid rounded border-2 border-black px-3 py-2 hover:border-green-light focus:border-green-light focus:outline-none sm:col-span-2"
               id="name"
               type="text"
+              maxLength={30}
               value={name}
               onChange={(e: ChangeEvent<HTMLInputElement>) => setName(e.target.value)}
               autoFocus={true}
               required
             />
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
             <label
-              className="grid col-span-1 col-start-1 sm:col-start-2 justify-start place-content-center"
+              className="col-span-1 col-start-1 grid place-content-center justify-start sm:col-start-2"
               htmlFor="awardedBy"
             >
               Awarded By
             </label>
             <input
-              className="grid col-span-3 sm:col-span-2 rounded px-3 py-2 mb-4 mx-2 border-black border-2 hover:border-green-light focus:outline-none focus:border-green-light"
+              className="col-span-3 mx-2 mb-4 grid rounded border-2 border-black px-3 py-2 hover:border-green-light focus:border-green-light focus:outline-none sm:col-span-2"
               id="awardedBy"
               type="text"
               value={awardedBy}
@@ -149,15 +150,15 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
               required
             />
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
             <label
-              className="grid col-span-1 col-start-1 sm:col-start-2 mb-4 justify-start place-content-center"
+              className="col-span-1 col-start-1 mb-4 grid place-content-center justify-start sm:col-start-2"
               htmlFor="date"
             >
               Date
             </label>
             <input
-              className="col-span-3 sm:col-span-2 rounded px-3 py-2 mb-4 mx-2 border-black border-2 hover:border-green-light focus:outline-none focus:border-green-light"
+              className="col-span-3 mx-2 mb-4 rounded border-2 border-black px-3 py-2 hover:border-green-light focus:border-green-light focus:outline-none sm:col-span-2"
               id="date"
               type="date"
               value={date}
@@ -165,15 +166,15 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
               required
             />
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
             <label
-              className="grid col-span-1 col-start-1 sm:col-start-2 mb-4 justify-start place-content-center"
+              className="col-span-1 col-start-1 mb-4 grid place-content-center justify-start sm:col-start-2"
               htmlFor="expirydate"
             >
               Valid Until
             </label>
             <input
-              className="col-span-3 sm:col-span-2 rounded px-3 py-2 mb-4 mx-2 border-black border-2 hover:border-green-light focus:outline-none focus:border-green-light"
+              className="col-span-3 mx-2 mb-4 rounded border-2 border-black px-3 py-2 hover:border-green-light focus:border-green-light focus:outline-none sm:col-span-2"
               id="expirydate"
               type="date"
               min={getMinExpiryDate()}
@@ -182,8 +183,8 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
               required
             />
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
-            <p className="grid col-span-1 col-start-1 sm:col-start-2 justify-start">
+          <div className="grid grid-cols-4 gap-2 sm:grid-cols-5">
+            <p className="col-span-1 col-start-1 grid justify-start sm:col-start-2">
               Is it Food Handler Certificate?
             </p>
             <div className="col-span-1">
@@ -217,15 +218,15 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 place-content-center">
+          <div className="grid grid-cols-4 place-content-center gap-2 sm:grid-cols-5">
             <label
-              className="grid col-span-1 col-start-1 sm:col-start-2 justify-start place-content-center"
+              className="col-span-1 col-start-1 grid place-content-center justify-start sm:col-start-2"
               htmlFor="cert_image"
             >
               {certificate ? 'Upload new certificate?' : 'Upload your certificate'}
             </label>
             <input
-              className="grid col-span-3 sm:col-span-2 rounded py-2 mx-2"
+              className="col-span-3 mx-2 grid rounded py-2 sm:col-span-2"
               id="cert_image"
               type="file"
               accept="image/*"
@@ -237,7 +238,7 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
         <div className="grid justify-center">
           <button
             id="submitBtn"
-            className="py-3 px-3 my-2 mx-2 sm:px-20 justify-center text-lg bg-green-light hover:bg-green-hover border-green-light hover:border-green-hover text-white rounded"
+            className="my-2 mx-2 justify-center rounded border-green-light bg-green-light py-3 px-3 text-lg text-white hover:border-green-hover hover:bg-green-hover sm:px-20"
             type="submit"
           >
             Submit

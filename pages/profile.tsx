@@ -1,4 +1,4 @@
-import { EyeIcon, PencilIcon, XCircleIcon } from '@heroicons/react/outline';
+import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
 import Head from 'next/head';
@@ -8,25 +8,31 @@ import Heading from '../components/common/Heading';
 import DeleteModal from '../components/modals/DeleteModal';
 import { Certificate } from '../models/Certificate';
 import { supabase } from '../utils/supabaseClient';
+// @ts-ignore
+import ModalImage from 'react-modal-image';
+import Loading from '../components/common/Loading';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
 });
 
 export default function Profile() {
+  const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
+  const [certToUrlMap, setCertToUrlMap] = useState<Map<Certificate, string | null | undefined>>(
+    new Map()
+  );
 
-  const [showModal, setShowModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [certName, setCertName] = useState('');
   const [certId, setCertId] = useState('');
   const [certImage, setCertImage] = useState('');
 
-  const handleOnClose = () => setShowModal(false);
+  const handleOnClose = () => setShowDeleteModal(false);
 
   useEffect(() => {
     getCertificates();
-  }, [user, showModal]);
+  }, [user, showDeleteModal]);
 
   async function getCertificates() {
     try {
@@ -46,9 +52,13 @@ export default function Profile() {
         }
 
         if (data) {
-          setCertificates(data);
-        } else {
-          setCertificates([]);
+          const retrievedCertToUrlMap = new Map<Certificate, string | null | undefined>();
+          for (const cert of data) {
+            const certUrl: string | null | undefined = await downloadCertificate(cert.image);
+            retrievedCertToUrlMap.set(cert, certUrl);
+          }
+          setCertToUrlMap(retrievedCertToUrlMap);
+          setLoading(false);
         }
       }
     } catch (err) {
@@ -56,10 +66,37 @@ export default function Profile() {
     }
   }
 
+  async function downloadCertificate(image: string) {
+    try {
+      if (user) {
+        const authorizedImgPath = `${user.id}/${image}?t=${Date.now()}`;
+
+        const { data, error } = await supabase.storage
+          .from('cert-images')
+          .download(authorizedImgPath);
+
+        if (error) {
+          throw error;
+        }
+
+        if (data) {
+          const url = URL.createObjectURL(data);
+          return url;
+        }
+      } else {
+        return null;
+      }
+    } catch (err) {
+      console.log(err);
+      return null;
+    }
+  }
+
   async function deleteCertificate() {
-    // delete from storage
     if (user) {
       const imagePath = `${user.id}/${certImage}`;
+
+      // delete from storage
       const { error: storageError } = await supabase.storage
         .from('cert-images')
         .remove([imagePath]);
@@ -78,7 +115,7 @@ export default function Profile() {
         throw deleteError;
       }
 
-      setShowModal(false);
+      setShowDeleteModal(false);
     }
   }
 
@@ -110,70 +147,75 @@ export default function Profile() {
         />
 
         <div className="w-full">
-          {certificates.length === 0
-            ? 'No records found'
-            : certificates.map((cert: Certificate) => {
-                return (
-                  <div className="grid grid-cols-6 gap-2 py-2 px-3 text-lg" key={cert.id}>
-                    <div className="col-span-2">
-                      <p className="break-words">{cert.name}</p>
-                    </div>
-                    <div className="col-span-2 break-words">
-                      <i>Valid Until:</i> {cert.expirydate.toString()}
-                    </div>
-
-                    <div className="break-words">
-                      <p>{cert.type}</p>
-                    </div>
-
-                    <div className="ml-auto grid grid-flow-col grid-rows-3 sm:grid-rows-1">
-                      <Link
-                        href={{
-                          pathname: '/certificate-management/view-certificate',
-                          query: { cert_image: cert.image },
-                        }}
-                      >
-                        <a className="mr-8" target="_blank">
-                          <EyeIcon className="h-6 w-6" />
-                        </a>
-                      </Link>
-                      <Link
-                        href={{
-                          pathname: '/certificate-management/edit-certificate',
-                          query: { cert_id: cert.id },
-                        }}
-                      >
-                        <a className="mr-8">
-                          <PencilIcon className="h-6 w-6" />
-                        </a>
-                      </Link>
-
-                      {/* No delete button for required certificate */}
-                      {cert.type == 'Required' ? (
-                        <div className="sm:ml-6"></div>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setShowModal(true);
-                            setCertName(cert.name);
-                            setCertId(cert.id);
-                            setCertImage(cert.image);
-                          }}
-                        >
-                          <a className="ml-auto" data-modal-toggle="popup-modal">
-                            <XCircleIcon className="h-6 w-6" data-modal-toggle="popup-modal" />
-                          </a>
-                        </button>
-                      )}
-                    </div>
+          {loading ? (
+            <Loading />
+          ) : certToUrlMap.size === 0 ? (
+            'No records found'
+          ) : (
+            Array.from(certToUrlMap.keys()).map((cert) => {
+              return (
+                <div
+                  className="grid grid-cols-6 place-items-center gap-2 py-2 px-1 text-lg"
+                  key={cert.id}
+                >
+                  <div className="w-8 sm:w-20" title="View Certificate">
+                    <ModalImage
+                      small={certToUrlMap.get(cert)}
+                      large={certToUrlMap.get(cert)}
+                      hideZoom={true}
+                      alt={cert.name}
+                    />
                   </div>
-                );
-              })}
+                  <div className="col-span-2 justify-self-start">
+                    <p className="break-all">{cert.name}</p>
+                  </div>
+                  <div className="col-span-1 break-words">
+                    <i>Valid Until:</i> {cert.expirydate.toString()}
+                  </div>
+
+                  <div className="col-span-1">
+                    <p className="break-all">{cert.type}</p>
+                  </div>
+
+                  <div className="ml-auto grid grid-flow-col grid-rows-2 sm:grid-rows-1">
+                    <Link
+                      href={{
+                        pathname: '/certificate-management/edit-certificate',
+                        query: { cert_id: cert.id },
+                      }}
+                    >
+                      <a className="mr-8" title="Edit">
+                        <PencilAltIcon className="h-6 w-6" />
+                      </a>
+                    </Link>
+
+                    {/* No delete button for required certificate */}
+                    {cert.type == 'Required' ? (
+                      <div className="sm:ml-6"></div>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setShowDeleteModal(true);
+                          setCertName(cert.name);
+                          setCertId(cert.id);
+                          setCertImage(cert.image);
+                        }}
+                      >
+                        <a className="ml-auto" title="Delete">
+                          <TrashIcon className="h-6 w-6" />
+                        </a>
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
         </div>
 
-        {/* Modal */}
+        {/* Delete Modal */}
         <DeleteModal
-          visible={showModal}
+          visible={showDeleteModal}
           onClose={handleOnClose}
           contentString={`Do you want to delete ${certName}?`}
           deleteOnClick={deleteCertificate}
