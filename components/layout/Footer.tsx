@@ -31,12 +31,12 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link href="">
+              <Link href="/">
                 <a>Private Policy</a>
               </Link>
             </li>
             <li>
-              <Link href="">
+              <Link href="/">
                 <a>Terms and Conditions</a>
               </Link>
             </li>
