@@ -6,7 +6,7 @@ import { supabase } from '../../utils/supabaseClient';
 import { useUser } from '../../lib/UserContext';
 
 import Logo from './Logo';
-import { ShoppingCartIcon } from '@heroicons/react/outline';
+import { SearchIcon, ShoppingCartIcon } from '@heroicons/react/outline';
 
 const Navbar = () => {
   const { user, isHomeChef } = useUser();
@@ -81,6 +81,11 @@ const Navbar = () => {
               </a>
             </Link>
           )}
+          <Link href="/search">
+            <a>
+              <SearchIcon className="w-6 h-6 text-black" />
+            </a>
+          </Link>
           <Link href="/help">
             <a className="text-xl font-semibold text-black">Help</a>
           </Link>
