@@ -5,12 +5,12 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Heading from '../components/common/Heading';
-import DeleteModal from '../components/modals/DeleteModal';
 import { Certificate } from '../models/Certificate';
 import { supabase } from '../utils/supabaseClient';
 // @ts-ignore
 import ModalImage from 'react-modal-image';
 import Loading from '../components/common/Loading';
+import Modal from '../components/modals/Modal';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
@@ -23,16 +23,16 @@ export default function Profile() {
     new Map()
   );
 
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [certName, setCertName] = useState('');
   const [certId, setCertId] = useState('');
   const [certImage, setCertImage] = useState('');
 
-  const handleOnClose = () => setShowDeleteModal(false);
+  const closeModal = () => setShowModal(false);
 
   useEffect(() => {
     getCertificates();
-  }, [user, showDeleteModal]);
+  }, [user, showModal]);
 
   async function getCertificates() {
     try {
@@ -44,8 +44,9 @@ export default function Profile() {
           .select(`*`)
           // select by homechef_id
           .eq('homechef_id', user.id)
-          // put required certificate on top
-          .order('type', { ascending: false });
+          // put required certificate on top then A-Z
+          .order('type', { ascending: false })
+          .order('name', { ascending: true });
 
         if (error && status !== 406) {
           throw error;
@@ -115,7 +116,7 @@ export default function Profile() {
         throw deleteError;
       }
 
-      setShowDeleteModal(false);
+      setShowModal(false);
     }
   }
 
@@ -128,7 +129,7 @@ export default function Profile() {
 
       <main className="flex h-screen w-full flex-col py-20 px-10">
         <Heading
-          title={'Certification Management'}
+          title={'Certificate Management'}
           optionalNode={
             <Link
               href={{
@@ -138,7 +139,7 @@ export default function Profile() {
                 },
               }}
             >
-              <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
+              <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light">
                 Add
               </button>
             </Link>
@@ -155,7 +156,7 @@ export default function Profile() {
             Array.from(certToUrlMap.keys()).map((cert) => {
               return (
                 <div
-                  className="grid grid-cols-6 place-items-center gap-2 py-2 px-1 text-lg"
+                  className="grid grid-cols-7 place-items-center gap-2 py-2 px-1 text-lg"
                   key={cert.id}
                 >
                   <div className="w-8 sm:w-20" title="View Certificate">
@@ -170,11 +171,15 @@ export default function Profile() {
                     <p className="break-all">{cert.name}</p>
                   </div>
                   <div className="col-span-1 break-words">
-                    <i>Valid Until:</i> {cert.expirydate.toString()}
+                    Valid Until: {cert.expirydate.toString()}
                   </div>
 
                   <div className="col-span-1">
                     <p className="break-all">{cert.type}</p>
+                  </div>
+
+                  <div className="col-span-1">
+                    <i className="break-all">{cert.status}</i>
                   </div>
 
                   <div className="ml-auto grid grid-flow-col grid-rows-2 sm:grid-rows-1">
@@ -195,7 +200,7 @@ export default function Profile() {
                     ) : (
                       <button
                         onClick={() => {
-                          setShowDeleteModal(true);
+                          setShowModal(true);
                           setCertName(cert.name);
                           setCertId(cert.id);
                           setCertImage(cert.image);
@@ -214,11 +219,15 @@ export default function Profile() {
         </div>
 
         {/* Delete Modal */}
-        <DeleteModal
-          visible={showDeleteModal}
-          onClose={handleOnClose}
-          contentString={`Do you want to delete ${certName}?`}
-          deleteOnClick={deleteCertificate}
+        <Modal
+          visible={showModal}
+          title={'Confirm Deletion'}
+          content={<p className="mx-2 mb-4 break-all text-lg">Do you want to delete {certName}?</p>}
+          leftBtnText={'Delete'}
+          leftBtnOnClick={deleteCertificate}
+          rightBtnText={'Cancel'}
+          rightBtnOnClick={closeModal}
+          hideLeftBtn={false}
         />
       </main>
     </>

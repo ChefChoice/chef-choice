@@ -5,6 +5,7 @@ import { ChangeEvent, useEffect, useState } from 'react';
 import Heading from '../../components/common/Heading';
 import { Certificate } from '../../models/Certificate';
 import { supabase } from '../../utils/supabaseClient';
+import Modal from '../modals/Modal';
 
 interface ICertForm {
   formName: string;
@@ -23,6 +24,14 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
 
   const { push } = useRouter();
   const [user, setUser] = useState<User | null>(null);
+
+  // Modal
+  const [showModal, setShowModal] = useState(false);
+
+  const closeModal = () => {
+    setShowModal(false);
+    push('/profile');
+  };
 
   useEffect(() => {
     setUser(supabase.auth.user());
@@ -93,6 +102,7 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
         date: date,
         expirydate: expirydate,
         image: imagePath,
+        status: 'Pending',
       },
     ]);
 
@@ -100,12 +110,13 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
       throw error;
     }
 
-    push('/profile');
+    // Show Confirm Modal
+    setShowModal(true);
   };
 
   const getMinExpiryDate = () => {
     const minExpiryDate = new Date();
-    minExpiryDate.setDate(minExpiryDate.getDate() + 15);
+    minExpiryDate.setDate(minExpiryDate.getDate() + 7);
 
     return minExpiryDate.toLocaleDateString('en-ca');
   };
@@ -245,6 +256,20 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
           </button>
         </div>
       </form>
+
+      {/* Confirm Modal */}
+      <Modal
+        visible={showModal}
+        title={certificate ? 'Certificate Updated' : 'Certificate Added'}
+        content={
+          <p className="mx-2 mb-4 break-words text-lg">
+            Your certificate has been received and is waiting for review. Thank you.
+          </p>
+        }
+        rightBtnText={'OK'}
+        rightBtnOnClick={closeModal}
+        hideLeftBtn={true}
+      />
     </>
   );
 };
