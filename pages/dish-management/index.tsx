@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { User } from '@supabase/supabase-js';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
+import Modal from '../../components/modals/Modal';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
@@ -19,6 +20,11 @@ const DishManagement: NextPage = () => {
   const [user, setUser] = useState<User | any>(null);
   const [bucketURL, setBucketURL] = useState<any>(null);
   const router = useRouter();
+
+  const [showModal, setShowModal] = useState(false);
+  const closeModal = () => setShowModal(false);
+  const [dishName, setDishName] = useState('');
+  const [dishId, setDishId] = useState('');
 
   useEffect(() => {
     getDishes();
@@ -45,12 +51,26 @@ const DishManagement: NextPage = () => {
     }
   };
 
-  const deleteDish = async (dishId: string) => {
-    // prompt with modal here
-    const filteredDishes = dishes?.filter((dish) => dish.dish_id !== dishId);
-    const { error } = await supabase.from('Dish').delete().match({ dish_id: dishId });
-    if (error) throw error;
-    setDishes(filteredDishes);
+  const deleteDish = async () => {
+    try {
+      const deleteableDish = dishes?.filter((dish) => dish.dish_id == dishId)[0];
+      const filteredDishes = dishes?.filter((dish) => dish !== deleteableDish);
+
+      const { error: imageError } = await supabase.storage
+        .from('dish-images')
+        .remove([deleteableDish.dish_image]);
+
+      if (imageError) throw imageError;
+
+      const { error: dishError } = await supabase.from('Dish').delete().match({ dish_id: dishId });
+
+      if (dishError) throw dishError;
+
+      setShowModal(false);
+      setDishes(filteredDishes);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
@@ -102,7 +122,11 @@ const DishManagement: NextPage = () => {
                     <div title={`Delete Dish: ${dish.dish_name}`}>
                       <TrashIcon
                         className="h-8 w-8 cursor-pointer stroke-1 hover:stroke-2"
-                        onClick={() => deleteDish(dish.dish_id)}
+                        onClick={() => {
+                          setShowModal(true);
+                          setDishName(dish.dish_name);
+                          setDishId(dish.dish_id);
+                        }}
                       />
                     </div>
                   </div>
@@ -112,6 +136,17 @@ const DishManagement: NextPage = () => {
             ))}
         </div>
       </div>
+
+      <Modal
+        visible={showModal}
+        title={'Confirm Deletion'}
+        content={<p className="mx-2 mb-4 break-all text-lg">Do you want to delete {dishName}?</p>}
+        leftBtnText={'Delete'}
+        leftBtnOnClick={deleteDish}
+        rightBtnText={'Cancel'}
+        rightBtnOnClick={closeModal}
+        hideLeftBtn={false}
+      />
     </>
   );
 };
