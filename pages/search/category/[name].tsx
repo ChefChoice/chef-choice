@@ -1,17 +1,20 @@
 import type { NextPage } from 'next';
 
 import Head from 'next/head';
+import { useRouter } from 'next/router';
 import { useState, useEffect, useRef, KeyboardEvent } from 'react';
-import { supabase } from '../../utils/supabaseClient';
+import { supabase } from '../../../utils/supabaseClient';
 
-import SearchBar from '../../components/search/SearchBar';
-import SearchRow from '../../components/search/SearchRow';
-import Loading from '../../components/common/Loading';
+import SearchBar from '../../../components/search/SearchBar';
+import SearchRow from '../../../components/search/SearchRow';
+import Loading from '../../../components/common/Loading';
 
-const SearchDish: NextPage = () => {
+const SearchDishByCategory: NextPage = () => {
   const DISH_DISPLAY_LIMIT = 2; // the number of displayed dishes will be n + 1
 
   const termRef = useRef<HTMLInputElement>(null);
+  const router = useRouter();
+  const categoryName = router.query.name;
 
   const [isLoading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(false);
@@ -26,8 +29,18 @@ const SearchDish: NextPage = () => {
       setLoading(true);
 
       const { data: dishData, error: dishError } = searchTerm
-        ? await supabase.rpc('search_dishes', { dish_term: searchTerm }).range(from, to)
-        : await supabase.from('dish_info').select().order('dish_name').range(from, to);
+        ? await supabase
+            .rpc('search_dishes_by_category', {
+              dish_term: searchTerm,
+              category_term: categoryName,
+            })
+            .range(from, to)
+        : await supabase
+            .from('dish_info')
+            .select()
+            .order('dish_name')
+            .eq('dish_category', categoryName)
+            .range(from, to);
 
       if (dishError) throw dishError.message;
 
@@ -114,4 +127,4 @@ const SearchDish: NextPage = () => {
   );
 };
 
-export default SearchDish;
+export default SearchDishByCategory;

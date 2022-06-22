@@ -33,7 +33,7 @@ const Search: NextPage = () => {
             </Link>
           </div>
           <div className="w-1/4 bg-green-light border-solid border-2 border-green-light rounded text-white hover:ring hover:bg-green-hover hover:border-green-hover hover:text-black">
-            <Link href="#">
+            <Link href="/search/search-category">
               <a>
                 <Image
                   src="/images/dishMgt.jpg"
@@ -48,7 +48,7 @@ const Search: NextPage = () => {
             </Link>
           </div>
           <div className="w-1/4 bg-green-light border-solid border-2 border-green-light rounded text-white hover:ring hover:bg-green-hover hover:border-green-hover hover:text-black">
-            <Link href="#">
+            <Link href="/search/search-chef">
               <a>
                 <Image
                   src="/images/dishMgt.jpg"

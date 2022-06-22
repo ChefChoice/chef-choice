@@ -5,11 +5,12 @@ import { useState, useEffect, useRef, KeyboardEvent } from 'react';
 import { supabase } from '../../utils/supabaseClient';
 
 import SearchBar from '../../components/search/SearchBar';
-import SearchRow from '../../components/search/SearchRow';
 import Loading from '../../components/common/Loading';
+import Link from 'next/link';
+import Image from 'next/image';
 
-const SearchDish: NextPage = () => {
-  const DISH_DISPLAY_LIMIT = 2; // the number of displayed dishes will be n + 1
+const SearchChef: NextPage = () => {
+  const DISH_DISPLAY_LIMIT = 3; // the number of displayed dishes will be n + 1
 
   const termRef = useRef<HTMLInputElement>(null);
 
@@ -25,14 +26,16 @@ const SearchDish: NextPage = () => {
 
       setLoading(true);
 
-      const { data: dishData, error: dishError } = searchTerm
-        ? await supabase.rpc('search_dishes', { dish_term: searchTerm }).range(from, to)
-        : await supabase.from('dish_info').select().order('dish_name').range(from, to);
+      const { data: chefData, error: chefError } = searchTerm
+        ? await supabase.rpc('search_chef', { chef_term: searchTerm }).order('name').range(from, to)
+        : await supabase.from('HomeChef').select().order('name').range(from, to);
 
-      if (dishError) throw dishError.message;
+      console.log(chefData);
 
-      if (dishData.length) {
-        setResult([...result, ...dishData]);
+      if (chefError) throw chefError.message;
+
+      if (chefData.length) {
+        setResult([...result, ...chefData]);
         setHasMore(true);
       } else {
         setHasMore(false);
@@ -41,7 +44,7 @@ const SearchDish: NextPage = () => {
       setLoading(false);
     }
 
-    getResult();
+    getResult().catch((error) => console.log(error.message));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchTerm, page]);
 
@@ -63,40 +66,46 @@ const SearchDish: NextPage = () => {
   const renderResults = () => {
     if (!isLoading && !result.length) {
       return (
-        <div className="flex flex-col justify-center items-center w-full">
-          <h2 className="text-2xl font-semibold">No items found</h2>
+        <div className="col-span-3 justify-self-center flex flex-col justify-center items-center w-full">
+          <h2 className="text-2xl font-semibold">No chef found</h2>
           <p className="text-lg mt-3">Please try with another search term</p>
         </div>
       );
     }
 
-    return result.map((dish: any) => (
-      <SearchRow
-        key={dish.dish_id}
-        dishId={dish.dish_id}
-        dishName={dish.dish_name}
-        dishPrice={dish.dish_price}
-        chefName={dish.name}
-        href={`/kitchen/${dish.user_id}`}
-        imageSrc={`${process.env.NEXT_PUBLIC_SUPABASE_DISH_STORAGE_URL}/${dish.dish_image}`}
-      />
+    return result.map((chef: any) => (
+      <div key={chef.id} className="w-full">
+        <Link href={`/kitchen/${chef.id}`}>
+          <a className="flex flex-col items-center border shadow-md bg-white hover:bg-gray-100 active:bg-gray-200">
+            <div className="relative w-full h-64 rounded-t-lg">
+              <Image src="/images/chef.webp" alt={chef.name} layout="fill" priority={true} />
+            </div>
+            <div className="flex flex-col justify-between p-4 -leading-normal">
+              <h5 className="mb-2 text-2xl text-black font-bold tracking-tight">{chef.name}</h5>
+              <div>Rating: {chef.rating || 'N/A'}</div>
+            </div>
+          </a>
+        </Link>
+      </div>
     ));
   };
 
   return (
     <>
       <Head>
-        <title>Search By Dish</title>
+        <title>Search By Chef</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
       </Head>
 
       <div className="flex flex-col justify-center items-center w-full py-32">
         <SearchBar
-          placeholder="Search by dish name..."
+          placeholder="Search by home chef..."
           termRef={termRef}
           handleKeyPress={handleKeyPress}
         />
-        <div className="grid w-2/3 gap-10 grid-cols-1 mt-11">{renderResults()}</div>
+        <div className="grid w-2/3 gap-10 grid-cols-1 md:grid-cols-3 content-center mt-11">
+          {renderResults()}
+        </div>
         {isLoading ? (
           <Loading />
         ) : (
@@ -114,4 +123,4 @@ const SearchDish: NextPage = () => {
   );
 };
 
-export default SearchDish;
+export default SearchChef;
