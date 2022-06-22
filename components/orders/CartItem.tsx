@@ -33,7 +33,7 @@ const CartItem = ({ title, price, quantity, orderDish, refresh, setRefresh }: IC
 
   return (
     <div className="flex">
-      {orderDish && (
+      {setRefresh && orderDish && (
         <div
           onClick={handleClick}
           className=" mr-2 w-8 cursor-pointer rounded-xl border-2 border-solid bg-red-500 text-center text-white hover:bg-black"
