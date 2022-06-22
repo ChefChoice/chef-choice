@@ -81,6 +81,11 @@ const uploadDishImage = async (formData: any) => {
               cacheControl: '0',
             })
             .then(async () => {
+              await supabase
+                .from('Dish')
+                .update({ dish_image: dishImageFilename })
+                .eq('dish_id', formData.fields.id);
+
               formData.fields.dishImage = dishImageFilename;
               return resolve(formData.fields);
             })
