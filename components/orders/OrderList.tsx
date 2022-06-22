@@ -1,7 +1,7 @@
+import { useRouter } from 'next/router';
 import { Dispatch, SetStateAction } from 'react';
 import { ORDER_TYPE } from '../../utils/constants';
 import { supabase } from '../../utils/supabaseClient';
-import RowItem from '../common/RowItem';
 
 interface IOrderListProps {
   type: string;
@@ -12,9 +12,10 @@ interface IOrderListProps {
 }
 
 const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderListProps) => {
+  const router = useRouter();
+
   const handleViewDetails: any = async (id: any) => {
-    // TODO: View details
-    console.log('view details');
+    router.push(`/order-management/order/${id}`);
   };
 
   const handleAccept: any = async (id: any) => {

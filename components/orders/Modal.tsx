@@ -43,7 +43,11 @@ export default function Modal({
           <div className="mb-10 flex justify-center text-lg">{title}</div>
           {price && <div className="mb-10 flex justify-center">{price}</div>}
           {description && <div className="mb-10 flex justify-center">{description}</div>}
-          <div className="mb-10 flex justify-center">{prompt}</div>
+          <div
+            className={`mb-10 flex justify-center ${prompt === PROMPT.WARNING && 'bg-yellow-400'}`}
+          >
+            {prompt}
+          </div>
 
           <div className="flex justify-center">
             <button
