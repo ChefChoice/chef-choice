@@ -6,6 +6,7 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Head from 'next/head';
+import { useState } from 'react';
 
 const schema = yup
   .object()
@@ -19,6 +20,8 @@ const schema = yup
   .required();
 
 export default function SignUp() {
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
   const {
     register,
     handleSubmit,
@@ -43,7 +46,8 @@ export default function SignUp() {
       console.log(userError);
       throw userError;
     } else {
-      router.push('./success');
+      setModalMessage('Please check your email for further instructions.');
+      setShowModal(true);
     }
   };
 
@@ -128,20 +132,30 @@ export default function SignUp() {
                   {errors.confirmPassword?.message}
                 </div>
               </div>
-              <div className="mb-2 flex-wrap">
-                <label className="ml-1 mb-1 block text-gray-500">Upload Food Certificate</label>
-                <input
-                  className="mb-4 w-full rounded border-2 border-gray-200 px-3 py-2"
-                  placeholder="Upload Food Certificate"
-                  id="input-certificate"
-                  type="file"
-                  {...register('certificate')}
-                />
-              </div>
               <button className="input-submit" type="submit">
                 Submit
               </button>
             </form>
+          </div>
+        </div>
+        <div className={showModal ? 'block' : 'hidden'}>
+          <div className="fixed inset-0 flex w-screen items-center justify-center bg-black bg-opacity-20">
+            <div className="m-3 flex flex-col rounded-lg bg-white p-3">
+              <div className="flex flex-col">
+                <p className="m-3 text-lg">{modalMessage}</p>
+                <div className="m-2 text-center">
+                  <button
+                    className="mx-3 rounded border-2 border-black bg-white px-5 py-1 text-black hover:bg-gray-600 hover:text-white"
+                    onClick={() => {
+                      setShowModal(false);
+                      router.push('./success');
+                    }}
+                  >
+                    Okay
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>

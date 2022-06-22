@@ -83,7 +83,7 @@ const Navbar = () => {
           )}
           <Link href="/search">
             <a>
-              <SearchIcon className="w-6 h-6 text-black" />
+              <SearchIcon className="h-6 w-6 text-black" />
             </a>
           </Link>
           <Link href="/help">

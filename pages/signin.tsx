@@ -30,14 +30,14 @@ export default function SignIn() {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
       <main>
-        <div className="bg-default bg-cover w-screen flex h-screen mx-auto">
-          <div className="max-w-sm m-auto bg-white px-4 py-4">
-            <div className="px-1 mb-4">
-              <p className="text-2xl font-sans font-bold">Welcome Back</p>
+        <div className="mx-auto flex h-screen w-screen bg-default bg-cover">
+          <div className="m-auto max-w-sm bg-white px-4 py-4">
+            <div className="mb-4 px-1">
+              <p className="font-sans text-2xl font-bold">Welcome Back</p>
             </div>
             <form onSubmit={handleSubmit} className="mb-2">
               <input
-                className="w-full rounded px-3 py-2 mb-4 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
+                className="mb-4 w-full rounded border-2 border-gray-200 bg-gray-200 px-3 py-2 hover:border-green-light focus:border-green-light focus:bg-white focus:outline-none"
                 placeholder="Email Address"
                 id="input-email"
                 type="email"
@@ -49,7 +49,7 @@ export default function SignIn() {
                 required
               />
               <input
-                className="w-full rounded px-3 py-2 mb-2 bg-gray-200 border-gray-200 border-2 hover:border-green-light focus:outline-none focus:bg-white focus:border-green-light"
+                className="mb-2 w-full rounded border-2 border-gray-200 bg-gray-200 px-3 py-2 hover:border-green-light focus:border-green-light focus:bg-white focus:outline-none"
                 placeholder="Password"
                 id="input-password"
                 type="password"
@@ -68,7 +68,7 @@ export default function SignIn() {
                 </p>
               </div>
               <button
-                className="block max-w-sm bg-green-light hover:bg-green-hover border-green-light hover:border-green-hover py-2 px-2 text-white rounded w-full"
+                className="block w-full max-w-sm rounded border-green-light bg-green-light py-2 px-2 text-white hover:border-green-hover hover:bg-green-hover"
                 type="submit"
               >
                 Login

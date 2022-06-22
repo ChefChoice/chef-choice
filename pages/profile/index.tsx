@@ -9,12 +9,14 @@ import Heading from '../../components/common/Heading';
 import DeleteModal from '../../components/modals/DeleteModal';
 import { Certificate } from '../../models/Certificate';
 import { supabase } from '../../utils/supabaseClient';
+import { useUser } from '../../lib/UserContext';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
 });
 
 const Profile: NextPage = () => {
+  const { user: userSession, isHomeChef } = useUser();
   const [user, setUser] = useState<User | null>(null);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [userData, setUserData] = useState<any>();
@@ -36,33 +38,54 @@ const Profile: NextPage = () => {
       setUser(supabase.auth.user());
 
       if (user) {
-        const { data: homeChefData, error: homeChefError } = await supabase
-          .from('HomeChef')
-          .select(`*, address:address_id(*)`)
-          .eq('id', user.id);
+        if (isHomeChef) {
+          const { data: homeChefData, error: homeChefError } = await supabase
+            .from('HomeChef')
+            .select(`*, address:address_id(*)`)
+            .eq('id', user.id);
 
-        if (homeChefError) throw homeChefError.message;
-        if (homeChefData) {
-          setUserData(homeChefData[0]);
-          console.log(homeChefData);
-        }
+          if (homeChefError) throw homeChefError.message;
+          if (homeChefData) {
+            setUserData(homeChefData[0]);
+            console.log(homeChefData);
+          }
 
-        let { data, error, status } = await supabase
-          .from<Certificate>('Certificate')
-          .select(`*`)
-          // select by homechef_id
-          .eq('homechef_id', user.id)
-          // put required certificate on top
-          .order('type', { ascending: false });
+          let { data, error, status } = await supabase
+            .from<Certificate>('Certificate')
+            .select(`*`)
+            // select by homechef_id
+            .eq('homechef_id', user.id)
+            // put required certificate on top
+            .order('type', { ascending: false });
 
-        if (error && status !== 406) {
-          throw error;
-        }
+          if (error && status !== 406) {
+            throw error;
+          }
 
-        if (data) {
-          setCertificates(data);
+          if (data) {
+            setCertificates(data);
+          } else {
+            setCertificates([]);
+          }
         } else {
-          setCertificates([]);
+          let {
+            data: consumerData,
+            error: consumerError,
+            status: consumerStatus,
+          } = await supabase
+            .from('Consumer')
+            .select('name')
+            .select(`*, address:address_id(*)`)
+            .eq('id', user.id);
+
+          if (consumerError && consumerStatus !== 406) {
+            throw consumerError;
+          }
+
+          if (consumerData) {
+            setUserData(consumerData[0]);
+            console.log(consumerData);
+          }
         }
       }
     } catch (err) {
@@ -134,16 +157,12 @@ const Profile: NextPage = () => {
             }
             optionalNodeRightAligned={true}
           />
-          <div className="ml-8 grid grid-cols-2">
-            <div>Name:</div>
-            <div>{userData?.name}</div>
-            <div>Email Address:</div>
-            <div>{userData?.email}</div>
-            <div>Phone Number:</div>
-            <div>{userData?.phoneno}</div>
-            <div>Address:</div>
+          <div className="ml-8">
+            <div>Name: {userData?.name}</div>
+            <div>Email Address: {userData?.email}</div>
+            <div>Phone Number: {userData?.phoneno}</div>
             <div>
-              {userData?.address?.street}, {userData?.address?.city},{' '}
+              Address: {userData?.address?.street}, {userData?.address?.city},{' '}
               {userData?.address?.postalcode}
             </div>
           </div>

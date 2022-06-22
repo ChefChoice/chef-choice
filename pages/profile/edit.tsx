@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import Heading from '../../components/common/Heading';
 import { supabase } from '../../utils/supabaseClient';
+import { useUser } from '../../lib/UserContext';
 
 const emailSchema = yup
   .object()
@@ -19,6 +20,7 @@ const emailSchema = yup
 const passwordSchema = yup
   .object()
   .shape({
+    currentPassword: yup.string().required('Required'),
     password: yup.string().min(8, 'Must be 8 characters or longer').required('Required'),
     confirmPassword: yup.string().oneOf([yup.ref('password'), null], 'Passwords must match'),
   })
@@ -45,6 +47,9 @@ export default function Edit() {
 
   const [user, setUser] = useState<User | null>(null);
   const [userData, setUserData] = useState<any>();
+  const { user: userSession, isHomeChef } = useUser();
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const {
     register: emailFormRegister,
@@ -75,15 +80,29 @@ export default function Edit() {
 
     if (emailError) throw emailError.message;
     console.log(emailData);
+    setModalMessage('Please check your email to confirm this change.');
+    setShowModal(true);
   };
 
   const onPasswordSubmit = async (data: any) => {
-    const { data: passwordData, error: passwordError } = await supabase.auth.update({
-      password: data.password,
-    });
+    const { data: passwordConfirmData, error: passwordConfirmError } = await supabase.rpc(
+      'check_current_password',
+      { current_password: data.currentPassword }
+    );
+    if (passwordConfirmError) {
+      console.log(passwordConfirmError.message);
+      setModalMessage(passwordConfirmError.message);
+      setShowModal(true);
+    } else {
+      const { data: passwordData, error: passwordError } = await supabase.auth.update({
+        password: data.password,
+      });
 
-    if (passwordError) throw passwordError.message;
-    console.log(passwordData);
+      if (passwordError) throw passwordError.message;
+      console.log(passwordData);
+      setModalMessage('Password changed successfully!');
+      setShowModal(true);
+    }
   };
 
   const onUserSubmit = async (data: any) => {
@@ -97,39 +116,71 @@ export default function Edit() {
         country: 'Canada',
       })
       .eq('id', userData?.address_id);
-
     if (error) throw error.message;
     console.log(submitData);
+    if (!(data.phoneNo === userData?.phoneno)) {
+      const { data: phoneData, error: phoneError } = await supabase
+        .from('Consumer')
+        .update({
+          phoneno: data?.phoneNo,
+        })
+        .eq('id', userData?.id);
+      if (phoneError) console.log(phoneError.message);
+      console.log(phoneData);
+    }
+    setModalMessage('Information updated successfully!');
+    setShowModal(true);
   };
 
   const getData = useCallback(async () => {
     setUser(supabase.auth.user());
     if (user) {
       setUser(user);
-      const { data: homeChefData, error: homeChefError } = await supabase
-        .from('HomeChef')
-        .select(`*, address:address_id(*)`)
-        .eq('id', user.id);
+      if (isHomeChef) {
+        const { data: homeChefData, error: homeChefError } = await supabase
+          .from('HomeChef')
+          .select(`*, address:address_id(*)`)
+          .eq('id', user.id);
 
-      if (homeChefError) throw homeChefError.message;
-      if (homeChefData) {
-        setUserData(homeChefData[0]);
-        console.log(homeChefData);
+        if (homeChefError) throw homeChefError.message;
+        if (homeChefData) {
+          setUserData(homeChefData[0]);
+          console.log(homeChefData);
 
-        const defaultValues = {
-          phoneNo: userData?.phoneno,
-          street: userData?.address.street,
-          city: userData?.address.city,
-          postalCode: userData?.address.postalCode,
-        };
-        reset(defaultValues);
+          const defaultValues = {
+            phoneNo: userData?.phoneno,
+            street: userData?.address.street,
+            city: userData?.address.city,
+            postalCode: userData?.address.postalcode,
+          };
+          reset(defaultValues);
+        }
+      } else {
+        const { data: consumerData, error: consumerError } = await supabase
+          .from('Consumer')
+          .select(`*, address:address_id(*)`)
+          .eq('id', user.id);
+
+        if (consumerError) throw consumerError.message;
+        if (consumerData) {
+          setUserData(consumerData[0]);
+          console.log(consumerData);
+
+          const defaultValues = {
+            phoneNo: userData?.phoneno,
+            street: userData?.address.street,
+            city: userData?.address.city,
+            postalCode: userData?.address.postalcode,
+          };
+          reset(defaultValues);
+        }
       }
     }
   }, [user]);
 
   useEffect(() => {
     getData();
-  }, [user, getData]);
+  }, [user, getData, showModal]);
 
   return (
     <>
@@ -198,10 +249,15 @@ export default function Edit() {
             <div className="mb-2 w-1/4">
               <label className="mb-1 block">Current Password</label>
               <input
-                className="input-text-disabled border-gray-500 bg-gray-500"
-                type="email"
-                disabled
+                {...passwordFormRegister('currentPassword')}
+                className={`${
+                  !passwordFormErrors.currentPassword ? 'input-text-default' : 'input-text-error'
+                }`}
+                type="password"
               />
+              <div className="ml-1 mt-1 text-xs font-semibold text-red-400">
+                {passwordFormErrors.currentPassword?.message}
+              </div>
             </div>
             <div className="mb-2 w-1/4">
               <label className="mb-1 block">New Password</label>
@@ -284,7 +340,7 @@ export default function Edit() {
                 className={`${
                   !userFormErrors.postalCode ? 'input-text-default' : 'input-text-error'
                 }`}
-                defaultValue={userData?.address.postalCode}
+                defaultValue={userData?.address.postalcode}
                 type="text"
               />
               <div className="ml-1 mt-1 text-xs font-semibold text-red-400">
@@ -295,6 +351,23 @@ export default function Edit() {
               Submit
             </button>
           </form>
+        </div>
+        <div className={showModal ? 'block' : 'hidden'}>
+          <div className="fixed inset-0 flex w-screen items-center justify-center bg-black bg-opacity-20">
+            <div className="m-3 flex flex-col rounded-lg bg-white p-3">
+              <div className="flex flex-col">
+                <p className="m-3 text-lg">{modalMessage}</p>
+                <div className="m-2 text-center">
+                  <button
+                    className="mx-3 rounded border-2 border-black bg-white px-5 py-1 text-black hover:bg-gray-600 hover:text-white"
+                    onClick={() => setShowModal(false)}
+                  >
+                    Okay
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
     </>
