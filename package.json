@@ -24,6 +24,7 @@
     "react": "18.1.0",
     "react-dom": "18.1.0",
     "react-hook-form": "^7.31.3",
+    "react-modal-image": "^2.5.0",
     "yup": "^0.32.11"
   },
   "devDependencies": {
