@@ -101,7 +101,7 @@ const DishManagement: NextPage = () => {
                 key={dish.dish_id}
                 rowID={dish.dish_id}
                 title={dish.dish_name}
-                subtitle={dish.dish_price}
+                subtitle={'$' + dish.dish_price}
                 image={
                   <Image
                     src={`${bucketURL}${dish.dish_image}`}
