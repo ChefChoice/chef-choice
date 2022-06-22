@@ -60,19 +60,21 @@ const DishManagement: NextPage = () => {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <div className="max-w-screen-2xl min-h-screen mx-auto p-16 ml-18 mr-18">
+      <div className="ml-18 mr-18 mx-auto min-h-screen max-w-screen-2xl p-16">
         <Heading
           title="Your Dishes"
           optionalNode={
-            <PlusCircleIcon
-              className="h-8 w-8 stroke-1 hover:stroke-2 cursor-pointer"
-              onClick={() => router.push('/dish-management/add-dish')}
-            />
+            <div title={`Add New Dish`}>
+              <PlusCircleIcon
+                className="h-8 w-8 cursor-pointer stroke-1 hover:stroke-2"
+                onClick={() => router.push('/dish-management/add-dish')}
+              />
+            </div>
           }
           optionalNodeRightAligned={true}
         />
 
-        <div className="grid gap-10 grid-cols-1">
+        <div className="grid grid-cols-1 gap-10">
           {dishes &&
             dishes.map((dish: any) => (
               <RowItem
@@ -90,16 +92,16 @@ const DishManagement: NextPage = () => {
                   />
                 }
                 optionalNode={
-                  <div className="flex flex-row space-x-3 justify-self-end self-center">
-                    <div>
+                  <div className="flex flex-row space-x-3 self-center justify-self-end">
+                    <div title={`Edit Dish: ${dish.dish_name}`}>
                       <PencilAltIcon
-                        className="h-8 w-8 stroke-1 hover:stroke-2 cursor-pointer"
+                        className="h-8 w-8 cursor-pointer stroke-1 hover:stroke-2"
                         onClick={() => router.push(`/dish-management/edit-dish/${dish.dish_id}`)}
                       />
                     </div>
-                    <div>
+                    <div title={`Delete Dish: ${dish.dish_name}`}>
                       <TrashIcon
-                        className="h-8 w-8 stroke-1 hover:stroke-2 cursor-pointer"
+                        className="h-8 w-8 cursor-pointer stroke-1 hover:stroke-2"
                         onClick={() => deleteDish(dish.dish_id)}
                       />
                     </div>
