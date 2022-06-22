@@ -52,35 +52,35 @@ export default function MainMenu() {
       </Head>
 
       <div className="mx-auto">
-        <main className="background-image h-screen w-full py-4 flex flex-col justify-center items-center">
-          <h1 className="font-headline font-medium text-3xl sm:text-4xl break-words">
+        <main className="background-image flex h-screen w-full flex-col items-center justify-center py-4">
+          <h1 className="font-headline break-words text-3xl font-medium sm:text-4xl">
             Welcome to ChefChoice, {username ? username : ''}
             <hr className="border-t-2 border-black/[.50]" />
           </h1>
-          <div className="grid grid-rows-3 grid-flow-row pt-10 justify-center">
+          <div className="grid grid-flow-row grid-rows-3 justify-center pt-10">
             {/* TODO: Change the option cards according to the type of user*/}
             {2 > 1 ? (
-              <Link href="#">
-                <a className="grid p-6 m-2 sm:w-96 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
+              <Link href="/order-management">
+                <a className="m-2 grid place-content-center rounded-lg bg-green-light p-6 text-xl text-white hover:bg-green-hover sm:w-96">
                   <h2>Orders</h2>
                 </a>
               </Link>
             ) : (
               <Link href="#">
-                <a className="grid p-6 m-2 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
+                <a className="m-2 grid place-content-center rounded-lg bg-green-light p-6 text-xl text-white hover:bg-green-hover">
                   <h2>Search Dishes</h2>
                 </a>
               </Link>
             )}
 
             <Link href="/marketplace">
-              <a className="grid p-6 m-2 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
+              <a className="m-2 grid place-content-center rounded-lg bg-green-light p-6 text-xl text-white hover:bg-green-hover">
                 <h2>Marketplace Management</h2>
               </a>
             </Link>
 
             <Link href="/profile">
-              <a className="grid p-6 m-2 place-content-center bg-green-light text-white text-xl rounded-lg hover:bg-green-hover">
+              <a className="m-2 grid place-content-center rounded-lg bg-green-light p-6 text-xl text-white hover:bg-green-hover">
                 <h2>My Account</h2>
               </a>
             </Link>
