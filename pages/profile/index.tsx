@@ -167,86 +167,90 @@ const Profile: NextPage = () => {
             </div>
           </div>
         </div>
-        <Heading
-          title={'Certification Management'}
-          optionalNode={
-            <Link
-              href={{
-                pathname: '/certificate-management/add-certificate',
-                query: {
-                  id: user ? user.id : null,
-                },
-              }}
-            >
-              <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
-                Add
-              </button>
-            </Link>
-          }
-          optionalNodeRightAligned={true}
-        />
+        {isHomeChef && (
+          <div>
+            <Heading
+              title={'Certification Management'}
+              optionalNode={
+                <Link
+                  href={{
+                    pathname: '/certificate-management/add-certificate',
+                    query: {
+                      id: user ? user.id : null,
+                    },
+                  }}
+                >
+                  <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
+                    Add
+                  </button>
+                </Link>
+              }
+              optionalNodeRightAligned={true}
+            />
 
-        <div className="w-full">
-          {certificates.length === 0
-            ? 'No records found'
-            : certificates.map((cert: Certificate) => {
-                return (
-                  <div className="grid grid-cols-6 gap-2 py-2 px-3 text-lg" key={cert.id}>
-                    <div className="col-span-2">
-                      <p className="break-words">{cert.name}</p>
-                    </div>
-                    <div className="col-span-2 break-words">
-                      <i>Valid Until:</i> {cert.expirydate.toString()}
-                    </div>
+            <div className="w-full">
+              {certificates.length === 0
+                ? 'No records found'
+                : certificates.map((cert: Certificate) => {
+                    return (
+                      <div className="grid grid-cols-6 gap-2 py-2 px-3 text-lg" key={cert.id}>
+                        <div className="col-span-2">
+                          <p className="break-words">{cert.name}</p>
+                        </div>
+                        <div className="col-span-2 break-words">
+                          <i>Valid Until:</i> {cert.expirydate.toString()}
+                        </div>
 
-                    <div className="break-words">
-                      <p>{cert.type}</p>
-                    </div>
+                        <div className="break-words">
+                          <p>{cert.type}</p>
+                        </div>
 
-                    <div className="ml-auto grid grid-flow-col grid-rows-3 sm:grid-rows-1">
-                      <Link
-                        href={{
-                          pathname: '/certificate-management/view-certificate',
-                          query: { cert_image: cert.image },
-                        }}
-                      >
-                        <a className="mr-8" target="_blank">
-                          <EyeIcon className="h-6 w-6" />
-                        </a>
-                      </Link>
-                      <Link
-                        href={{
-                          pathname: '/certificate-management/edit-certificate',
-                          query: { cert_id: cert.id },
-                        }}
-                      >
-                        <a className="mr-8">
-                          <PencilIcon className="h-6 w-6" />
-                        </a>
-                      </Link>
+                        <div className="ml-auto grid grid-flow-col grid-rows-3 sm:grid-rows-1">
+                          <Link
+                            href={{
+                              pathname: '/certificate-management/view-certificate',
+                              query: { cert_image: cert.image },
+                            }}
+                          >
+                            <a className="mr-8" target="_blank">
+                              <EyeIcon className="h-6 w-6" />
+                            </a>
+                          </Link>
+                          <Link
+                            href={{
+                              pathname: '/certificate-management/edit-certificate',
+                              query: { cert_id: cert.id },
+                            }}
+                          >
+                            <a className="mr-8">
+                              <PencilIcon className="h-6 w-6" />
+                            </a>
+                          </Link>
 
-                      {/* No delete button for required certificate */}
-                      {cert.type == 'Required' ? (
-                        <div className="sm:ml-6"></div>
-                      ) : (
-                        <button
-                          onClick={() => {
-                            setShowModal(true);
-                            setCertName(cert.name);
-                            setCertId(cert.id);
-                            setCertImage(cert.image);
-                          }}
-                        >
-                          <a className="ml-auto" data-modal-toggle="popup-modal">
-                            <XCircleIcon className="h-6 w-6" data-modal-toggle="popup-modal" />
-                          </a>
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-        </div>
+                          {/* No delete button for required certificate */}
+                          {cert.type == 'Required' ? (
+                            <div className="sm:ml-6"></div>
+                          ) : (
+                            <button
+                              onClick={() => {
+                                setShowModal(true);
+                                setCertName(cert.name);
+                                setCertId(cert.id);
+                                setCertImage(cert.image);
+                              }}
+                            >
+                              <a className="ml-auto" data-modal-toggle="popup-modal">
+                                <XCircleIcon className="h-6 w-6" data-modal-toggle="popup-modal" />
+                              </a>
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+            </div>
+          </div>
+        )}
 
         {/* Modal */}
         <DeleteModal
