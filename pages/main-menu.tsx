@@ -94,7 +94,7 @@ export default function MainMenu() {
           {/* TODO: Change the option cards according to the type of user*/}
           {user && isHomeChef ? (
             <div className="grid grid-flow-row grid-rows-3 justify-center pt-10">
-              <Link href="#">
+              <Link href="/order-management">
                 <a className="m-2 grid place-content-center rounded-lg bg-green-light p-6 text-xl text-white hover:bg-green-hover sm:w-96">
                   <h2>Orders</h2>
                 </a>
