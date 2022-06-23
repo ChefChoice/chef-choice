@@ -1,17 +1,41 @@
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import { supabase } from '../../utils/supabaseClient';
-
-import Logo from './Logo';
-
 import { useUser } from '../../lib/UserContext';
 
+import Logo from './Logo';
+import { SearchIcon, ShoppingCartIcon } from '@heroicons/react/outline';
+
 const Navbar = () => {
-  const { user } = useUser();
+  const { user, isHomeChef } = useUser();
+  const [itemNumber, setItemNumber] = useState<number>(0);
   const router = useRouter();
 
+  useEffect(() => {
+    // TODO: Get cart number to change realtime
+    // getCart('P');
+  }, []);
+
+  const getCart = async (status: string) => {
+    try {
+      const response = await axios.get(`/api/order-management/orders/${status}`);
+
+      const orders = response.data.orders;
+      const filteredOrders = orders.filter((order: any) => order.cart);
+
+      if (filteredOrders.length > 0) {
+        const response = await axios.get(`/api/order-management/quantity/${filteredOrders[0].id}`);
+        setItemNumber(response.data.quantity);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
-    <div className="flex items-center max-w-screen-2xl mx-auto px-5 py-3 bg-white">
+    <div className="mx-auto flex max-w-screen-2xl items-center bg-white px-5 py-3">
       <div className="mr-8">
         <Link href="/">
           <a>
@@ -19,35 +43,55 @@ const Navbar = () => {
           </a>
         </Link>
       </div>
-
-      <div className="flex items-center justify-between w-full">
+      <div className="flex w-full items-center justify-between">
         <nav>
-          <ul>
-            <li>
-              {user ? (
+          {user ? (
+            <ul>
+              <li className="inline">
                 <Link href="/order-management">
-                  <a className="text-black font-semibold text-xl">Orders</a>
+                  <a className="text-xl font-semibold text-black hover:text-gray-400">Orders</a>
                 </Link>
-              ) : (
-                <Link href="#">
-                  <a className="text-black font-semibold text-xl">Become a Chef</a>
+              </li>
+            </ul>
+          ) : (
+            <ul className="flex gap-x-6">
+              <li className="inline">
+                <Link href="/sign-up/consumer">
+                  <a className="text-xl font-semibold text-black hover:text-gray-400">
+                    Register Today
+                  </a>
                 </Link>
-              )}
-            </li>
-          </ul>
+              </li>
+              <li className="inline">
+                <Link href="/sign-up/chef">
+                  <a className="text-xl font-semibold text-black hover:text-gray-400">
+                    Become a Chef
+                  </a>
+                </Link>
+              </li>
+            </ul>
+          )}
         </nav>
-        <div className="flex items-center gap-x-8">
-          {user && (
+        <div className="flex items-center gap-x-6">
+          {!isHomeChef && (
             <Link href="/order-management/checkout">
-              <a className="text-black font-semibold text-xl">Cart</a>
+              <a className="flex text-xl font-semibold text-black">
+                {itemNumber > 0 && <div>{itemNumber}</div>}
+                <ShoppingCartIcon className="h-8 w-8 stroke-2 pr-2" />
+              </a>
             </Link>
           )}
+          <Link href="/search">
+            <a>
+              <SearchIcon className="h-6 w-6 text-black" />
+            </a>
+          </Link>
           <Link href="/help">
-            <a className="text-black font-semibold text-xl">Help</a>
+            <a className="text-xl font-semibold text-black">Help</a>
           </Link>
           {user && (
             <button
-              className="block max-w-sm bg-green-light hover:bg-green-hover py-2 px-2 text-white rounded w-full"
+              className="rounded-lg border-green-light bg-green-light px-6 py-1 text-xl font-semibold text-white hover:border-green-hover hover:bg-green-hover"
               onClick={async (e) => {
                 e.preventDefault();
                 const { error } = await supabase.auth.signOut();
@@ -63,7 +107,7 @@ const Navbar = () => {
           )}
 
           <Link href={user ? '/profile' : '/signin'}>
-            <a className="text-white font-semibold text-xl px-6 py-1 border-none rounded-lg bg-green-light">
+            <a className="rounded-lg border-green-light bg-green-light px-6 py-1 text-xl font-semibold text-white hover:border-green-hover hover:bg-green-hover">
               {user ? <span>Profile</span> : <span>Log In</span>}
             </a>
           </Link>

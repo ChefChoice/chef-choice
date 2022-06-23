@@ -10,11 +10,23 @@
   },
   "dependencies": {
     "@heroicons/react": "^1.0.6",
+    "@hookform/resolvers": "^2.9.0",
     "@supabase/supabase-auth-helpers": "^1.4.2",
     "@supabase/supabase-js": "^1.35.3",
+    "@tailwindcss/forms": "^0.5.2",
+    "@types/multiparty": "^0.0.33",
+    "axios": "^0.27.2",
+    "image-conversion": "^2.1.1",
+    "multiparty": "^4.2.3",
+    "nanoid": "^3.3.4",
     "next": "12.1.6",
+    "nookies": "^2.5.2",
     "react": "18.1.0",
-    "react-dom": "18.1.0"
+    "react-dom": "18.1.0",
+    "react-hook-form": "^7.31.3",
+    "react-modal-image": "^2.5.0",
+    "sharp": "^0.30.7",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@types/node": "17.0.33",
@@ -26,7 +38,8 @@
     "eslint-config-next": "12.1.6",
     "eslint-config-prettier": "^8.5.0",
     "postcss": "^8.4.13",
-    "prettier": "2.6.2",
+    "prettier": "^2.6.2",
+    "prettier-plugin-tailwindcss": "^0.1.11",
     "tailwindcss": "^3.0.24",
     "typescript": "4.6.4"
   }

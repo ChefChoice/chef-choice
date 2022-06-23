@@ -4,7 +4,7 @@ import Logo from './Logo';
 
 const Footer = () => {
   return (
-    <div className="flex max-w-screen-2xl mx-auto px-20 py-12 bg-white h-80">
+    <div className="mx-auto flex h-80 max-w-screen-2xl bg-white px-20 py-12">
       <div className="w-1/2 min-w-fit border-r-2 border-black">
         <Link href="/">
           <a>
@@ -12,7 +12,7 @@ const Footer = () => {
           </a>
         </Link>
       </div>
-      <div className="flex flex-col justify-between w-1/2 min-w-fit px-20 text-black font-normal text-lg">
+      <div className="flex w-1/2 min-w-fit flex-col justify-between px-20 text-lg font-normal text-black">
         <nav>
           <ul className="flex flex-col justify-start gap-3 ">
             <li>
@@ -31,12 +31,12 @@ const Footer = () => {
               </Link>
             </li>
             <li>
-              <Link href="">
+              <Link href="/">
                 <a>Private Policy</a>
               </Link>
             </li>
             <li>
-              <Link href="">
+              <Link href="/">
                 <a>Terms and Conditions</a>
               </Link>
             </li>
