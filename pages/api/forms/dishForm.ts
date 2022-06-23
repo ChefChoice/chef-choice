@@ -53,33 +53,48 @@ const upsertDish = async (formFields: any) => {
 };
 
 const uploadDishImage = async (formData: any) => {
-  return new Promise((resolve, reject) => {
-    if (formData.fields.id) {
+  return new Promise(async (resolve, reject) => {
+    const imageFile = formData.files.upload[0];
+    const imageType = imageFile.headers['content-type'];
+    const { originalFilename } = imageFile;
+
+    if (originalFilename === '') {
       formData.fields.dishImage = null;
       return resolve(formData.fields);
     }
 
-    const imageFile = formData.files.upload[0];
-    const imageType = imageFile.headers['content-type'];
-    const { originalFilename } = imageFile;
-    const dishImageFilename = nanoid() + '.' + originalFilename.split('.').pop();
-    const serverFilePath = `${dishImageFilename}`;
+    await supabase
+      .from('Dish')
+      .select('dish_image')
+      .eq('dish_id', formData.fields.id)
+      .then((dish) => {
+        const dishImageFilename = nanoid() + '.' + originalFilename.split('.').pop();
 
-    fs.readFile(imageFile.path, async (error, image) => {
-      if (error) return reject(error.message);
+        fs.readFile(imageFile.path, async (error, image) => {
+          if (error) return reject(error.message);
 
-      await supabase.storage
-        .from('dish-images')
-        .upload(serverFilePath, image, { contentType: imageType })
-        .catch((error) => {
-          console.error(error);
-          return reject(error);
-        })
-        .then(() => {
-          formData.fields.dishImage = dishImageFilename;
-          return resolve(formData.fields);
+          await supabase.storage
+            .from('dish-images')
+            .upload(dishImageFilename, image, {
+              contentType: imageType,
+              upsert: true,
+              cacheControl: '0',
+            })
+            .then(async () => {
+              await supabase
+                .from('Dish')
+                .update({ dish_image: dishImageFilename })
+                .eq('dish_id', formData.fields.id);
+
+              formData.fields.dishImage = dishImageFilename;
+              return resolve(formData.fields);
+            })
+            .catch(({ error }) => {
+              console.error(error);
+              return reject(error);
+            });
         });
-    });
+      });
   });
 };
 
