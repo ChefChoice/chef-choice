@@ -6,7 +6,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Heading from '../../components/common/Heading';
-import DeleteModal from '../../components/modals/DeleteModal';
 import { Certificate } from '../../models/Certificate';
 import { supabase } from '../../utils/supabaseClient';
 
