@@ -118,15 +118,30 @@ export default function Edit() {
       .eq('id', userData?.address_id);
     if (error) throw error.message;
     console.log(submitData);
-    if (!(data.phoneNo === userData?.phoneno)) {
-      const { data: phoneData, error: phoneError } = await supabase
-        .from('Consumer')
-        .update({
-          phoneno: data?.phoneNo,
-        })
-        .eq('id', userData?.id);
-      if (phoneError) console.log(phoneError.message);
-      console.log(phoneData);
+    if (isHomeChef) {
+      if (!(data.phoneNo === userData?.phoneno)) {
+        console.log(data?.phoneNo);
+        console.log(userData?.phoneno);
+        const { data: phoneData, error: phoneError } = await supabase
+          .from('HomeChef')
+          .update({
+            phoneno: data?.phoneNo,
+          })
+          .eq('id', userData?.id);
+        if (phoneError) console.log(phoneError.message);
+        console.log(phoneData);
+      }
+    } else {
+      if (!(data.phoneNo === userData?.phoneno)) {
+        const { data: phoneData, error: phoneError } = await supabase
+          .from('Consumer')
+          .update({
+            phoneno: data?.phoneNo,
+          })
+          .eq('id', userData?.id);
+        if (phoneError) console.log(phoneError.message);
+        console.log(phoneData);
+      }
     }
     setModalMessage('Information updated successfully!');
     setShowModal(true);
