@@ -7,4 +7,5 @@ export interface Certificate {
   date: Date;
   expirydate: Date;
   image: string;
+  status: string;
 }

@@ -2,6 +2,7 @@ import Heading from '../../components/common/Heading';
 import Image from 'next/image';
 // import { compress, compressAccurately } from 'image-conversion';
 import { useEffect, useState } from 'react';
+import { InformationCircleIcon } from '@heroicons/react/outline';
 
 //TODO:
 // - Make Fields larger on mobile + make tablet resolution more appealing
@@ -58,7 +59,7 @@ const DishForm = ({
       <Heading title={formName} />
       <form action="/api/forms/dishForm" method="post" encType="multipart/form-data">
         <div className="grid gap-y-10 text-lg">
-          <div className="grid grid-rows-2 lg:grid-rows-1 grid-cols-10 gap-y-10 place-items-center lg:place-items-start lg:p-5">
+          <div className="grid grid-cols-10 grid-rows-2 place-items-center gap-y-10 lg:grid-rows-1 lg:place-items-start lg:p-5">
             <div className="col-span-10 lg:col-span-2">
               <div className="grid gap-3">
                 <Image
@@ -72,7 +73,8 @@ const DishForm = ({
                 <div className="flex flex-col">
                   <label
                     htmlFor="upload"
-                    className="text-center text-white rounded w-full h-12 bg-green-light hover:bg-green-hover cursor-pointer"
+                    className="h-12 w-full cursor-pointer rounded bg-green-light text-center text-white hover:bg-green-hover"
+                    title="Upload Dish Image"
                   >
                     <p className="p-2">Upload Image...</p>
                   </label>
@@ -102,23 +104,23 @@ const DishForm = ({
                   />
                   <p
                     id="imageErr"
-                    className={`text-center text-red-600 pt-3 ${!imageError && 'hidden'}`}
+                    className={`pt-3 text-center text-red-600 ${!imageError && 'hidden'}`}
                   >
                     Dish Image is Required.
                   </p>
                 </div>
               </div>
             </div>
-            <div className="col-span-10 lg:col-span-7 lg:pl-8 lg:w-2/3">
-              <div className="grid grid-rows-4 gap-3 lg:gap-4 text-center justify-items-center lg:justify-items-start lg:text-left">
-                <div className="w-5/6 lg:w-2/3">
+            <div className="col-span-10 lg:col-span-7 lg:w-2/3 lg:pl-8">
+              <div className="grid grid-rows-4 justify-items-center gap-5 text-center lg:justify-items-start lg:gap-4 lg:text-left">
+                <div className="w-5/6 lg:w-2/3" title="Dish Name">
                   <label htmlFor="name">Dish name</label>
                   <input
                     type="text"
                     id="name"
                     name="name"
                     defaultValue={dishName}
-                    className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
+                    className="w-full rounded border-2 border-x-0 border-t-0 border-gray-200 bg-gray-100 p-1 text-center hover:border-green-hover focus:border-green-hover focus:bg-white focus:outline-none lg:p-2 lg:text-left"
                     required
                     minLength={3}
                     maxLength={32}
@@ -135,14 +137,14 @@ const DishForm = ({
                     }}
                   />
                 </div>
-                <div className="w-1/3">
+                <div className="w-1/3" title="Dish Price">
                   <label htmlFor="price">Dish price</label>
                   <input
                     type="text"
                     id="price"
                     name="price"
                     defaultValue={dishPrice}
-                    className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
+                    className="w-full rounded border-2 border-x-0 border-t-0 border-gray-200 bg-gray-100 p-1 text-center hover:border-green-hover focus:border-green-hover focus:bg-white focus:outline-none lg:p-2 lg:text-left"
                     required
                     pattern="^\d*(\.\d{0,2})?$"
                     onInvalid={(e) => {
@@ -158,64 +160,88 @@ const DishForm = ({
                     }}
                   />
                 </div>
-                <div className="w-5/6 lg:w-1/2">
-                  <label htmlFor="section">Marketplace section</label>
-                  <input
-                    type="text"
-                    id="section"
-                    name="section"
-                    defaultValue={dishSection}
-                    className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
-                    required
-                    maxLength={32}
-                  />
+                <div className="w-5/6 lg:w-1/2" title="Marketplace section">
+                  <div className="w-full">
+                    <label htmlFor="section">Marketplace section</label>
+                    <div className="flex content-around justify-between rounded border-2 border-x-0 border-t-0 border-gray-200 bg-gray-100 p-1 text-center hover:border-green-hover focus:border-green-hover lg:p-2 lg:text-left">
+                      <input
+                        type="text"
+                        id="section"
+                        name="section"
+                        defaultValue={dishSection}
+                        className="w-full grow bg-gray-100 p-1 focus:outline-none"
+                        required
+                        maxLength={32}
+                      />
+                      <div
+                        className="self-end"
+                        title="What section your dish will appear under when viewing your marketplace as a consumer."
+                      >
+                        <InformationCircleIcon className="mr-1 h-8 w-8 cursor-pointer stroke-1 hover:stroke-2" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="w-5/6 lg:w-1/2">
-                  <label htmlFor="category">Dish category</label>
-                  <input
-                    type="text"
-                    id="category"
-                    name="category"
-                    defaultValue={dishCategory}
-                    className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
-                    maxLength={32}
-                  />
+                <div className="w-5/6 lg:w-1/2" title="Dish category">
+                  <div className="w-full">
+                    <label htmlFor="category">Dish category</label>
+                    <div className="flex content-around justify-between rounded border-2 border-x-0 border-t-0 border-gray-200 bg-gray-100 p-1 text-center hover:border-green-hover focus:border-green-hover lg:p-2 lg:text-left">
+                      <input
+                        type="text"
+                        id="category"
+                        name="category"
+                        defaultValue={dishCategory}
+                        className="w-full grow bg-gray-100 p-1 focus:outline-none"
+                        maxLength={32}
+                      />
+                      <div
+                        className="self-end"
+                        title="What category your dish will appear under when searching by category as a consumer."
+                      >
+                        <InformationCircleIcon className="mr-1 h-8 w-8 cursor-pointer  stroke-1 hover:stroke-2" />
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div className="w-full">
+                <div className="w-full" title="Dish ingredients">
                   <label htmlFor="ingredient">Ingredient(s)</label>
                   <input
                     type="text"
                     id="ingredient"
                     name="ingredient"
                     defaultValue={dishIngredients}
-                    className="w-full p-1 lg:p-2 bg-gray-100 rounded border-gray-200 border-2 border-x-0 border-t-0 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover text-center lg:text-left"
+                    className="w-full rounded border-2 border-x-0 border-t-0 border-gray-200 bg-gray-100 p-1 text-center hover:border-green-hover focus:border-green-hover focus:bg-white focus:outline-none lg:p-2 lg:text-left"
                     maxLength={256}
                   />
                 </div>
               </div>
             </div>
           </div>
-          <div className="grid grid-rows-8 gap-6">
-            <div className="row-span-6">
+          <div className="grid-rows-8 grid gap-6">
+            <div className="row-span-6" title="Dish notes">
               <label htmlFor="details">Other notes</label>
               <textarea
                 id="details"
                 name="details"
                 rows={4}
                 defaultValue={dishDescription}
-                className="w-full px-1 py-1 bg-gray-100 rounded border-gray-200 border-2 hover:border-green-hover focus:outline-none focus:bg-white focus:border-green-hover resize-none"
+                className="w-full resize-none rounded border-2 border-gray-200 bg-gray-100 px-1 py-1 hover:border-green-hover focus:border-green-hover focus:bg-white focus:outline-none"
                 maxLength={256}
               />
             </div>
-            <button
-              type="submit"
-              className="row-span-2 rounded w-1/3 h-12 bg-green-light hover:bg-green-hover justify-center place-self-center text-white"
-              onSubmit={() => {
-                URL.revokeObjectURL(previewURL); // dealloc
-              }}
+            <div
+              className=" row-span-2 flex h-12 w-1/3 justify-center place-self-center rounded bg-green-light text-center text-white hover:bg-green-hover"
+              title="Submit Dish to Marketplace"
             >
-              Submit
-            </button>
+              <button
+                type="submit"
+                onSubmit={() => {
+                  URL.revokeObjectURL(previewURL); // dealloc
+                }}
+              >
+                Submit
+              </button>
+            </div>
           </div>
         </div>
         {dishId && <input type="hidden" name="id" value={dishId} />}
