@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../../../utils/supabaseClient';
-import { setSession } from '../../utils';
+import { setSession } from '../../../../utils/supabase-admin';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {

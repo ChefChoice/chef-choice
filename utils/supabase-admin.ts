@@ -1,5 +1,8 @@
-import { Order, OrderDish } from './models';
-import { supabase } from '../../utils/supabaseClient';
+// ======= Server Functions Only ======
+// Do not use on client side.
+
+import { Order, OrderDish } from '../models/models';
+import { supabase } from './supabaseClient';
 import { NextApiRequest } from 'next';
 import { parseCookies } from 'nookies';
 

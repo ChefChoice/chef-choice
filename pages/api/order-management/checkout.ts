@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../../utils/supabaseClient';
-import { setSession, getOrder } from '../utils';
+import { setSession, getOrder } from '../../../utils/supabase-admin';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await setSession(req).then(async ({ user, isHomeChef }) => {
