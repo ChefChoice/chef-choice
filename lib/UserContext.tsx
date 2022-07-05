@@ -76,12 +76,11 @@ async function checkAdmin() {
   // Check if user is Admin
   const { data: admin, error: adminFetchError } = await supabase
     .from('Admin')
-    .select(`*`)
-    .eq('id', supabase.auth.user()?.id)
-    .single();
+    .select('id')
+    .eq('id', supabase.auth.user()?.id);
 
   if (adminFetchError) {
-    throw adminFetchError;
+    console.log(adminFetchError);
   }
-  return admin.length !== 0;
+  return admin?.length !== 0;
 }

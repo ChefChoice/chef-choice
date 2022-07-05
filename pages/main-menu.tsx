@@ -19,7 +19,7 @@ export default function MainMenu() {
 
   useEffect(() => {
     getUsername();
-  }, [user]);
+  }, [user, isHomeChef, isAdmin]);
 
   async function getUsername() {
     try {

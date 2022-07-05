@@ -25,9 +25,8 @@ const Profile: NextPage = () => {
   const [certToUrlMap, setCertToUrlMap] = useState<Map<Certificate, string | null | undefined>>(
     new Map()
   );
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
+
   const [userData, setUserData] = useState<any>();
-  const [address, setAddress] = useState<any>();
 
   const [showModal, setShowModal] = useState(false);
   const [certName, setCertName] = useState('');
@@ -38,7 +37,7 @@ const Profile: NextPage = () => {
 
   useEffect(() => {
     getData();
-  }, [user, showModal]);
+  }, [user, showModal, userSession, isHomeChef]);
 
   async function getData() {
     try {
