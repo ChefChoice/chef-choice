@@ -102,6 +102,9 @@ const AdminDashboard: NextPage = () => {
         .update({ status: status })
         .match({ id: certId });
 
+      if (error) {
+        console.log(error);
+      }
       showApproveModal ? setShowApproveModal(false) : setShowRejectModal(false);
     }
   }
