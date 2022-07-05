@@ -24,7 +24,7 @@ export default function Modal({
   } else {
     return (
       <div className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-20">
-        <div className="m-3 flex flex-col rounded-lg border-2 border-solid bg-white p-3 sm:w-1/3">
+        <div className="m-3 flex flex-col rounded-lg border-2 border-solid bg-white p-3 sm:w-1/4">
           <h1 className="text-center text-xl font-semibold">{title}</h1>
           <hr className="mb-6 mt-3 border-t-2 border-black/[.50]" />
 
