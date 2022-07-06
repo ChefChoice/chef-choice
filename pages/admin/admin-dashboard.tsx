@@ -1,4 +1,4 @@
-import { CheckCircleIcon, XCircleIcon } from '@heroicons/react/outline';
+import { CheckCircleIcon, ChevronLeftIcon, XCircleIcon } from '@heroicons/react/outline';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
 import { NextPage } from 'next';
@@ -28,6 +28,8 @@ const AdminDashboard: NextPage = () => {
   const [showApproveModal, setShowApproveModal] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [certId, setCertId] = useState('');
+  const [homechefId, setHomechefId] = useState('');
+  const [certType, setCertType] = useState('');
 
   const closeModal = () => {
     showApproveModal ? setShowApproveModal(false) : setShowRejectModal(false);
@@ -99,15 +101,31 @@ const AdminDashboard: NextPage = () => {
 
   async function updateCertStatus(status: string) {
     if (status !== '') {
-      const { error } = await supabase
+      const { error: certErr } = await supabase
         .from('Certificate')
         .update({ status: status })
         .match({ id: certId });
 
-      if (error) {
-        console.log(error);
+      // Verify chef
+      if (certType === 'Required' && status === 'Approved') {
+        verifyChef();
+      }
+
+      if (certErr) {
+        console.log(certErr);
       }
       showApproveModal ? setShowApproveModal(false) : setShowRejectModal(false);
+    }
+  }
+
+  async function verifyChef() {
+    const { error: chefErr } = await supabase
+      .from('HomeChef')
+      .update({ verified: true })
+      .match({ id: homechefId });
+
+    if (chefErr) {
+      console.log(chefErr);
     }
   }
 
@@ -178,6 +196,8 @@ const AdminDashboard: NextPage = () => {
                         onClick={() => {
                           setShowApproveModal(true);
                           setCertId(cert.id);
+                          setCertType(cert.type);
+                          setHomechefId(cert.homechef_id);
                         }}
                       >
                         <a title="Approve Certificate">
