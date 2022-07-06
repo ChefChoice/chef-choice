@@ -11,12 +11,14 @@ import { supabase } from '../../utils/supabaseClient';
 import ModalImage from 'react-modal-image';
 import Loading from '../../components/common/Loading';
 import Modal from '../../components/modals/Modal';
+import { useRouter } from 'next/router';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
 });
 
 const AdminDashboard: NextPage = () => {
+  const { reload } = useRouter();
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>(null);
   const [certToUrlMap, setCertToUrlMap] = useState<Map<Certificate, string | null | undefined>>(
@@ -118,7 +120,20 @@ const AdminDashboard: NextPage = () => {
 
       <main className="flex h-full w-full flex-col py-20 px-10">
         <div className="pt-3">
-          <Heading title={'List of certificates waiting for approval'} />
+          <Heading
+            title={'List of certificates waiting for approval'}
+            optionalNode={
+              <button
+                className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light"
+                onClick={() => {
+                  reload();
+                }}
+              >
+                Refresh
+              </button>
+            }
+            optionalNodeRightAligned={true}
+          />
 
           <div className="w-full">
             {loading ? (
@@ -157,15 +172,16 @@ const AdminDashboard: NextPage = () => {
                       <p className="break-all">{cert.type}</p>
                     </div>
 
-                    <div className="ml-auto grid-rows-2 place-items-center sm:grid-rows-1">
+                    <div className="ml-auto grid-rows-2 sm:grid-rows-1">
                       <button
+                        className="mr-5"
                         onClick={() => {
                           setShowApproveModal(true);
                           setCertId(cert.id);
                         }}
                       >
-                        <a className="ml-auto" title="Approve Certificate">
-                          <CheckCircleIcon className="h-6 w-6" />
+                        <a title="Approve Certificate">
+                          <CheckCircleIcon className="h-8 w-8" />
                         </a>
                       </button>
 
@@ -175,8 +191,8 @@ const AdminDashboard: NextPage = () => {
                           setCertId(cert.id);
                         }}
                       >
-                        <a className="ml-auto" title="Reject Certificate">
-                          <XCircleIcon className="h-6 w-6" />
+                        <a title="Reject Certificate">
+                          <XCircleIcon className="h-8 w-8" />
                         </a>
                       </button>
                     </div>
