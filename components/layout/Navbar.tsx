@@ -9,7 +9,7 @@ import Logo from './Logo';
 import { SearchIcon, ShoppingCartIcon } from '@heroicons/react/outline';
 
 const Navbar = () => {
-  const { user, isHomeChef } = useUser();
+  const { user, isHomeChef, isAdmin } = useUser();
   const [itemNumber, setItemNumber] = useState<number>(0);
   const router = useRouter();
 
@@ -45,7 +45,9 @@ const Navbar = () => {
       </div>
       <div className="flex w-full items-center justify-between">
         <nav>
-          {user ? (
+          {isAdmin ? (
+            <></>
+          ) : user && !isAdmin ? (
             <ul>
               <li className="inline">
                 <Link href="/order-management">
@@ -73,7 +75,7 @@ const Navbar = () => {
           )}
         </nav>
         <div className="flex items-center gap-x-6">
-          {!isHomeChef && (
+          {!isHomeChef && !isAdmin && (
             <Link href="/order-management/checkout">
               <a className="flex text-xl font-semibold text-black">
                 {itemNumber > 0 && <div>{itemNumber}</div>}
@@ -106,9 +108,19 @@ const Navbar = () => {
             </button>
           )}
 
-          <Link href={user ? '/profile' : '/signin'}>
+          <Link
+            href={
+              user && !isAdmin ? '/profile' : user && isAdmin ? '/admin/admin-dashboard' : '/signin'
+            }
+          >
             <a className="rounded-lg border-green-light bg-green-light px-6 py-1 text-xl font-semibold text-white hover:border-green-hover hover:bg-green-hover">
-              {user ? <span>Profile</span> : <span>Log In</span>}
+              {user && !isAdmin ? (
+                <span>Profile</span>
+              ) : user && isAdmin ? (
+                <span>Dashboard</span>
+              ) : (
+                <span>Log In</span>
+              )}
             </a>
           </Link>
         </div>
