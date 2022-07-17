@@ -18,16 +18,16 @@ export default function Marketplace() {
       </Head>
 
       <div className="mx-auto">
-        <main className="background-image sm:h-screen h-1/3 w-full py-4 flex flex-col justify-center">
+        <main className="background-image flex h-1/3 w-full flex-col justify-center py-4 sm:h-screen">
           <div className="grid sm:grid-cols-5">
-            <h2 className="grid sm:col-start-2 sm:col-span-3 font-headline font-medium sm:text-4xl text-3xl break-words">
+            <h2 className="font-headline grid break-words text-3xl font-medium sm:col-span-3 sm:col-start-2 sm:text-4xl">
               Marketplace Management
               <hr className="mb-5 border-t-2 border-black/[.50]" />
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-5 grid-cols-1 gap-2 mx-10 justify-center">
-            <div className="sm:col-start-2 bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
+          <div className="mx-10 grid grid-cols-1 justify-center gap-2 sm:grid-cols-5">
+            <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring sm:col-start-2">
               <Image
                 src="/images/dishMgt.jpg"
                 layout="responsive"
@@ -38,14 +38,14 @@ export default function Marketplace() {
 
               <div className="py-5 px-5 text-right">
                 <Link href="/dish-management">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
+                  <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
                     Manage Dishes
                   </a>
                 </Link>
               </div>
             </div>
 
-            <div className="bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
+            <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
               <Image
                 src="/images/reviewMgt.jpg"
                 layout="responsive"
@@ -56,14 +56,14 @@ export default function Marketplace() {
 
               <div className="py-5 px-5 text-right">
                 <Link href="#">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
+                  <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
                     Manage Reviews
                   </a>
                 </Link>
               </div>
             </div>
 
-            <div className="bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
+            <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
               <Image
                 src="/images/scheduleMgt.jpg"
                 layout="responsive"
@@ -73,8 +73,8 @@ export default function Marketplace() {
               />
 
               <div className="py-5 px-5 text-right">
-                <Link href="#">
-                  <a className="font-bold text-white lg:text-base xs:text-xs  hover:text-black">
+                <Link href="/schedule">
+                  <a className="xs:text-xs font-bold text-white hover:text-black  lg:text-base">
                     Manage Schedule
                   </a>
                 </Link>

@@ -139,7 +139,7 @@ const AdminDashboard: NextPage = () => {
       <main className="flex h-full w-full flex-col py-20 px-10">
         <div className="pt-3">
           <Heading
-            title={'List of certificates waiting for approval'}
+            title={'List of certificates waiting for review'}
             optionalNode={
               <button
                 className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light"
