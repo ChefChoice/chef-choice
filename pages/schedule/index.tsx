@@ -16,7 +16,7 @@ const Schedule = () => {
           <h2>Schedule</h2>
         </div>
       </div>
-      <div className="container mx-auto">
+      <div className="container mx-auto w-2/3 py-10">
         <FullCalendar plugins={[timeGridPlugin, interactionPlugin]} editable selectable />
       </div>
     </>
