@@ -74,7 +74,7 @@ const Order: NextPage = ({ page }: any) => {
                 <Heading title={isHomeChef ? 'Items' : 'Your Items'}></Heading>
                 <div className="md:w-full">
                   {order &&
-                    order.orderDish?.map((orderDish: any, i: any) => (
+                    order.orderDish?.map((orderDish: any, i: number) => (
                       <CartItem
                         key={i}
                         quantity={orderDish.quantity}

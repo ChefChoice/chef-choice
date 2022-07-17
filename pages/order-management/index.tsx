@@ -6,6 +6,7 @@ import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { useUser } from '../../lib/UserContext';
 
 import { ORDER_TYPE } from '../../utils/constants';
+import { Order } from '../../models/models';
 
 import Heading from '../../components/common/Heading';
 import Loading from '../../components/common/Loading';
@@ -36,8 +37,8 @@ const OrderManagement: NextPage = () => {
   const { isHomeChef } = useUser();
 
   useEffect(() => {
-    getOrders('P').then((orders: any) => {
-      const filteredOrders = orders.filter((order: any) => order.cart == false);
+    getOrders('P').then((orders: Order[]) => {
+      const filteredOrders = orders.filter((order: Order) => order.cart == false);
       dispatch({ type: ORDER_TYPE.PENDING_ORDERS, results: filteredOrders });
     });
   }, [refresh]);
@@ -52,7 +53,7 @@ const OrderManagement: NextPage = () => {
     }
   };
 
-  const handleTab: any = async (orderType: any) => {
+  const handleTab = async (orderType: string) => {
     let status = '';
     switch (orderType) {
       case ORDER_TYPE.ONGOING_ORDERS:
@@ -66,8 +67,8 @@ const OrderManagement: NextPage = () => {
         status = 'P';
     }
 
-    getOrders(status).then((orders: any) => {
-      const filteredOrders = orders.filter((order: any) => order.cart == false);
+    getOrders(status).then((orders: Order[]) => {
+      const filteredOrders = orders.filter((order: Order) => order.cart == false);
       dispatch({ type: orderType, results: filteredOrders });
     });
   };
@@ -85,7 +86,7 @@ const OrderManagement: NextPage = () => {
               <SmallButton data={'Refresh'} />
             </div>
             <div className="flex">
-              {Object.values(ORDER_TYPE).map((orders: any, i) => {
+              {Object.values(ORDER_TYPE).map((orders: string, i) => {
                 const element = [];
 
                 element.push(
