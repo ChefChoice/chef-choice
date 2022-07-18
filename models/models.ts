@@ -3,7 +3,7 @@ export interface Order {
   homechef_id: string;
   cons_id: string;
   status: string;
-  schedtime?: any;
+  schedtime?: Date; // TODO: make it not nullable when ready
   subtotal?: number;
   fees?: number;
   total?: number;

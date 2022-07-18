@@ -74,13 +74,17 @@ const checkHomeChef = async () => {
 
 async function checkAdmin() {
   // Check if user is Admin
-  const { data: admin, error: adminFetchError } = await supabase
-    .from('Admin')
-    .select('id')
-    .eq('id', supabase.auth.user()?.id);
+  const user = supabase.auth.user();
+  if (user) {
+    const { data: admin, error: adminFetchError } = await supabase
+      .from('Admin')
+      .select()
+      .eq('id', user.id);
 
-  if (adminFetchError) {
-    console.log(adminFetchError);
+    if (adminFetchError) {
+      console.log(adminFetchError);
+    }
+    return admin?.length !== 0;
   }
-  return admin?.length !== 0;
+  return false;
 }

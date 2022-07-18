@@ -9,6 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@babel/preset-react": "^7.18.6",
+    "@fullcalendar/common": "^5.11.0",
+    "@fullcalendar/core": "^5.11.0",
+    "@fullcalendar/daygrid": "^5.11.0",
+    "@fullcalendar/interaction": "^5.11.0",
+    "@fullcalendar/list": "^5.11.0",
+    "@fullcalendar/react": "^5.11.1",
+    "@fullcalendar/resource-timeline": "^5.11.0",
+    "@fullcalendar/timegrid": "^5.11.0",
     "@heroicons/react": "^1.0.6",
     "@hookform/resolvers": "^2.9.0",
     "@supabase/supabase-auth-helpers": "^1.4.2",
@@ -20,6 +29,7 @@
     "multiparty": "^4.2.3",
     "nanoid": "^3.3.4",
     "next": "12.1.6",
+    "next-transpile-modules": "^9.0.0",
     "nookies": "^2.5.2",
     "react": "18.1.0",
     "react-dom": "18.1.0",

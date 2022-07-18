@@ -1,4 +1,4 @@
-import { EyeIcon, PencilAltIcon, TrashIcon, XCircleIcon } from '@heroicons/react/outline';
+import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
 import Head from 'next/head';
@@ -9,10 +9,10 @@ import { Certificate } from '../../models/Certificate';
 import { supabase } from '../../utils/supabaseClient';
 // @ts-ignore
 import ModalImage from 'react-modal-image';
+import { NextPage } from 'next';
 import Loading from '../../components/common/Loading';
 import Modal from '../../components/modals/Modal';
 import { useUser } from '../../lib/UserContext';
-import { NextPage } from 'next';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
