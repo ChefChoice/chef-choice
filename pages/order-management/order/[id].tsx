@@ -79,9 +79,9 @@ const Order: NextPage = ({ page }: any) => {
                         key={i}
                         quantity={orderDish.quantity}
                         title={orderDish.Dish.dish_name}
-                        price={
+                        price={`${
                           Math.round(orderDish.Dish.dish_price * orderDish.quantity * 100) / 100
-                        }
+                        }`}
                         orderDish={orderDish}
                       ></CartItem>
                     ))}
