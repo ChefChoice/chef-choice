@@ -16,13 +16,17 @@ export const UserContextProvider = (props: any) => {
 
     setSession(session);
     setUser(session?.user ?? null);
-    checkHomeChef().then((result) => {
-      setIsHomeChef(result);
-    });
+    const user = session?.user;
 
-    checkAdmin().then((result) => {
-      setIsAdmin(result);
-    });
+    if (user) {
+      checkHomeChef().then((result) => {
+        setIsHomeChef(result);
+      });
+
+      checkAdmin().then((result) => {
+        setIsAdmin(result);
+      });
+    }
 
     const { data: authListener } = supabaseClient.auth.onAuthStateChange(
       async (event: any, session: any) => {
