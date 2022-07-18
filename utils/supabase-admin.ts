@@ -200,3 +200,18 @@ export async function getOrderQuantity(orderId: number | string | string[]) {
     throw err;
   }
 }
+
+export const getOrdersForCalendar = async (status: string[]) => {
+  try {
+    const { data: orders, error: OrderError } = await supabase
+      .from('Order')
+      .select('id, schedtime, status, Consumer (name)')
+      .or(`status.in.(${status})`);
+
+    if (OrderError) throw OrderError.message;
+
+    return orders;
+  } catch (err) {
+    throw err;
+  }
+};
