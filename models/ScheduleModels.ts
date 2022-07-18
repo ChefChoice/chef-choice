@@ -1,4 +1,4 @@
-export interface DbAvail {
+export interface DbAvailability {
   id: string;
   daysOfWeek: number[];
   startTime: string;
@@ -13,11 +13,16 @@ export interface CalendarRecurEvent {
   endTime: string;
   startRecur: Date;
   endRecur: Date;
-  display: string;
+}
+
+export interface CalendarOrder {
+  id: string;
+  Consumer: { name: string };
+  schedtime: Date;
+  status: string;
 }
 
 export interface CalendarEvent {
   title: string;
   start: Date;
-  end: Date;
 }
