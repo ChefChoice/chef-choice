@@ -1,11 +1,13 @@
 import axios from 'axios';
+import { Dispatch, SetStateAction } from 'react';
+import { OrderDish } from '../../models/models';
 
 interface ICartItemProps {
   key: number;
   title: string;
-  price: number;
+  price: string;
   quantity?: number;
-  orderDish?: any;
+  orderDish?: OrderDish;
   refresh?: any;
   setRefresh?: any;
 }

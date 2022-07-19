@@ -1,15 +1,17 @@
 import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import Heading from '../../components/common/Heading';
 import { Certificate } from '../../models/Certificate';
 import { supabase } from '../../utils/supabaseClient';
 // @ts-ignore
 import ModalImage from 'react-modal-image';
-import { NextPage } from 'next';
 import Loading from '../../components/common/Loading';
 import Modal from '../../components/modals/Modal';
 import { useUser } from '../../lib/UserContext';
@@ -157,6 +159,14 @@ const Profile: NextPage = () => {
     }
   }
 
+  async function handlePayout() {
+    const response = await axios.get(`/api/profile/payout-management`);
+
+    if (response.data) {
+      window.open(response.data.customerUrl, '_blank');
+    }
+  }
+
   return (
     <>
       <Head>
@@ -170,18 +180,12 @@ const Profile: NextPage = () => {
             title={'Account Details'}
             optionalNode={
               <div className="flew space-x-2">
-                <Link
-                  href={{
-                    pathname: '#',
-                    query: {
-                      id: user ? user.id : null,
-                    },
-                  }}
+                <button
+                  onClick={handlePayout}
+                  className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
                 >
-                  <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
-                    Payout Management
-                  </button>
-                </Link>
+                  Payout Management
+                </button>
                 <Link
                   href={{
                     pathname: '/profile/edit',

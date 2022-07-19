@@ -1,11 +1,13 @@
 import { useRouter } from 'next/router';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { ORDER_TYPE } from '../../utils/constants';
-import { supabase } from '../../utils/supabaseClient';
+import { Order } from '../../models/models';
+import axios from 'axios';
+import Modal from '../modals/Modal';
 
 interface IOrderListProps {
   type: string;
-  orders: any[];
+  orders: Order[];
   isHomeChef: boolean | null;
   refresh: number;
   setRefresh: Dispatch<SetStateAction<number>>;
@@ -13,33 +15,32 @@ interface IOrderListProps {
 
 const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderListProps) => {
   const router = useRouter();
+  const [showModal, setShowModal] = useState(false);
+  const [status, setStatus] = useState<any | null>(null);
 
-  const handleViewDetails: any = async (id: any) => {
+  const handleViewDetails = async (id: number) => {
     router.push(`/order-management/order/${id}`);
   };
 
-  const handleAccept: any = async (id: any) => {
-    // TODO: Accept order make serverside
-    const { data, error } = await supabase.from('Order').update({ status: 'O' }).eq('id', id);
-    setRefresh(refresh + 1);
-  };
-
-  const handleCancel: any = async (id: any) => {
-    // TODO: Cancel Order make serverside
-    const { data, error } = await supabase.from('Order').update({ status: 'C' }).eq('id', id);
-    setRefresh(refresh + 1);
-  };
-
-  const handleFulfill: any = async (id: any) => {
-    // TODO: Fulfill Order make serverside
-    const { data, error } = await supabase.from('Order').update({ status: 'F' }).eq('id', id);
+  const handleClick = async (status: string, id: number) => {
+    await axios
+      .post(`/api/order-management/order/${id}`, { status })
+      .then((response) => {
+        if (response.data !== 200) {
+          return response.data;
+        }
+      })
+      .catch((err) => {
+        console.error(err.message);
+      });
+    setShowModal(false);
     setRefresh(refresh + 1);
   };
 
   return (
     <div className="md:w-full">
       {orders.length != 0 ? (
-        orders.map((order: any, i: number) => {
+        orders.map((order: Order, i: number) => {
           const time: Date = new Date(Date.parse(order.time));
 
           return (
@@ -47,7 +48,7 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
               <div className="flex grow gap-5">
                 <div className="w-20 text-xl">{`#${order.id}`}</div>
                 <div className="w-30 text-xl">{time.toDateString()}</div>
-                <div className="w-20 text-xl">{`$${order.total}`}</div>
+                <div className="w-20 text-xl">{`$${order.total?.toFixed(2)}`}</div>
               </div>
               <div
                 onClick={() => handleViewDetails(order.id)}
@@ -59,7 +60,10 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
               </div>
               {isHomeChef && type === ORDER_TYPE.PENDING_ORDERS && (
                 <div
-                  onClick={() => handleAccept(order.id)}
+                  onClick={() => {
+                    setStatus('O');
+                    setShowModal(true);
+                  }}
                   className="hover:border-green w-full max-w-fit cursor-pointer overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
                 >
                   <div className="py-2 px-2 text-center">
@@ -69,7 +73,10 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
               )}
               {isHomeChef && type === ORDER_TYPE.ONGOING_ORDERS && (
                 <div
-                  onClick={() => handleFulfill(order.id)}
+                  onClick={() => {
+                    setStatus('F');
+                    setShowModal(true);
+                  }}
                   className="hover:border-green w-full max-w-fit cursor-pointer overflow-hidden rounded bg-green-light shadow-lg hover:bg-green-hover hover:ring"
                 >
                   <div className="py-2 px-2 text-center">
@@ -79,7 +86,10 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
               )}
               {type === ORDER_TYPE.PENDING_ORDERS && (
                 <div
-                  onClick={() => handleCancel(order.id)}
+                  onClick={() => {
+                    setStatus('C');
+                    setShowModal(true);
+                  }}
                   className="w-full max-w-fit cursor-pointer overflow-hidden rounded bg-red-500 shadow-lg hover:bg-black hover:ring"
                 >
                   <div className="py-2 px-2 text-center">
@@ -89,6 +99,20 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
                   </div>
                 </div>
               )}
+              <Modal
+                visible={showModal}
+                title={'Confirm Action'}
+                content={
+                  <p className="mx-2 mb-4 break-all text-lg">
+                    Confirm action for Order #{order.id}?
+                  </p>
+                }
+                leftBtnText={'No'}
+                leftBtnOnClick={async () => setShowModal(false)}
+                rightBtnText={'Yes'}
+                rightBtnOnClick={() => handleClick(status, order.id)}
+                hideLeftBtn={false}
+              />
             </div>
           );
         })
