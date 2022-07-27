@@ -8,9 +8,10 @@ export interface DbAvailability {
 }
 
 export interface CalendarRecurEvent {
+  // title: string;
   daysOfWeek: number[];
-  startTime: string;
-  endTime: string;
+  // startTime: string;
+  // endTime: string;
   startRecur: Date;
   endRecur: Date;
 }
