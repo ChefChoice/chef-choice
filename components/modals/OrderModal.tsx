@@ -1,6 +1,6 @@
 import { PROMPT } from '../../utils/constants';
 
-interface IModalProps {
+interface IOrderModalProps {
   setModalOn: any;
   setChoice: any;
   setWarning?: any;
@@ -10,7 +10,7 @@ interface IModalProps {
   prompt?: string;
 }
 
-export default function Modal({
+export default function OrderModal({
   setModalOn,
   setChoice,
   setWarning,
@@ -18,7 +18,7 @@ export default function Modal({
   price,
   description,
   prompt = 'Add to Order?',
-}: IModalProps) {
+}: IOrderModalProps) {
   const handleOKClick = () => {
     setChoice(true);
     setModalOn(false);
@@ -36,12 +36,13 @@ export default function Modal({
   };
 
   return (
-    <div className="fixed inset-0 z-40">
-      <div className="fixed inset-0 z-40 bg-slate-400 opacity-80"></div>
-      <div className="flex h-screen items-center justify-center">
-        <div className="z-50 flex-col justify-center border-2 border-black bg-white py-12 px-24">
-          <div className="mb-10 flex justify-center text-lg">{title}</div>
-          {price && <div className="mb-10 flex justify-center">{price}</div>}
+    <div className="fixed inset-0 flex h-screen w-screen items-center justify-center bg-black bg-opacity-20">
+      <div className="m-3 flex flex-col rounded-lg border-2 border-solid bg-white p-3 sm:w-1/3">
+        <h1 className="text-center text-xl font-semibold">{title}</h1>
+        <hr className="mb-6 mt-3 border-t-2 border-black/[.50]" />
+
+        <div className="flex flex-col place-items-center">
+          {price && <div className="mb-10 flex justify-center">{`$${price.toFixed(2)}`}</div>}
           {description && <div className="mb-10 flex justify-center">{description}</div>}
           <div
             className={`mb-10 flex justify-center ${prompt === PROMPT.WARNING && 'bg-yellow-400'}`}
@@ -52,11 +53,14 @@ export default function Modal({
           <div className="flex justify-center">
             <button
               onClick={prompt === PROMPT.WARNING ? handleWarningClick : handleOKClick}
-              className="rounded bg-green-light px-4 py-2"
+              className="mx-3 rounded bg-green-light px-5 py-1 text-white hover:bg-green-hover hover:ring hover:ring-green-500"
             >
               Yes
             </button>
-            <button onClick={handleCancelClick} className="rounded bg-red-700 px-4 py-2">
+            <button
+              onClick={handleCancelClick}
+              className="mx-3 rounded bg-red-700 px-5 py-1 text-white hover:bg-red-500 hover:ring hover:ring-red-400"
+            >
               No
             </button>
           </div>
