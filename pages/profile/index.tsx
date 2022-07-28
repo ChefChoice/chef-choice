@@ -38,11 +38,14 @@ const Profile: NextPage = () => {
 
   useEffect(() => {
     getData();
-  }, [user, showModal]);
+  }, [user, showModal, userSession, isHomeChef]);
 
   async function getData() {
     try {
       setUser(supabase.auth.user());
+      console.log('getData');
+      console.log(user);
+      console.log(isHomeChef);
 
       if (user) {
         if (isHomeChef) {
