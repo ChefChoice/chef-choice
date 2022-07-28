@@ -18,67 +18,60 @@ export default function Marketplace() {
       </Head>
 
       <div className="mx-auto">
-        <main className="background-image sm:h-screen h-1/3 w-full py-4 flex flex-col justify-center">
+        <main className="background-image flex h-1/3 w-full flex-col justify-center py-4 sm:h-screen">
           <div className="grid sm:grid-cols-5">
-            <h2 className="grid sm:col-start-2 sm:col-span-3 font-headline font-medium sm:text-4xl text-3xl break-words">
+            <h2 className="grid break-words text-3xl font-medium sm:col-span-3 sm:col-start-2">
               Marketplace Management
               <hr className="mb-5 border-t-2 border-black/[.50]" />
             </h2>
           </div>
 
-          <div className="grid sm:grid-cols-5 grid-cols-1 gap-2 mx-10 justify-center">
-            <div className="sm:col-start-2 bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
-              <Image
-                src="/images/dishMgt.jpg"
-                layout="responsive"
-                width={2100}
-                height={1900}
-                alt="dish image"
-              />
-
-              <div className="py-5 px-5 text-right">
-                <Link href="/dish-management">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
-                    Manage Dishes
-                  </a>
-                </Link>
-              </div>
+          <div className="grid grid-cols-1 justify-center gap-2 self-center sm:w-2/5 sm:grid-cols-2">
+            <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring ">
+              <Link href="/dish-management">
+                <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
+                  <Image
+                    src="/images/dishMgt.jpg"
+                    layout="responsive"
+                    width={1700}
+                    height={1500}
+                    alt="dish image"
+                  />
+                  <div className="py-5 px-5 text-right">Manage Dishes</div>
+                </a>
+              </Link>
             </div>
 
-            <div className="bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
-              <Image
-                src="/images/reviewMgt.jpg"
-                layout="responsive"
-                width={2100}
-                height={1900}
-                alt="review image"
-              />
+            {/* <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
+              <Link href="#">
+                <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
+                  <Image
+                    src="/images/reviewMgt.jpg"
+                    layout="responsive"
+                    width={2100}
+                    height={1900}
+                    alt="review image"
+                  />
 
-              <div className="py-5 px-5 text-right">
-                <Link href="#">
-                  <a className="font-bold text-white lg:text-base xs:text-xs hover:text-black">
-                    Manage Reviews
-                  </a>
-                </Link>
-              </div>
-            </div>
+                  <div className="py-5 px-5 text-right">Manage Reviews</div>
+                </a>
+              </Link>
+            </div> */}
 
-            <div className="bg-green-light rounded overflow-hidden shadow-lg border-solid border-2 border-green-light hover:border-4 hover:border-green hover:ring hover:bg-green-hover">
-              <Image
-                src="/images/scheduleMgt.jpg"
-                layout="responsive"
-                width={2100}
-                height={1900}
-                alt="schedule image"
-              />
+            <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
+              <Link href="/schedule">
+                <a className="xs:text-xs font-bold text-white hover:text-black  lg:text-base">
+                  <Image
+                    src="/images/scheduleMgt.jpg"
+                    layout="responsive"
+                    width={1700}
+                    height={1500}
+                    alt="schedule image"
+                  />
 
-              <div className="py-5 px-5 text-right">
-                <Link href="#">
-                  <a className="font-bold text-white lg:text-base xs:text-xs  hover:text-black">
-                    Manage Schedule
-                  </a>
-                </Link>
-              </div>
+                  <div className="py-5 px-5 text-right">Manage Schedule</div>
+                </a>
+              </Link>
             </div>
           </div>
         </main>

@@ -1,9 +1,12 @@
-import { EyeIcon, PencilAltIcon, TrashIcon, XCircleIcon } from '@heroicons/react/outline';
+import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
+import { NextPage } from 'next';
 import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import axios from 'axios';
+
 import Heading from '../../components/common/Heading';
 import { Certificate } from '../../models/Certificate';
 import { supabase } from '../../utils/supabaseClient';
@@ -12,7 +15,6 @@ import ModalImage from 'react-modal-image';
 import Loading from '../../components/common/Loading';
 import Modal from '../../components/modals/Modal';
 import { useUser } from '../../lib/UserContext';
-import { NextPage } from 'next';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
@@ -25,9 +27,8 @@ const Profile: NextPage = () => {
   const [certToUrlMap, setCertToUrlMap] = useState<Map<Certificate, string | null | undefined>>(
     new Map()
   );
-  const [certificates, setCertificates] = useState<Certificate[]>([]);
+
   const [userData, setUserData] = useState<any>();
-  const [address, setAddress] = useState<any>();
 
   const [showModal, setShowModal] = useState(false);
   const [certName, setCertName] = useState('');
@@ -60,7 +61,7 @@ const Profile: NextPage = () => {
             console.log(homeChefData);
           }
 
-          let { data, error, status } = await supabase
+          const { data, error, status } = await supabase
             .from<Certificate>('Certificate')
             .select(`*`)
             // select by homechef_id
@@ -83,7 +84,7 @@ const Profile: NextPage = () => {
             setLoading(false);
           }
         } else {
-          let {
+          const {
             data: consumerData,
             error: consumerError,
             status: consumerStatus,
@@ -161,6 +162,14 @@ const Profile: NextPage = () => {
     }
   }
 
+  async function handlePayout() {
+    const response = await axios.get(`/api/profile/payout-management`);
+
+    if (response.data) {
+      window.open(response.data.customerUrl, '_blank');
+    }
+  }
+
   return (
     <>
       <Head>
@@ -168,24 +177,18 @@ const Profile: NextPage = () => {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <main className="flex h-screen w-full flex-col py-20 px-10">
+      <main className="flex h-full w-full flex-col py-20 px-10">
         <div>
           <Heading
             title={'Account Details'}
             optionalNode={
               <div className="flew space-x-2">
-                <Link
-                  href={{
-                    pathname: '#',
-                    query: {
-                      id: user ? user.id : null,
-                    },
-                  }}
+                <button
+                  onClick={handlePayout}
+                  className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
                 >
-                  <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
-                    Payout Management
-                  </button>
-                </Link>
+                  Payout Management
+                </button>
                 <Link
                   href={{
                     pathname: '/profile/edit',
@@ -210,7 +213,7 @@ const Profile: NextPage = () => {
           </div>
         </div>
         {isHomeChef && (
-          <div>
+          <div className="pt-3">
             <Heading
               title={'Certificate Management'}
               optionalNode={
@@ -239,7 +242,7 @@ const Profile: NextPage = () => {
                 Array.from(certToUrlMap.keys()).map((cert) => {
                   return (
                     <div
-                      className="grid grid-cols-7 place-items-center gap-2 py-2 px-1 text-lg"
+                      className="grid grid-cols-8 place-items-center gap-2 py-2 px-1 text-lg"
                       key={cert.id}
                     >
                       <div className="w-8 sm:w-20" title="View Certificate">
@@ -253,15 +256,15 @@ const Profile: NextPage = () => {
                       <div className="col-span-2 justify-self-start">
                         <p className="break-all">{cert.name}</p>
                       </div>
-                      <div className="col-span-1 break-words">
-                        Valid Until: {cert.expirydate.toString()}
+                      <div className="col-span-1 break-words" title="Expiry Date">
+                        {cert.expirydate.toString()}
                       </div>
 
-                      <div className="col-span-1">
+                      <div className="col-span-1" title="Certificate Type">
                         <p className="break-all">{cert.type}</p>
                       </div>
 
-                      <div className="col-span-1">
+                      <div className="col-span-2" title="Certificate Status">
                         <i className="break-all">{cert.status}</i>
                       </div>
 
@@ -272,7 +275,7 @@ const Profile: NextPage = () => {
                             query: { cert_id: cert.id },
                           }}
                         >
-                          <a className="mr-8" title="Edit">
+                          <a className="mr-8" title="Edit Certificate">
                             <PencilAltIcon className="h-6 w-6" />
                           </a>
                         </Link>
@@ -289,7 +292,7 @@ const Profile: NextPage = () => {
                               setCertImage(cert.image);
                             }}
                           >
-                            <a className="ml-auto" title="Delete">
+                            <a className="ml-auto" title="Delete Certificate">
                               <TrashIcon className="h-6 w-6" />
                             </a>
                           </button>

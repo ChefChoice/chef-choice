@@ -5,6 +5,8 @@ import { Order, OrderDish } from '../models/models';
 import { supabase } from './supabaseClient';
 import { NextApiRequest } from 'next';
 import { parseCookies } from 'nookies';
+import { stripe, clientDomain } from './stripe';
+import Stripe from 'stripe';
 
 export const setSession = async (req: NextApiRequest) => {
   const { user, error } = await supabase.auth.api.getUserByCookie(req);
@@ -200,3 +202,74 @@ export async function getOrderQuantity(orderId: number | string | string[]) {
     throw err;
   }
 }
+
+export const getOrdersForCalendar = async (status: string[]) => {
+  try {
+    const { data: orders, error: OrderError } = await supabase
+      .from('Order')
+      .select('id, schedtime, status, Consumer (name)')
+      .or(`status.in.(${status})`);
+
+    if (OrderError) throw OrderError.message;
+
+    return orders;
+  } catch (err) {
+    throw err;
+  }
+};
+
+// ===== Stripe Functions =====
+
+export const createOrRetrieveStripeChef = async ({
+  email,
+  uuid,
+  user, // TODO: Prefill details from the Chef sign up
+}: {
+  email: string;
+  uuid: string;
+  user?: any;
+}) => {
+  const { data, error } = await supabase
+    .from('TestStripe')
+    .select('stripe_id')
+    .eq('id', uuid)
+    .single();
+  if (error) {
+    // No customer record found, let's create one.
+    // Create a Stripe Connect Account
+    const customerData: Stripe.AccountCreateParams = {
+      metadata: {
+        supabaseUUID: uuid,
+      },
+      type: 'express',
+      country: 'CA',
+      business_type: 'individual',
+      capabilities: {
+        card_payments: { requested: true },
+        transfers: { requested: true },
+      },
+    };
+    if (email) customerData.email = email;
+    const customer = await stripe.accounts.create(customerData);
+    // Now insert the customer ID into our Supabase mapping table.
+    const { error: supabaseError } = await supabase
+      .from('TestStripe')
+      .insert([{ id: uuid, stripe_id: customer.id }]);
+    if (supabaseError) throw supabaseError;
+    console.log(`New customer created and inserted for ${uuid}.`);
+
+    const accountLink = await stripe.accountLinks.create({
+      account: customer.id,
+      refresh_url: `${clientDomain}/reauth`,
+      return_url: `${clientDomain}/sign-up/success`,
+      type: 'account_onboarding',
+    });
+
+    return accountLink.url;
+  } else {
+    // Create a Stripe Express Dashboard Login Link
+    const link = await stripe.accounts.createLoginLink(data.stripe_id);
+
+    return link.url;
+  }
+};

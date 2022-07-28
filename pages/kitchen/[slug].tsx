@@ -11,7 +11,8 @@ import Loading from '../../components/common/Loading';
 import ContentContainer from '../../components/orders/ContentContainer';
 import SmallButton from '../../components/orders/SmallButton';
 import Stars from '../../components/common/Stars';
-import Modal from '../../components/orders/Modal';
+import OrderModal from '../../components/modals/OrderModal';
+import { Dish } from '../../models/models';
 import { PROMPT } from '../../utils/constants';
 import Link from 'next/link';
 
@@ -107,11 +108,11 @@ const Kitchen: NextPage = ({ page }: any) => {
               >
                 <SmallButton data={'View Schedule'} />
               </div>
-              <Link href={`/review/${data.HomeChef[0].id}`}>
+              {/* <Link href={`/review/${data.HomeChef[0].id}`}>
                 <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light">
                   Reviews
                 </button>
-              </Link>
+              </Link> */}
               <Stars stars={data ? data.HomeChef[0].rating : 0} />
             </div>
             <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}
@@ -121,7 +122,7 @@ const Kitchen: NextPage = ({ page }: any) => {
               {/* TODO: Add scrollbar */}
               <div>
                 {data &&
-                  data.Dishes.map((dish: any) => (
+                  data.Dishes.map((dish: Dish) => (
                     <div key={dish.dish_id}>
                       <RowItem
                         key={dish.dish_id}
@@ -137,7 +138,7 @@ const Kitchen: NextPage = ({ page }: any) => {
                         }
                         optionalNode={
                           <div className="gap-4 md:flex">
-                            <div>{`$${dish.dish_price}`}</div>
+                            <div>{`$${dish.dish_price.toFixed(2)}`}</div>
                             <div
                               onClick={() => {
                                 setDish({ ...dish });
@@ -155,7 +156,7 @@ const Kitchen: NextPage = ({ page }: any) => {
               </div>
             </div>
             {modalOn && (
-              <Modal
+              <OrderModal
                 setModalOn={setModalOn}
                 setChoice={setChoice}
                 setWarning={setWarning}

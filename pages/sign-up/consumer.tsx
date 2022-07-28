@@ -1,12 +1,12 @@
 // pages/sign-up/consumer.tsx
 
-import { supabase } from '../../utils/supabaseClient';
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import Head from 'next/head';
 import { useState } from 'react';
+import axios from 'axios';
 
 const schema = yup
   .object()
@@ -31,26 +31,17 @@ export default function SignUp() {
   const router = useRouter();
 
   const onSubmit = async (data: any) => {
-    const { user: userData, error: userError } = await supabase.auth.signUp(
-      { email: data.email, password: data.password },
-      {
-        data: {
-          type: 'consumer',
-          name: data.firstName.concat(' ', data.lastName),
-        },
-      }
-    );
-
-    console.log(userError);
-    console.log(userData);
-    if (userError) {
-      alert(userError.message);
-      console.log(userError);
-      throw userError;
-    } else {
-      setModalMessage('Please check your email for further instructions.');
-      setShowModal(true);
-    }
+    await axios
+      .post(`/api/sign-up/consumer`, { data })
+      .then((response) => {
+        setModalMessage('Please check your email for further instructions.');
+        setShowModal(true);
+      })
+      .catch((err) => {
+        alert(err.message);
+        console.log(err);
+        throw err;
+      });
   };
 
   return (

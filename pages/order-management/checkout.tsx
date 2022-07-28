@@ -69,14 +69,14 @@ const Checkout: NextPage = () => {
                 <Heading title={'Your Items'}></Heading>
                 <div className="md:w-full">
                   {order &&
-                    order.orderDish?.map((orderDish: any, i: any) => (
+                    order.orderDish?.map((orderDish: any, i: number) => (
                       <CartItem
                         key={i}
                         quantity={orderDish.quantity}
                         title={orderDish.Dish.dish_name}
-                        price={
+                        price={(
                           Math.round(orderDish.Dish.dish_price * orderDish.quantity * 100) / 100
-                        }
+                        ).toFixed(2)}
                         orderDish={orderDish}
                         setRefresh={setRefresh}
                         refresh={refresh}
@@ -85,15 +85,15 @@ const Checkout: NextPage = () => {
                 </div>
                 <div className="flex font-semibold md:w-full">
                   <div className="grow">Subtotal</div>
-                  <div>{order && `$` + order.order[0].subtotal}</div>
+                  <div>{order && `$` + order.order[0].subtotal.toFixed(2)}</div>
                 </div>
                 <div className="flex md:w-full">
                   <div className="grow">Tax and Fees (HST 13%)</div>
-                  <div>{order && `$` + order.order[0].fees}</div>
+                  <div>{order && `$` + order.order[0].fees.toFixed(2)}</div>
                 </div>
                 <div className="flex text-lg font-bold md:w-full">
                   <div className="grow">Total</div>
-                  <div>{order && `$` + order.order[0].total}</div>
+                  <div>{order && `$` + order.order[0].total.toFixed(2)}</div>
                 </div>
               </div>
               <div className="flex grow flex-col lg:max-w-xl">

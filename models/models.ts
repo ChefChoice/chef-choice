@@ -3,7 +3,8 @@ export interface Order {
   homechef_id: string;
   cons_id: string;
   status: string;
-  schedtime?: any;
+  schedtime?: Date; // TODO: make it not nullable when ready
+  time: string;
   subtotal?: number;
   fees?: number;
   total?: number;
@@ -13,9 +14,9 @@ export interface Order {
 export interface Dish {
   dish_id: number;
   user_id: string;
-  created_at?: any;
+  created_at?: string;
   dish_name: string;
-  dish_price: string;
+  dish_price: number;
   dish_description?: string;
   dish_category?: string;
   dish_image?: string;
