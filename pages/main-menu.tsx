@@ -218,7 +218,7 @@ export default function MainMenu() {
             <div className="grid grid-flow-row grid-rows-3 justify-center pt-10">
               <Link href="/search">
                 <a className="m-2 grid place-content-center rounded-lg bg-green-light p-6 text-xl text-white hover:bg-green-hover sm:w-96">
-                  <h2>Search Dishes</h2>
+                  <h2>Search</h2>
                 </a>
               </Link>
               <Link href="/order-management">
