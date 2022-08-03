@@ -1,5 +1,5 @@
 export interface DbAvailability {
-  id: string;
+  id?: string;
   daysOfWeek: number[];
   startTime: string;
   endTime: string;
