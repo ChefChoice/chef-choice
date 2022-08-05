@@ -1,4 +1,4 @@
-import { createOrRetrieveStripeAccount, setSession } from '../../../utils/supabase-admin';
+import { createOrRetrieveStripeChef, setSession } from '../../../utils/supabase-admin';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
@@ -9,7 +9,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         console.log(user);
 
         // Retrieving link from Stripe
-        const customerUrl = await createOrRetrieveStripeAccount({
+        const customerUrl = await createOrRetrieveStripeChef({
           uuid: user.id || '',
           email: user.email || '',
         });
