@@ -273,3 +273,56 @@ export const createOrRetrieveStripeChef = async ({
     return link.url;
   }
 };
+
+export const createOrRetrieveStripeCustomer = async ({ uuid }: { uuid: string }) => {
+  const { data, error } = await supabase
+    .from('TestStripe')
+    .select('stripe_id')
+    .eq('id', uuid)
+    .single();
+
+  if (error) {
+    const customer = await stripe.customers.create({
+      metadata: {
+        supabaseUUID: uuid,
+      },
+    });
+
+    const { error: supabaseError } = await supabase
+      .from('TestStripe')
+      .insert([{ id: uuid, stripe_id: customer.id }]);
+
+    if (supabaseError) throw supabaseError;
+    console.log(`New customer created and inserted for ${uuid}.`);
+    return customer.id;
+  }
+
+  return data.stripe_id;
+};
+
+export const getAllPaymentMethods = async ({ uuid }: { uuid: string }) => {
+  return createOrRetrieveStripeCustomer({ uuid: uuid }).then((accountID) => {
+    return stripe.customers
+      .listPaymentMethods(accountID, { type: 'card' })
+      .then((methods) => {
+        let mappedMethods = methods.data.map((method) => {
+          if (method.card) {
+            return {
+              id: method.id,
+              brand: method.card.brand,
+              number: method.card.last4,
+            };
+          }
+        });
+
+        return mappedMethods;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+};
+
+export const detachPaymentMethod = async ({ paymentMethodID }: { paymentMethodID: string }) => {
+  return stripe.paymentMethods.detach(paymentMethodID);
+};

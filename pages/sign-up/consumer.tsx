@@ -34,8 +34,7 @@ export default function SignUp() {
     await axios
       .post(`/api/sign-up/consumer`, { data })
       .then((response) => {
-        setModalMessage('Please check your email for further instructions.');
-        setShowModal(true);
+        router.push('/');
       })
       .catch((err) => {
         alert(err.message);
