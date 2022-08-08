@@ -263,7 +263,7 @@ export const CertForm = ({ formName, certificate }: ICertForm) => {
         title={certificate ? 'Certificate Updated' : 'Certificate Added'}
         content={
           <p className="mx-2 mb-4 break-words text-lg">
-            Your certificate has been received and is waiting for review. Thank you.
+            Your certificate has been received and is being reviewed by Admin. Thank you.
           </p>
         }
         rightBtnText={'OK'}

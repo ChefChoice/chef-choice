@@ -19,11 +19,11 @@ export interface CalendarRecurEvent {
 export interface CalendarOrder {
   id: string;
   Consumer: { name: string };
-  schedtime: Date;
+  time: string;
   status: string;
 }
 
 export interface CalendarEvent {
   title: string;
-  start: Date;
+  start: string;
 }

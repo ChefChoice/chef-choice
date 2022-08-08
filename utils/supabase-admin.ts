@@ -208,7 +208,7 @@ export const getOrdersForCalendar = async (status: string[]) => {
   try {
     const { data: orders, error: OrderError } = await supabase
       .from('Order')
-      .select('id, schedtime, status, Consumer (name)')
+      .select('id, time, schedtime, status, Consumer (name)')
       .or(`status.in.(${status})`);
 
     if (OrderError) throw OrderError.message;
