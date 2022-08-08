@@ -96,12 +96,13 @@ const Schedule = () => {
         const calendarOrders: CalendarOrder[] = await getOrdersForCalendar(['O', 'F']);
         if (calendarOrders) {
           const orders: CalendarEvent[] = calendarOrders.map((calendarOrder: CalendarOrder) => {
+            console.log(calendarOrder);
             return {
               title:
                 calendarOrder.status === 'F'
                   ? `Fulfilled #${calendarOrder.id.toString()} - ${calendarOrder.Consumer.name}`
                   : `Ongoing #${calendarOrder.id.toString()} - ${calendarOrder.Consumer.name}`,
-              start: calendarOrder.schedtime,
+              start: calendarOrder.time,
               color: calendarOrder.status === 'F' ? '#EB4747' : '#3788d8',
             };
           });
@@ -210,9 +211,11 @@ const Schedule = () => {
               }}
               events={[...availabilities, ...orders]}
               eventClick={(info) => {
-                setModalTitle(`${info.event.start?.toDateString()}`);
-                setModalDesc(`${info.event.start?.toLocaleTimeString()} ${info.event.title}`);
-                setIsOpen(true);
+                if (info.event.display !== 'background') {
+                  setModalTitle(`${info.event.start?.toDateString()}`);
+                  setModalDesc(`${info.event.start?.toLocaleTimeString()} ${info.event.title}`);
+                  setIsOpen(true);
+                }
               }}
               stickyHeaderDates={true}
               nowIndicator={true}
