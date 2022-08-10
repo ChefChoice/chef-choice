@@ -35,29 +35,6 @@ const Navbar = () => {
     }
   };
 
-  const SignUpLinks = () => (
-    <>
-      {isAdmin ? (
-        <></>
-      ) : user && !isAdmin ? (
-        <></>
-      ) : (
-        <ul className="mt-5 md:relative md:right-64 md:mt-0 md:flex md:gap-x-6">
-          <li className="mb-4 md:mb-0">
-            <Link href="/sign-up/consumer">
-              <a className="text-xl font-semibold text-black hover:text-gray-400">Register Today</a>
-            </Link>
-          </li>
-          <li>
-            <Link href="/sign-up/chef">
-              <a className="text-xl font-semibold text-black hover:text-gray-400">Become a Chef</a>
-            </Link>
-          </li>
-        </ul>
-      )}
-    </>
-  );
-
   return (
     <div className="fixed top-0 left-0 z-50 w-full shadow-md">
       <nav className="bg-white">
@@ -68,24 +45,6 @@ const Navbar = () => {
                 <Logo />
               </a>
             </Link>
-            <div className="ml-4">
-              {isAdmin ? (
-                <></>
-              ) : (
-                user &&
-                !isAdmin && (
-                  <ul>
-                    <li className="inline">
-                      <Link href="/order-management">
-                        <a className="text-xl font-semibold text-black hover:text-gray-400">
-                          Orders
-                        </a>
-                      </Link>
-                    </li>
-                  </ul>
-                )
-              )}
-            </div>
           </div>
           <div
             className="absolute right-8 top-4 cursor-pointer md:hidden"
@@ -97,12 +56,41 @@ const Navbar = () => {
               <MenuIcon className="h-8 w-8 stroke-2"></MenuIcon>
             )}
           </div>
-          <SignUpLinks />
           <ul
-            className={`absolute left-0 w-full bg-white pb-12 pl-8 opacity-0 transition-all duration-500 ease-in md:static md:z-auto md:flex md:w-auto md:items-center md:pb-0 md:pl-0 md:opacity-100 ${
+            className={`absolute left-0 w-full bg-white pb-12 pl-8 opacity-0 transition-all duration-500 ease-in md:static md:z-auto md:flex md:w-full md:items-center md:justify-end md:pb-0 md:pl-0 md:opacity-100 ${
               open ? 'top-15 opacity-100' : 'top-[-490px]'
             }`}
           >
+            <li className="mr-auto mt-5 md:ml-4 md:mt-0">
+              {isAdmin ? (
+                <></>
+              ) : user && !isAdmin ? (
+                <ul>
+                  <li className="inline">
+                    <Link href="/order-management">
+                      <a className="text-xl font-semibold text-black hover:text-gray-400">Orders</a>
+                    </Link>
+                  </li>
+                </ul>
+              ) : (
+                <ul className="md:flex md:gap-x-6">
+                  <li className="mb-4 md:mb-0">
+                    <Link href="/sign-up/consumer">
+                      <a className="text-xl font-semibold text-black hover:text-gray-400">
+                        Register Today
+                      </a>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link href="/sign-up/chef">
+                      <a className="text-xl font-semibold text-black hover:text-gray-400">
+                        Become a Chef
+                      </a>
+                    </Link>
+                  </li>
+                </ul>
+              )}
+            </li>
             <li>
               {user && !isHomeChef && !isAdmin && (
                 <Link href="/order-management/checkout">
