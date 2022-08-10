@@ -7,6 +7,7 @@ import { NextApiRequest } from 'next';
 import { parseCookies } from 'nookies';
 import { stripe, clientDomain } from './stripe';
 import Stripe from 'stripe';
+import { DbAvailability } from '../models/ScheduleModels';
 
 export const setSession = async (req: NextApiRequest) => {
   const { user, error } = await supabase.auth.api.getUserByCookie(req);
@@ -207,7 +208,7 @@ export const getOrdersForCalendar = async (status: string[]) => {
   try {
     const { data: orders, error: OrderError } = await supabase
       .from('Order')
-      .select('id, schedtime, status, Consumer (name)')
+      .select('id, time, schedtime, status, Consumer (name)')
       .or(`status.in.(${status})`);
 
     if (OrderError) throw OrderError.message;
@@ -215,6 +216,25 @@ export const getOrdersForCalendar = async (status: string[]) => {
     return orders;
   } catch (err) {
     throw err;
+  }
+};
+
+export const createAvailability = async (homeChefId: string, availability: DbAvailability) => {
+  try {
+    const { data, error } = await supabase
+      .from('HomeChef_Availability')
+      .insert([
+        {
+          homechef_id: homeChefId,
+          daysOfWeek: availability.daysOfWeek,
+          startTime: availability.startTime,
+          endTime: availability.endTime,
+          startRecur: availability.startRecur,
+          endRecur: availability.endRecur,
+        },
+      ]);
+  } catch (error) {
+    throw error;
   }
 };
 

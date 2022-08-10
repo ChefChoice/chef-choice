@@ -23,7 +23,7 @@ export default function Modal({
     return null;
   } else {
     return (
-      <div className="relative z-50" onClick={rightBtnOnClick}>
+      <div className="relative z-50">
         <div className="fixed inset-0 bg-black/20" />
         <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
           <div className="m-3 rounded-lg border-2 border-solid bg-white p-3 sm:w-1/4">
