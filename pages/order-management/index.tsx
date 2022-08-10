@@ -82,7 +82,7 @@ const OrderManagement: NextPage = () => {
       <ContentContainer>
         {state.orders ? (
           <>
-            <div className="w-40" onClick={() => setRefresh(refresh + 1)}>
+            <div className="mb-2 w-40" onClick={() => setRefresh(refresh + 1)}>
               <SmallButton data={'Refresh'} />
             </div>
             <div className="flex">

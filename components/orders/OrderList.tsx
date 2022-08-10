@@ -22,6 +22,10 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
     router.push(`/order-management/order/${id}`);
   };
 
+  const handleReview = async (id: string) => {
+    router.push(`/review/${id}`);
+  };
+
   const handleClick = async (status: string, id: number) => {
     await axios
       .post(`/api/order-management/order/${id}`, { status })
@@ -58,6 +62,16 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
                   <a className="xs:text-x font-bold lg:text-base">View Details</a>
                 </div>
               </div>
+              {type === ORDER_TYPE.PAST_ORDERS && (
+                <div
+                  onClick={() => handleReview(order.homechef_id)}
+                  className="w-full max-w-fit cursor-pointer overflow-hidden rounded border-2 border-solid border-black shadow-lg hover:bg-green-hover hover:ring"
+                >
+                  <div className="py-2 px-2 text-center">
+                    <a className="xs:text-x font-bold lg:text-base">Review</a>
+                  </div>
+                </div>
+              )}
               {isHomeChef && type === ORDER_TYPE.PENDING_ORDERS && (
                 <div
                   onClick={() => {
