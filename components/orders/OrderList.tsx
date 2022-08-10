@@ -16,6 +16,7 @@ interface IOrderListProps {
 const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderListProps) => {
   const router = useRouter();
   const [showModal, setShowModal] = useState(false);
+  const [orderId, setOrderId] = useState<any | null>(null);
   const [status, setStatus] = useState<any | null>(null);
 
   const handleViewDetails = async (id: number) => {
@@ -46,7 +47,6 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
       {orders.length != 0 ? (
         orders.map((order: Order, i: number) => {
           const time: Date = new Date(Date.parse(order.time));
-
           return (
             <div key={i} className="flex gap-3 py-2">
               <div className="flex grow gap-5">
@@ -76,6 +76,7 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
                 <div
                   onClick={() => {
                     setStatus('O');
+                    setOrderId(order.id);
                     setShowModal(true);
                   }}
                   className="hover:border-green w-full max-w-fit cursor-pointer overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:bg-green-hover hover:ring"
@@ -89,6 +90,7 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
                 <div
                   onClick={() => {
                     setStatus('F');
+                    setOrderId(order.id);
                     setShowModal(true);
                   }}
                   className="hover:border-green w-full max-w-fit cursor-pointer overflow-hidden rounded bg-green-light shadow-lg hover:bg-green-hover hover:ring"
@@ -102,6 +104,7 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
                 <div
                   onClick={() => {
                     setStatus('C');
+                    setOrderId(order.id);
                     setShowModal(true);
                   }}
                   className="w-full max-w-fit cursor-pointer overflow-hidden rounded bg-red-500 shadow-lg hover:bg-black hover:ring"
@@ -113,26 +116,24 @@ const OrderList = ({ type, orders, isHomeChef, refresh, setRefresh }: IOrderList
                   </div>
                 </div>
               )}
-              <Modal
-                visible={showModal}
-                title={'Confirm Action'}
-                content={
-                  <p className="mx-2 mb-4 break-all text-lg">
-                    Confirm action for Order #{order.id}?
-                  </p>
-                }
-                leftBtnText={'No'}
-                leftBtnOnClick={async () => setShowModal(false)}
-                rightBtnText={'Yes'}
-                rightBtnOnClick={() => handleClick(status, order.id)}
-                hideLeftBtn={false}
-              />
             </div>
           );
         })
       ) : (
         <div>No records</div>
       )}
+      <Modal
+        visible={showModal}
+        title={'Confirm Action'}
+        content={
+          <p className="mx-2 mb-4 break-all text-lg">Confirm action for Order #{orderId}?</p>
+        }
+        leftBtnText={'No'}
+        leftBtnOnClick={async () => setShowModal(false)}
+        rightBtnText={'Yes'}
+        rightBtnOnClick={() => handleClick(status, orderId)}
+        hideLeftBtn={false}
+      />
     </div>
   );
 };
