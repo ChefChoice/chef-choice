@@ -108,11 +108,11 @@ const Kitchen: NextPage = ({ page }: any) => {
               >
                 <SmallButton data={'View Schedule'} />
               </div>
-              {/* <Link href={`/review/${data.HomeChef[0].id}`}>
+              <Link href={`/review/${data.HomeChef[0].id}`}>
                 <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light">
                   Reviews
                 </button>
-              </Link> */}
+              </Link>
               <Stars stars={data ? data.HomeChef[0].rating : 0} />
             </div>
             <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}

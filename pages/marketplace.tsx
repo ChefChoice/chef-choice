@@ -1,7 +1,9 @@
-import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
+import { User, withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import Head from 'next/head';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { supabase } from '../utils/supabaseClient';
 
 // TODO: Add navigations to schedule and review
 
@@ -10,6 +12,12 @@ export const getServerSideProps = withPageAuth({
 });
 
 export default function Marketplace() {
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    setUser(supabase.auth.user());
+  }, [user]);
+
   return (
     <>
       <Head>
@@ -26,7 +34,7 @@ export default function Marketplace() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 justify-center gap-2 self-center sm:w-2/5 sm:grid-cols-2">
+          <div className="grid grid-cols-1 justify-center gap-2 self-center sm:w-2/5 sm:grid-cols-3">
             <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring ">
               <Link href="/dish-management">
                 <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
@@ -42,8 +50,8 @@ export default function Marketplace() {
               </Link>
             </div>
 
-            {/* <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
-              <Link href="#">
+            <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
+              <Link href={`/review/${user?.id}`}>
                 <a className="xs:text-xs font-bold text-white hover:text-black lg:text-base">
                   <Image
                     src="/images/reviewMgt.jpg"
@@ -53,10 +61,10 @@ export default function Marketplace() {
                     alt="review image"
                   />
 
-                  <div className="py-5 px-5 text-right">Manage Reviews</div>
+                  <div className="py-5 px-5 text-right">See Reviews</div>
                 </a>
               </Link>
-            </div> */}
+            </div>
 
             <div className="hover:border-green overflow-hidden rounded border-2 border-solid border-green-light bg-green-light shadow-lg hover:border-4 hover:bg-green-hover hover:ring">
               <Link href="/schedule">

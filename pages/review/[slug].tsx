@@ -13,6 +13,7 @@ import { supabase } from '../../utils/supabaseClient';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useUser } from '../../lib/UserContext';
 
 const schema = yup
   .object()
@@ -51,6 +52,7 @@ export const getServerSideProps = withPageAuth({
 });
 
 const Review: NextPage = ({ review, homeChef }: any) => {
+  const { user: userSession, isHomeChef } = useUser();
   const [user, setUser] = useState<User | null>(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const [addModal, setAddModal] = useState(false);
@@ -80,7 +82,7 @@ const Review: NextPage = ({ review, homeChef }: any) => {
 
   useEffect(() => {
     setUser(supabase.auth.user());
-  }, [user]);
+  }, [user, isHomeChef]);
 
   const onAddReviewSubmit = async (data: any) => {
     let { error } = await supabase.from('Review').insert([
@@ -130,19 +132,27 @@ const Review: NextPage = ({ review, homeChef }: any) => {
           <Heading
             title={`${homeChef.name} - Reviews`}
             optionalNode={
-              <div className="flex space-x-2">
-                <Link href={`/kitchen/${homeChef.id}`}>
+              !isHomeChef ? (
+                <div className="flex space-x-2">
+                  <Link href={`/kitchen/${homeChef.id}`}>
+                    <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
+                      Back to Dishes
+                    </button>
+                  </Link>
+                  <button
+                    onClick={() => setAddModal(true)}
+                    className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
+                  >
+                    Add Review
+                  </button>
+                </div>
+              ) : (
+                <Link href="/marketplace">
                   <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
-                    Back to Dishes
+                    Back to Marketplace
                   </button>
                 </Link>
-                <button
-                  onClick={() => setAddModal(true)}
-                  className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
-                >
-                  Add Review
-                </button>
-              </div>
+              )
             }
             optionalNodeRightAligned={true}
           />
