@@ -2,7 +2,7 @@ import { createOrRetrieveStripeChef, setSession } from '../../../utils/supabase-
 import { NextApiRequest, NextApiResponse } from 'next';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  await setSession(req).then(async ({ user, isHomeChef }) => {
+  await setSession(req).then(async ({ user }) => {
     if (req.method === 'GET') {
       try {
         if (!user) throw Error('Could not get user');

@@ -1,4 +1,4 @@
-import { PencilAltIcon, TrashIcon } from '@heroicons/react/outline';
+import { PencilAltIcon, TrashIcon, CreditCardIcon } from '@heroicons/react/outline';
 import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 import { User } from '@supabase/supabase-js';
 import { NextPage } from 'next';
@@ -15,6 +15,7 @@ import ModalImage from 'react-modal-image';
 import Loading from '../../components/common/Loading';
 import Modal from '../../components/modals/Modal';
 import { useUser } from '../../lib/UserContext';
+import RowItem from '../../components/common/RowItem';
 
 export const getServerSideProps = withPageAuth({
   redirectTo: '/signin',
@@ -29,8 +30,11 @@ const Profile: NextPage = () => {
   );
 
   const [userData, setUserData] = useState<any>();
+  const [payMethods, setPayMethods] = useState<any>();
 
   const [showModal, setShowModal] = useState(false);
+  const [showMethodModalText, setMethodShowModalText] = useState('');
+  const [methodID, setMethodID] = useState('');
   const [certName, setCertName] = useState('');
   const [certId, setCertId] = useState('');
   const [certImage, setCertImage] = useState('');
@@ -96,8 +100,18 @@ const Profile: NextPage = () => {
           }
 
           if (consumerData) {
+            await axios
+              .get(`/api/profile/get-methods`)
+              .then((methods) => {
+                if (methods.data) {
+                  setPayMethods(methods.data);
+                }
+              })
+              .catch((error) => {
+                console.log(error);
+              });
+
             setUserData(consumerData[0]);
-            console.log(consumerData);
           }
         }
       }
@@ -159,6 +173,21 @@ const Profile: NextPage = () => {
     }
   }
 
+  async function removeMethod() {
+    await axios
+      .post(`/api/profile/detach-method`, { paymentMethodID: methodID })
+      .then(() => {
+        const deleteableMethod = payMethods?.filter((method: any) => method.id == methodID)[0];
+        const filteredMethods = payMethods?.filter((method: any) => method !== deleteableMethod);
+
+        setPayMethods(filteredMethods);
+        setShowModal(false);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   async function handlePayout() {
     const response = await axios.get(`/api/profile/payout-management`);
 
@@ -174,18 +203,20 @@ const Profile: NextPage = () => {
         <meta content="width=device-width, initial-scale=1" name="viewport" />
       </Head>
 
-      <main className="flex h-full w-full flex-col py-20 px-10">
+      <main className="flex h-full w-full flex-col py-20 px-20">
         <div>
           <Heading
             title={'Account Details'}
             optionalNode={
               <div className="flew space-x-2">
-                <button
-                  onClick={handlePayout}
-                  className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
-                >
-                  Payout Management
-                </button>
+                {isHomeChef && (
+                  <button
+                    onClick={handlePayout}
+                    className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
+                  >
+                    Payout Management
+                  </button>
+                )}
                 <Link
                   href={{
                     pathname: '/profile/edit',
@@ -303,13 +334,67 @@ const Profile: NextPage = () => {
           </div>
         )}
 
+        {!isHomeChef && (
+          <div className="pt-10">
+            <Heading
+              title={'Payment Options'}
+              optionalNode={
+                <Link
+                  href={{
+                    pathname: '/profile/add-method',
+                    query: {
+                      id: user ? user.id : null,
+                    },
+                  }}
+                >
+                  <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light">
+                    Add
+                  </button>
+                </Link>
+              }
+              optionalNodeRightAligned={true}
+            />
+            {payMethods &&
+              payMethods.map((method: any, index: number) => {
+                let methodInline = `${method.brand} ending in #${method.number}`;
+
+                // add make primary
+                return (
+                  <RowItem
+                    rowID={index}
+                    key={index}
+                    title={methodInline}
+                    image={<CreditCardIcon className="h-10 w-10" />}
+                    optionalNode={
+                      <div className="pl-20" title={`Delete Method: ${methodInline}`}>
+                        <TrashIcon
+                          className="h-10 w-10 cursor-pointer stroke-1 hover:stroke-2"
+                          onClick={() => {
+                            setMethodShowModalText(methodInline);
+                            setMethodID(method.id);
+                            setShowModal(true);
+                          }}
+                        />
+                      </div>
+                    }
+                    optionalNodeRightAligned={false}
+                  />
+                );
+              })}
+          </div>
+        )}
+
         {/* Delete Modal */}
         <Modal
           visible={showModal}
           title={'Confirm Deletion'}
-          content={<p className="mx-2 mb-4 break-all text-lg">Do you want to delete {certName}?</p>}
+          content={
+            <p className="mx-2 mb-4 break-all text-lg">
+              Do you want to delete {isHomeChef ? certName : showMethodModalText}?
+            </p>
+          }
           leftBtnText={'Delete'}
-          leftBtnOnClick={deleteCertificate}
+          leftBtnOnClick={isHomeChef ? deleteCertificate : removeMethod}
           rightBtnText={'Cancel'}
           rightBtnOnClick={closeModal}
           hideLeftBtn={false}
