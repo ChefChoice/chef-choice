@@ -48,6 +48,9 @@ const Profile: NextPage = () => {
   async function getData() {
     try {
       setUser(supabase.auth.user());
+      console.log('getData');
+      console.log(user);
+      console.log(isHomeChef);
 
       if (user) {
         if (isHomeChef) {

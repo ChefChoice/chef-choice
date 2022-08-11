@@ -100,19 +100,16 @@ const Kitchen: NextPage = ({ page }: any) => {
           <>
             <div className="flex flex-col gap-y-4 lg:flex-row">
               {data && <h3 className="pr-5 text-4xl font-bold">Chef {data.HomeChef[0].name}</h3>}
-              <div
-                className=""
-                onClick={() => {
-                  console.log('view schedule');
-                }}
-              >
-                <SmallButton data={'View Schedule'} />
-              </div>
-              {/* <Link href={`/review/${data.HomeChef[0].id}`}>
+              <div className="space-x-2">
                 <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light">
-                  Reviews
+                  Schedule
                 </button>
-              </Link> */}
+                <Link href={`/review/${data.HomeChef[0].id}`}>
+                  <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring hover:ring-green-light">
+                    Reviews
+                  </button>
+                </Link>
+              </div>
               <Stars stars={data ? data.HomeChef[0].rating : 0} />
             </div>
             <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}

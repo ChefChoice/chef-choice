@@ -13,6 +13,8 @@ import { supabase } from '../../utils/supabaseClient';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
+import { useUser } from '../../lib/UserContext';
+import Stars from '../../components/common/Stars';
 
 const schema = yup
   .object()
@@ -36,7 +38,7 @@ export const getServerSideProps = withPageAuth({
 
       let { data: review, error } = await supabase
         .from('Review')
-        .select(`id, consumer:consumer_id(id, name), time_posted, content, rating`)
+        .select(`id, consumer:consumer_id(id, name), time_posted, time_edited, content, rating`)
         .eq('homechef_id', homechef_id);
 
       if (error) throw error.message;
@@ -51,6 +53,7 @@ export const getServerSideProps = withPageAuth({
 });
 
 const Review: NextPage = ({ review, homeChef }: any) => {
+  const { user: userSession, isHomeChef } = useUser();
   const [user, setUser] = useState<User | null>(null);
   const [deleteModal, setDeleteModal] = useState(false);
   const [addModal, setAddModal] = useState(false);
@@ -80,7 +83,7 @@ const Review: NextPage = ({ review, homeChef }: any) => {
 
   useEffect(() => {
     setUser(supabase.auth.user());
-  }, [user]);
+  }, [user, isHomeChef]);
 
   const onAddReviewSubmit = async (data: any) => {
     let { error } = await supabase.from('Review').insert([
@@ -103,6 +106,7 @@ const Review: NextPage = ({ review, homeChef }: any) => {
         {
           content: data.content,
           rating: data.rating,
+          time_edited: new Date(),
         },
       ])
       .eq('id', reviewId);
@@ -130,19 +134,27 @@ const Review: NextPage = ({ review, homeChef }: any) => {
           <Heading
             title={`${homeChef.name} - Reviews`}
             optionalNode={
-              <div className="flex space-x-2">
-                <Link href={`/kitchen/${homeChef.id}`}>
+              !isHomeChef ? (
+                <div className="flex space-x-2">
+                  <Link href={`/kitchen/${homeChef.id}`}>
+                    <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
+                      Back to Dishes
+                    </button>
+                  </Link>
+                  <button
+                    onClick={() => setAddModal(true)}
+                    className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
+                  >
+                    Add Review
+                  </button>
+                </div>
+              ) : (
+                <Link href="/marketplace">
                   <button className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring">
-                    Back to Dishes
+                    Back to Marketplace
                   </button>
                 </Link>
-                <button
-                  onClick={() => setAddModal(true)}
-                  className="rounded border-2 border-solid border-black bg-white py-1 px-8 text-lg font-medium hover:ring"
-                >
-                  Add Review
-                </button>
-              </div>
+              )
             }
             optionalNodeRightAligned={true}
           />
@@ -152,10 +164,17 @@ const Review: NextPage = ({ review, homeChef }: any) => {
                 <div className="">
                   <span className="font-semibold">{review.consumer.name}</span>{' '}
                 </div>
-                <div className="flex">Rating: {review.rating}/5</div>
+                <div className="flex">
+                  <Stars stars={review.rating} />
+                </div>
               </div>
               <div className="flex">
-                <div className="text-sm">{new Date(review.time_posted).toDateString()}</div>
+                <div className="text-sm">
+                  {new Date(review.time_posted).toDateString()}{' '}
+                  {review.time_edited && (
+                    <span>(Edited: {new Date(review.time_edited).toDateString()})</span>
+                  )}
+                </div>
               </div>
               <div className="flex place-content-between">
                 <div className="">{review.content}</div>
