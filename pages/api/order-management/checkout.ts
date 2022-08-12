@@ -35,7 +35,9 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (OrderError) throw OrderError.message;
           if (OrderDishError) throw OrderDishError.message;
 
-          return res.status(200).json({ order, orderDish });
+          let primaryPayMethod = await getPrimaryMethodTerse({ uuid: user.id });
+
+          return res.status(200).json({ order:{ order, orderDish }, primaryPayMethod });
         } else return res.status(200).json(orderId);
     }
   });

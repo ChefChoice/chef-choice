@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../../utils/supabaseClient';
 import { parseCookies } from 'nookies';
-import { createOrRetrieveStripeCustomer } from '../../../utils/supabase-admin';
+import { createOrRetrieveStripeCustomerID } from '../../../utils/supabase-admin';
 import { stripe } from '../../../utils/stripe';
 
 const setSession = async (req: NextApiRequest) => {
@@ -22,7 +22,7 @@ const setSession = async (req: NextApiRequest) => {
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await setSession(req).then(async (user) => {
-    createOrRetrieveStripeCustomer({ uuid: user.id })
+    createOrRetrieveStripeCustomerID({ uuid: user.id })
       .then((customerID) => {
         let expMonth = req.body.expdate.substring(0, 2);
         let expYear = req.body.expdate.substring(2, 6);

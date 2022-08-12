@@ -1,4 +1,4 @@
-import { createOrRetrieveStripeCustomer } from '../../../utils/supabase-admin';
+import { createOrRetrieveStripeCustomerID } from '../../../utils/supabase-admin';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../../utils/supabaseClient';
 
@@ -26,7 +26,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       if (!user) throw Error('Could not get user');
 
       // Adding user to Stripe
-      await createOrRetrieveStripeCustomer({
+      await createOrRetrieveStripeCustomerID({
         uuid: user.id || '',
       });
 
