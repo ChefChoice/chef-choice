@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
+import { supabaseClient, withPageAuth } from '@supabase/supabase-auth-helpers/nextjs';
 
 import Head from 'next/head';
 import Image from 'next/image';
@@ -14,6 +14,7 @@ import Stars from '../../components/common/Stars';
 import OrderModal from '../../components/modals/OrderModal';
 import { Dish } from '../../models/models';
 import { PROMPT } from '../../utils/constants';
+import { supabase } from '../../utils/supabaseClient';
 import Link from 'next/link';
 
 export const getServerSideProps = withPageAuth({
@@ -35,6 +36,7 @@ const Kitchen: NextPage = ({ page }: any) => {
   const [choice, setChoice] = useState<boolean>(false);
   const [warning, setWarning] = useState<boolean>(false);
   const [dish, setDish] = useState<any | null>(null);
+  const [address, setAddress] = useState<any | null>(null);
 
   useEffect(() => {
     getKitchen(page)
@@ -56,6 +58,18 @@ const Kitchen: NextPage = ({ page }: any) => {
   const getKitchen = async (chefId: string) => {
     try {
       const response = await axios.get(`/api/kitchen/${chefId}`);
+
+      const {
+        data: chefData,
+        error: chefError,
+        status: chefStatus,
+      } = await supabase
+        .from('HomeChef')
+        .select('name')
+        .select(`*, address:address_id(*)`)
+        .eq('id', chefId);
+
+      chefData && setAddress(chefData[0].address);
 
       return response.data.kitchen;
     } catch (error) {
@@ -112,7 +126,11 @@ const Kitchen: NextPage = ({ page }: any) => {
               </div>
               <Stars stars={data ? data.HomeChef[0].rating : 0} />
             </div>
-            <div>100 Queen St W, Toronto, ON M5H 2N1</div> {/* TODO: Temporary hard-coded value */}
+            {address && (
+              <div className="mt-4">
+                {address.street}, {address.city}, {address.postalcode}
+              </div>
+            )}
             <div className="flex grow flex-col pt-5">
               {/* TODO: Make heading below dynamic */}
               <Heading title={'Dinner'}></Heading>
@@ -120,7 +138,7 @@ const Kitchen: NextPage = ({ page }: any) => {
               <div>
                 {data &&
                   data.Dishes.map((dish: Dish) => (
-                    <div key={dish.dish_id}>
+                    <div key={dish.dish_id} className="mb-6 md:mb-0">
                       <RowItem
                         key={dish.dish_id}
                         rowID={dish.dish_id}
@@ -148,6 +166,7 @@ const Kitchen: NextPage = ({ page }: any) => {
                         }
                         optionalNodeRightAligned
                       />
+                      <hr className="mt-4 md:hidden" />
                     </div>
                   ))}
               </div>

@@ -122,7 +122,7 @@ const Checkout: NextPage = () => {
                         key={0}
                         rowID={0}
                         title=""
-                        subtitle="Visa ending in 4321"
+                        subtitle="Mastercard ending in #5463"
                         optionalNode={<SmallButton data={'Edit'} />}
                         optionalNodeRightAligned
                       />

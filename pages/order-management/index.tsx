@@ -82,10 +82,10 @@ const OrderManagement: NextPage = () => {
       <ContentContainer>
         {state.orders ? (
           <>
-            <div className="w-40" onClick={() => setRefresh(refresh + 1)}>
+            <div className="mb-4 w-40" onClick={() => setRefresh(refresh + 1)}>
               <SmallButton data={'Refresh'} />
             </div>
-            <div className="flex">
+            <div className="md:flex">
               {Object.values(ORDER_TYPE).map((orders: string, i) => {
                 const element = [];
 
@@ -105,7 +105,7 @@ const OrderManagement: NextPage = () => {
                 if (i != Object.values(ORDER_TYPE).length - 1) {
                   element.push(
                     <div key={1} className="text-3xl">
-                      <div className="mb-3 pr-10">|</div>
+                      <div className="mb-3 hidden pr-10 md:block">|</div>
                       <hr className="border-t-2 border-black/[.50]" />
                     </div>
                   );
