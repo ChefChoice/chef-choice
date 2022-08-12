@@ -125,7 +125,7 @@ const Checkout: NextPage = () => {
                         key={0}
                         rowID={0}
                         title=""
-                        subtitle={primaryPayMethod.brand ? `${primaryPayMethod.brand} ending in ${primaryPayMethod.last4}` : "No Primary Method"}
+                        subtitle={primaryPayMethod.brand ? `${primaryPayMethod.brand} ending in #${primaryPayMethod.last4}` : "No Primary Method"}
                         optionalNode={
                           <div className="w-40" onClick={() => router.push('/profile/add-method')}>
                             <SmallButton data={primaryPayMethod.brand ? 'Add New' : 'Add'} />
