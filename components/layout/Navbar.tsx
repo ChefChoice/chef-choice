@@ -109,7 +109,7 @@ const Navbar = () => {
               </Link>
             </li>
             <li className="my-4 md:my-0 md:ml-6">
-              <Link href="/help">
+              <Link href="/">
                 <a className="text-xl font-semibold text-black hover:text-gray-400">Help</a>
               </Link>
             </li>
