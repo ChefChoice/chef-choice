@@ -361,5 +361,5 @@ export const getPrimaryMethodTerse = async ({ uuid } : { uuid: string }) => {
         }
       }
     })
-    .then((paymentMethod) => { return { brand: paymentMethod?.card?.brand, last4: paymentMethod?.card?.last4 }});
+    .then((paymentMethod) => { return { id:paymentMethod?.id, brand: paymentMethod?.card?.brand, last4: paymentMethod?.card?.last4 }});
 };
