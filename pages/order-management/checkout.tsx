@@ -20,6 +20,7 @@ export const getServerSideProps = withPageAuth({
 const Checkout: NextPage = () => {
   const [order, setOrder] = useState<any | null>(null);
   const [refresh, setRefresh] = useState<number>(0);
+  const [primaryPayMethod, setPrimaryPayMethod] = useState({brand:null, last4:null});
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const Checkout: NextPage = () => {
   }, [refresh]);
 
   const getData = async () => {
-    const order = await axios
+    const { order, primaryPayMethod } = await axios
       .get('/api/order-management/checkout')
       .then((response) => {
         return response.data;
@@ -36,6 +37,8 @@ const Checkout: NextPage = () => {
         throw Error('Server Error');
       });
     setOrder(order);
+    console.log(primaryPayMethod)
+    setPrimaryPayMethod(primaryPayMethod);
   };
 
   const handleClick = async () => {
@@ -122,8 +125,12 @@ const Checkout: NextPage = () => {
                         key={0}
                         rowID={0}
                         title=""
-                        subtitle="Mastercard ending in #5463"
-                        optionalNode={<SmallButton data={'Edit'} />}
+                        subtitle={primaryPayMethod.brand ? `${primaryPayMethod.brand} ending in #${primaryPayMethod.last4}` : "No Primary Method"}
+                        optionalNode={
+                          <div className="w-40" onClick={() => router.push('/profile/add-method')}>
+                            <SmallButton data={primaryPayMethod.brand ? 'Add New' : 'Add'} />
+                          </div>
+                        }
                         optionalNodeRightAligned
                       />
                     </div>

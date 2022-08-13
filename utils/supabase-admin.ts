@@ -294,7 +294,7 @@ export const createOrRetrieveStripeChef = async ({
   }
 };
 
-export const createOrRetrieveStripeCustomer = async ({ uuid }: { uuid: string }) => {
+export const createOrRetrieveStripeCustomerID = async ({ uuid }: { uuid: string }) => {
   const { data, error } = await supabase
     .from('TestStripe')
     .select('stripe_id')
@@ -321,7 +321,7 @@ export const createOrRetrieveStripeCustomer = async ({ uuid }: { uuid: string })
 };
 
 export const getAllPaymentMethods = async ({ uuid }: { uuid: string }) => {
-  return createOrRetrieveStripeCustomer({ uuid: uuid }).then((accountID) => {
+  return createOrRetrieveStripeCustomerID({ uuid: uuid }).then((accountID) => {
     return stripe.customers
       .listPaymentMethods(accountID, { type: 'card' })
       .then((methods) => {
@@ -345,4 +345,21 @@ export const getAllPaymentMethods = async ({ uuid }: { uuid: string }) => {
 
 export const detachPaymentMethod = async ({ paymentMethodID }: { paymentMethodID: string }) => {
   return stripe.paymentMethods.detach(paymentMethodID);
+};
+
+
+export const getPrimaryMethodTerse = async ({ uuid } : { uuid: string }) => {
+  return createOrRetrieveStripeCustomerID({ uuid: uuid })
+    .then((accountID) => { return stripe.customers.retrieve(accountID) })
+    .then((customer) => {
+      if (!customer.deleted)
+      {
+        if (customer.invoice_settings?.default_payment_method != null)
+        {
+          let methodID : string = customer.invoice_settings.default_payment_method.toString();
+          return stripe.customers.retrievePaymentMethod(customer.id, methodID)
+        }
+      }
+    })
+    .then((paymentMethod) => { return { id:paymentMethod?.id, brand: paymentMethod?.card?.brand, last4: paymentMethod?.card?.last4 }});
 };
