@@ -5,6 +5,9 @@ import { Order, OrderDish } from '../models/models';
 import { supabase } from './supabaseClient';
 import { NextApiRequest } from 'next';
 import { parseCookies } from 'nookies';
+import { stripe, clientDomain } from './stripe';
+import Stripe from 'stripe';
+import { DbAvailability } from '../models/ScheduleModels';
 
 export const setSession = async (req: NextApiRequest) => {
   const { user, error } = await supabase.auth.api.getUserByCookie(req);
@@ -200,3 +203,163 @@ export async function getOrderQuantity(orderId: number | string | string[]) {
     throw err;
   }
 }
+
+export const getOrdersForCalendar = async (status: string[]) => {
+  try {
+    const { data: orders, error: OrderError } = await supabase
+      .from('Order')
+      .select('id, time, schedtime, status, Consumer (name)')
+      .or(`status.in.(${status})`);
+
+    if (OrderError) throw OrderError.message;
+
+    return orders;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const createAvailability = async (homeChefId: string, availability: DbAvailability) => {
+  try {
+    const { data, error } = await supabase
+      .from('HomeChef_Availability')
+      .insert([
+        {
+          homechef_id: homeChefId,
+          daysOfWeek: availability.daysOfWeek,
+          startTime: availability.startTime,
+          endTime: availability.endTime,
+          startRecur: availability.startRecur,
+          endRecur: availability.endRecur,
+        },
+      ]);
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ===== Stripe Functions =====
+
+export const createOrRetrieveStripeChef = async ({
+  email,
+  uuid,
+  user, // TODO: Prefill details from the Chef sign up
+}: {
+  email: string;
+  uuid: string;
+  user?: any;
+}) => {
+  const { data, error } = await supabase
+    .from('TestStripe')
+    .select('stripe_id')
+    .eq('id', uuid)
+    .single();
+  if (error) {
+    // No customer record found, let's create one.
+    // Create a Stripe Connect Account
+    const customerData: Stripe.AccountCreateParams = {
+      metadata: {
+        supabaseUUID: uuid,
+      },
+      type: 'express',
+      country: 'CA',
+      business_type: 'individual',
+      capabilities: {
+        card_payments: { requested: true },
+        transfers: { requested: true },
+      },
+    };
+    if (email) customerData.email = email;
+    const customer = await stripe.accounts.create(customerData);
+    // Now insert the customer ID into our Supabase mapping table.
+    const { error: supabaseError } = await supabase
+      .from('TestStripe')
+      .insert([{ id: uuid, stripe_id: customer.id }]);
+    if (supabaseError) throw supabaseError;
+    console.log(`New customer created and inserted for ${uuid}.`);
+
+    const accountLink = await stripe.accountLinks.create({
+      account: customer.id,
+      refresh_url: `${clientDomain}/reauth`,
+      return_url: `${clientDomain}/sign-up/success`,
+      type: 'account_onboarding',
+    });
+
+    return accountLink.url;
+  } else {
+    // Create a Stripe Express Dashboard Login Link
+    const link = await stripe.accounts.createLoginLink(data.stripe_id);
+
+    return link.url;
+  }
+};
+
+export const createOrRetrieveStripeCustomerID = async ({ uuid }: { uuid: string }) => {
+  const { data, error } = await supabase
+    .from('TestStripe')
+    .select('stripe_id')
+    .eq('id', uuid)
+    .single();
+
+  if (error) {
+    const customer = await stripe.customers.create({
+      metadata: {
+        supabaseUUID: uuid,
+      },
+    });
+
+    const { error: supabaseError } = await supabase
+      .from('TestStripe')
+      .insert([{ id: uuid, stripe_id: customer.id }]);
+
+    if (supabaseError) throw supabaseError;
+    console.log(`New customer created and inserted for ${uuid}.`);
+    return customer.id;
+  }
+
+  return data.stripe_id;
+};
+
+export const getAllPaymentMethods = async ({ uuid }: { uuid: string }) => {
+  return createOrRetrieveStripeCustomerID({ uuid: uuid }).then((accountID) => {
+    return stripe.customers
+      .listPaymentMethods(accountID, { type: 'card' })
+      .then((methods) => {
+        let mappedMethods = methods.data.map((method) => {
+          if (method.card) {
+            return {
+              id: method.id,
+              brand: method.card.brand,
+              number: method.card.last4,
+            };
+          }
+        });
+
+        return mappedMethods;
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  });
+};
+
+export const detachPaymentMethod = async ({ paymentMethodID }: { paymentMethodID: string }) => {
+  return stripe.paymentMethods.detach(paymentMethodID);
+};
+
+
+export const getPrimaryMethodTerse = async ({ uuid } : { uuid: string }) => {
+  return createOrRetrieveStripeCustomerID({ uuid: uuid })
+    .then((accountID) => { return stripe.customers.retrieve(accountID) })
+    .then((customer) => {
+      if (!customer.deleted)
+      {
+        if (customer.invoice_settings?.default_payment_method != null)
+        {
+          let methodID : string = customer.invoice_settings.default_payment_method.toString();
+          return stripe.customers.retrievePaymentMethod(customer.id, methodID)
+        }
+      }
+    })
+    .then((paymentMethod) => { return { id:paymentMethod?.id, brand: paymentMethod?.card?.brand, last4: paymentMethod?.card?.last4 }});
+};

@@ -20,6 +20,7 @@ export const getServerSideProps = withPageAuth({
 const Checkout: NextPage = () => {
   const [order, setOrder] = useState<any | null>(null);
   const [refresh, setRefresh] = useState<number>(0);
+  const [primaryPayMethod, setPrimaryPayMethod] = useState({brand:null, last4:null});
   const router = useRouter();
 
   useEffect(() => {
@@ -27,7 +28,7 @@ const Checkout: NextPage = () => {
   }, [refresh]);
 
   const getData = async () => {
-    const order = await axios
+    const { order, primaryPayMethod } = await axios
       .get('/api/order-management/checkout')
       .then((response) => {
         return response.data;
@@ -36,6 +37,8 @@ const Checkout: NextPage = () => {
         throw Error('Server Error');
       });
     setOrder(order);
+    console.log(primaryPayMethod)
+    setPrimaryPayMethod(primaryPayMethod);
   };
 
   const handleClick = async () => {
@@ -69,14 +72,14 @@ const Checkout: NextPage = () => {
                 <Heading title={'Your Items'}></Heading>
                 <div className="md:w-full">
                   {order &&
-                    order.orderDish?.map((orderDish: any, i: any) => (
+                    order.orderDish?.map((orderDish: any, i: number) => (
                       <CartItem
                         key={i}
                         quantity={orderDish.quantity}
                         title={orderDish.Dish.dish_name}
-                        price={
+                        price={(
                           Math.round(orderDish.Dish.dish_price * orderDish.quantity * 100) / 100
-                        }
+                        ).toFixed(2)}
                         orderDish={orderDish}
                         setRefresh={setRefresh}
                         refresh={refresh}
@@ -85,15 +88,15 @@ const Checkout: NextPage = () => {
                 </div>
                 <div className="flex font-semibold md:w-full">
                   <div className="grow">Subtotal</div>
-                  <div>{order && `$` + order.order[0].subtotal}</div>
+                  <div>{order && `$` + order.order[0].subtotal.toFixed(2)}</div>
                 </div>
                 <div className="flex md:w-full">
                   <div className="grow">Tax and Fees (HST 13%)</div>
-                  <div>{order && `$` + order.order[0].fees}</div>
+                  <div>{order && `$` + order.order[0].fees.toFixed(2)}</div>
                 </div>
                 <div className="flex text-lg font-bold md:w-full">
                   <div className="grow">Total</div>
-                  <div>{order && `$` + order.order[0].total}</div>
+                  <div>{order && `$` + order.order[0].total.toFixed(2)}</div>
                 </div>
               </div>
               <div className="flex grow flex-col lg:max-w-xl">
@@ -122,8 +125,12 @@ const Checkout: NextPage = () => {
                         key={0}
                         rowID={0}
                         title=""
-                        subtitle="Visa ending in 4321"
-                        optionalNode={<SmallButton data={'Edit'} />}
+                        subtitle={primaryPayMethod.brand ? `${primaryPayMethod.brand} ending in #${primaryPayMethod.last4}` : "No Primary Method"}
+                        optionalNode={
+                          <div className="w-40" onClick={() => router.push('/profile/add-method')}>
+                            <SmallButton data={primaryPayMethod.brand ? 'Add New' : 'Add'} />
+                          </div>
+                        }
                         optionalNodeRightAligned
                       />
                     </div>

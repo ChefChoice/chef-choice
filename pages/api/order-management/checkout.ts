@@ -1,12 +1,26 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '../../../utils/supabaseClient';
-import { setSession, getOrder } from '../../../utils/supabase-admin';
+import { setSession, getOrder, createOrRetrieveStripeCustomerID, getPrimaryMethodTerse } from '../../../utils/supabase-admin';
+import { stripe } from '../../../utils/stripe';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   await setSession(req).then(async ({ user, isHomeChef }) => {
     switch (req.method) {
       case 'POST':
         const { id } = req.body;
+
+        await supabase
+        .from('Order')
+        .select('id,total')
+        .eq('id', id)
+        .single().then((order) => {
+          createOrRetrieveStripeCustomerID({uuid: user.id}).then((accountID) => {
+            getPrimaryMethodTerse({uuid: user.id}).then((primaryMethod) => {
+              stripe.paymentIntents.create({amount: Math.floor(order.data.total * 100), currency: 'cad', customer: accountID, payment_method:primaryMethod.id, description:`ORDER #${order.data.id}`, confirm:true});
+            });
+          })
+        });
+
         const { data, error } = await supabase
           .from('Order')
           .update({ status: 'P', cart: false })
@@ -35,8 +49,10 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
           if (OrderError) throw OrderError.message;
           if (OrderDishError) throw OrderDishError.message;
 
-          return res.status(200).json({ order, orderDish });
-        } else return res.status(200).json(orderId);
+          let primaryPayMethod : any = await getPrimaryMethodTerse({ uuid: user.id });
+
+          return res.status(200).json({ order:{ order, orderDish }, primaryPayMethod });
+        } else return res.status(200).json({ order: orderId });
     }
   });
 };
